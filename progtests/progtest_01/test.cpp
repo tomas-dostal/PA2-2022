@@ -28,6 +28,7 @@ using namespace std;
 class FileManager {
 public:
     bool get_bit() {
+        // this one does not skip the chunks stuff
         return this->file.at(current++);
     };
     ~FileManager(){
@@ -36,7 +37,7 @@ public:
         for (int i = 0; i < 8; i++) {
             n <<= 1;
             if(this->out_buffer.size()){
-                n |= this->out_buffer.first();
+                n |= this->out_buffer.front();
                 this->out_buffer.pop();
             }
             else {
@@ -53,35 +54,44 @@ public:
 
     void write(bool bit) {
         // can not write bit directly, need to collect at least 1byte
-        this->buffer.push(bit);
+        this->out_buffer.push(bit);
         write_buffer();
     };
 
     void write_buffer(){
+        cout << "running write to file, in buffer there is " << this->out_buffer.size() << " bits "<<  endl;
         while(this->out_buffer.size() >= 8){
                 uint8_t n = 0;
 
                 for (int i = 0; i < 8; i++) {
                     n <<= 1;
-                    n |= out_buffer.first();
+                    n |= out_buffer.front();
                     out_buffer.pop();
                 }
-                this->ofstream << n;
-            }
-        }
 
-    void read_file(string &filename);
+                this->ofstream << n;
+                std::cout << "writing to ostream '" << n <<"'"  << std::endl;
+                cout << "-- in buffer there is " << this->out_buffer.size() << " bits "<<  endl;
+
+        }
+        }
 
 
     void write(std::vector<bool> bits) {
-        this->out_buffer.emplace(std::end(this->out_buffer), std::begin(bits), std::end(bits));
+        // okay, I don't like it neither
+        std::cout << " Writing to out_buffer: ";
+        for (auto b: bits) {
+            this->out_buffer.push(b);
+            std::cout << b;
+        }
+        std::cout << std::endl;
         write_buffer();
     };
 
     void read_file(std::string &filename);
 
-    bool is_okay() {
-        return this->is.good();
+    bool can_continue_reading_from_buffer() {
+        return this->current < this->file.size();
     };
 
 protected:
@@ -99,10 +109,11 @@ protected:
 };
 
 void FileManager::read_file(std::string &filename) {
-    is = istream(filename, ios::binary | ios::in);
+    this->is.open(filename, ios::binary | ios::in);
 
     // whatever, it should pass the memory limit anyway
     // better solution would be a custom
+    std::cout << "Loading file " << filename << std::endl;
     char c;
     while (is.get(c)) {
 
@@ -111,6 +122,7 @@ void FileManager::read_file(std::string &filename) {
             cout << tmp;
             file.push_back(tmp);
         }
+        cout << " ";
 
         if (is.fail())
             throw runtime_error("Input error - unable to read from file");
@@ -119,6 +131,8 @@ void FileManager::read_file(std::string &filename) {
             is.close();    // left the loop and ! eof -> error reading the file.
         }
     }
+    cout << std::endl;
+
 }
 
 std::vector<bool> FileManager::read_utf_or_ascii_char() {
@@ -219,7 +233,12 @@ std::vector<bool> FileManager::read_utf_or_ascii_char() {
 }
 
 vector<bool> FileManager::get_bits(int how_many) {
-    vector<bool> result = {this->file.begin() + current, this->file.begin() + current + how_many};
+
+    // TODO!! check chunks stuff
+    if(this->file.size() < current + how_many)
+        throw std::runtime_error("Out of range of the vector's file");
+        // todo check if it is closed?
+    vector<bool> result = { this->file.begin() + current, this->file.begin() + current + how_many};
     current +=how_many;
     return result;
 }
@@ -238,14 +257,13 @@ struct node {
     std::vector<bool> data;
     node *left;
     node *right;
+    std::string prefix;
 };
 
 
 class HuffmannEncodingManager {
 public:
-    HuffmannEncodingManager(FileManager fm){
-        this->fm=fm;
-    }
+    HuffmannEncodingManager(FileManager & fm) : fm(fm){};
 
     bool decompress();
     bool compress();
@@ -255,10 +273,10 @@ public:
 
 private:
     void new_node(node **currentNode);
-    bool _load_subtree(std::string str_prefix = "", node *n);
-    node *root = nullptr;
+    bool _load_subtree(node *n, std::string str_prefix);
+    node * root = nullptr;
     int tree_empty = 0;
-    FileManager fm;
+    FileManager & fm;
 };
 
 bool HuffmannEncodingManager::decompress() {
@@ -266,24 +284,37 @@ bool HuffmannEncodingManager::decompress() {
     // decode key by key and write to the output file
 
     load_tree();
-
-    while (this->fm.is_okay()) {
+    // after loading, there is some chunks file section
+    // there is bit 1 if there are 4096 bits in the huffmann code
+    // if there is bit 0, following 12 bits are number of letters to be decoded, e.g. 110110111000
+    while (this->fm.can_continue_reading_from_buffer()) {
         std::vector<bool> my_char = read_key_and_get_value();
         this->fm.write(my_char);
     }
+
+    return true;
 }
 
 std::vector<bool> HuffmannEncodingManager::read_key_and_get_value() {
     node *current_node = this->root;
-    while (current_node->left == NULL && current_node->right == NULL) {
+    std::cout << "read_key_and_get_value: ";
+    while (current_node->right != NULL && current_node->left != NULL) { // need to find the leaf
         if (this->fm.get_bit())
             current_node = current_node->right;
-        else current_node = current_node->left;
+        else
+            current_node = current_node->left;
     }
+    std::cout << " prefix: " << current_node->prefix << std::endl;
+    if(!current_node->data.size())
+        throw runtime_error("read_key_and_get_value: Current node (prefix=" + current_node->prefix + " has empty data");
     return current_node->data;
 }
 void HuffmannEncodingManager::load_tree() {
-    _load_subtree("", this->root);
+    new_node(&this->root);
+    while(true){
+        if (!_load_subtree(this->root, ""))
+            break;
+    };
 }
 
 bool HuffmannEncodingManager::compress() {
@@ -292,36 +323,56 @@ bool HuffmannEncodingManager::compress() {
     // create a binary tree (map) and write it to the file
     // read the file again and encode it
 
-    while (this->fm.is_okay()) {
+    while (this->fm.can_continue_reading_from_buffer()) {
         std::vector<bool> my_char = this->fm.read_utf_or_ascii_char();
         // whatever, it won't be a good compression, but we can try to
         // just read letter by letter
     }
+
+    return false;
 }
-bool HuffmannEncodingManager::_load_subtree(std::string str_prefix = "", node *n) {
+
+bool HuffmannEncodingManager::_load_subtree(node * n, std::string str_prefix) {
+    std::cout << "_load_subtree prefix: " << str_prefix << std::endl;
+
     if (tree_empty == 0 && n != root)
         return true;
-
-    if (!this->fm.get_bit()) {
-        new_node(&n);
-        new_node(&n);
-        tree_empty++;
-        if (n == this->root)
+    if(fm.can_continue_reading_from_buffer()) {
+        n->prefix=str_prefix;
+        if (!this->fm.get_bit()) {
+            std::cout << "creating new nodes" << std::endl;
+            new_node(&n);
+            new_node(&n);
             tree_empty++;
+            if (n == this->root)
+                tree_empty++;
 
-        _load_subtree(str_prefix + "0", n->left);
-        _load_subtree(str_prefix + "1", n->right);
-    } else {
-        // load char
-        vector<bool> _char = this->fm.read_utf_or_ascii_char();
-        n->data = _char;
-        tree_empty--;
+            _load_subtree(n->left, n->prefix + "0");
+            _load_subtree(n->right, n->prefix + "1");
+        } else {
+            // load char
+            std::cout << "Loading char" << std::endl;
+            vector<bool> _char = this->fm.read_utf_or_ascii_char();
+            for (bool byte: _char) {
+                std::cout << byte;
+            }
+            std::cout << std::endl;
 
+            n->data = vector<bool>(_char);
+            tree_empty--;
+
+        }
+    }
+    else {
+        throw runtime_error("_load_subtree: can not read from buffer");
     }
     std::cout << "Currently " << tree_empty << " empty nodes" << std::endl;
-    if (tree_empty == 0 && n != root)
-        return false;
-    else return true;
+    if(n != root){
+        if (tree_empty == 0)
+            return true;
+        else
+            return false;
+    }
 }
 
 void HuffmannEncodingManager::new_node(node **currentNode) {
@@ -342,6 +393,7 @@ void HuffmannEncodingManager::new_node(node **currentNode) {
         (*currentNode)->right->right = NULL;
     } else {
         std::cout << "Can not create new node - right and left leaf already filled." << std::endl;
+        throw std::runtime_error("Tree is already filled");
     }
 }
 
@@ -352,24 +404,25 @@ void HuffmannEncodingManager::new_node(node **currentNode) {
 
 
 bool decompressFile(const char *inFileName, const char *outFileName) {
-    FileManager fm = FileManager();
+    FileManager fm;
     std::string file_name = inFileName;
     fm.read_file(file_name);
 
-    HuffmannEncodingManager hm = HuffmannEncodingManager(fm);
+    HuffmannEncodingManager hm(fm);
     try {
         hm.decompress();
     }
     catch (runtime_error & exception)
     {
+        std::cout << exception.what() << std::endl;
         return false;
     }
-
+    return true;
 }
 
 bool compressFile(const char *inFileName, const char *outFileName) {
     // keep this dummy implementation (no bonus) or implement the compression (bonus)
-    FileManager fm = FileManager();
+    FileManager fm;
     std::string file_name = inFileName;
     fm.read_file(file_name);
 
