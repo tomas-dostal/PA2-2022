@@ -4,4 +4,4 @@ project(progtest_01)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(progtest_01
-        test.cpp)
+        main.cpp)
