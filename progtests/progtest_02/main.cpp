@@ -30,7 +30,7 @@ public:
     };
 
     bool operator == (const Company & c) const;
-    bool operator < (const Company & c) const;
+    const bool operator < (const Company & c) const;
     bool  deactivate(){
         if(active) {
             active = !active;
@@ -43,7 +43,7 @@ public:
     unsigned int total_money = 0;
     vector<Invoice> invoices;
     void add_invoice(Invoice & invoice);
-    const std::string & get_tax_id(){ return this->tax_id; }
+    const std::string & get_tax_id() const { return this->tax_id; };
     const string & get_address() const;
     const string & get_name() const;
 
@@ -56,21 +56,21 @@ private:
 class Invoice {
 public:
     Invoice(Company & company, const unsigned int amount):company(company), amount(amount){};
-    bool operator < (const Invoice & i);
+    bool operator < (const Invoice & i) const;
     unsigned int get_amount() const {return this->amount;};
 private:
     Company & company;
     unsigned int amount;
 };
 
-bool Invoice::operator<(const Invoice & i) {
+bool Invoice::operator<(const Invoice & i) const {
     return std::tie(this->amount, this->company) < std::tie( i.amount, i.company);
 }
 
 class CompanyByIdComparator {
 public:
     bool operator()(const Company& a,
-                    const Company& b)
+                    const Company& b) const
     {
         // The member function returns 0 if all the characters in the compared
         // contents compare equal, a negative value if the first character that
@@ -86,7 +86,7 @@ public:
 class CompanyByNameComparator {
 public:
     bool operator()(const Company& a,
-                    const Company& b)
+                    const Company& b) const
     {
 
 
@@ -106,12 +106,12 @@ bool Company::operator==(const Company & c) const {
     return this->name == c.name && this->address == c.address && this->tax_id == c.tax_id;
 }
 
-bool Company::operator<(const Company &c) const {
+const bool Company::operator<(const Company &c) const {
     return c.tax_id.compare(c.tax_id) == -1;
 }
 
 void Company::add_invoice(Invoice & invoice) {
-    this->invoices.push_back(invoice);
+    this->invoices.emplace_back(invoice);
 }
 
 const string & Company::get_name() const {
@@ -124,7 +124,7 @@ const string & Company::get_address() const {
 
 class CVATRegister {
 public:
-    CVATRegister();
+    CVATRegister() = default;
 
     ~CVATRegister() = default;
 
@@ -139,9 +139,9 @@ public:
     Company & getCompanyByName(const string &name, const string &addr);
 
     bool companyExists(const string &name,
-                       const string &addr);
+                       const string &addr) const;
 
-    bool companyExists(const string &id);
+    bool companyExists(const string &id) const;
 
     bool cancelCompany(const string &name,
                        const string &addr);
@@ -168,12 +168,11 @@ public:
     bool nextCompany(string &name,
                      string &addr) const;
 
-    unsigned int medianInvoice(void) const;
+    unsigned int medianInvoice() const;
 
 private:
     vector<Company> companies_by_id, companies_by_name;
-    vector<Invoice> ordered_invoices;
-    vector<Company>::const_iterator iterator;
+    vector<Invoice> ounrdered_invoices;
 
 };
 
@@ -200,7 +199,7 @@ bool CVATRegister::invoice(const string &taxID, unsigned int amount) {
 
         c.total_money += amount;
         c.add_invoice(i);
-        ordered_invoices.insert(std::lower_bound(ordered_invoices.begin(), ordered_invoices.end(), i), i);
+        ounrdered_invoices.push_back(i);
 
         return true;
     }
@@ -271,30 +270,32 @@ bool CVATRegister::audit(const string &taxID, unsigned int &sumIncome) const {
 }
 
 bool CVATRegister::nextCompany(string &name, string &addr) const {
-    auto it_tmp = std::next(iterator);
-    try{
-        name = it_tmp->get_name();
-        addr = it_tmp->get_address();
+    // nejdriv vezmi a podle name a addr najdi nejakou formu.
+    // Do tech parametru name a addr vrat o jedno vetsi firmu
+
+    Company tmp = Company(name, addr, "");
+    auto it = std::upper_bound(companies_by_name.begin(), companies_by_name.end(), tmp, CompanyByNameComparator());
+    // tohle mozna nefunguje
+    if (it != companies_by_name.end() && const_cast<Company &>(*it) == tmp){
+        name = (*it).get_name();
+        addr = (*it).get_address();
         return true;
     }
-    catch (...) {
-        std::cout << "nextCompany out of range." << std::endl;
-        return false;
-    }
+    return false;
 }
 
 bool CVATRegister::firstCompany(string &name, string &addr) const{
-   try{
-       addr = iterator->get_address();
-       name = iterator->get_name();
-       return true;
-   }
-   catch (...){
-       return false;
-   }
+    // uplne prvni prvek pole
+    if(this->companies_by_name.empty())
+        return false;
+    else {
+        addr = this->companies_by_name.front().get_address();
+        name = this->companies_by_name.front().get_name();
+    }
+    return true;
 }
 
-unsigned int CVATRegister::medianInvoice(void) const {
+unsigned int CVATRegister::medianInvoice() const {
     // this one will be tricky. Maybe store ordered in register.
     // vyhledá medián hodnoty faktury.
     // Do vypočteného mediánu se započtou všechny úspěšně zpracované faktury
@@ -304,11 +305,16 @@ unsigned int CVATRegister::medianInvoice(void) const {
     // v systému zadaný sudý počet faktur, vezme se vyšší ze dvou prostředních hodnot.
     // Pokud systém zatím nezpracoval žádnou fakturu, bude vrácena hodnota 0.
 
-    unsigned int size = this->ordered_invoices.size();
-    return this->ordered_invoices.at((size - size % 2)/2).get_amount();
+    // create a copy, sort it.
+
+    vector<Invoice> tmp =  vector<Invoice>(this->ounrdered_invoices);
+    std::sort(tmp.begin(), tmp.end());
+
+    unsigned int size = tmp.size();
+    return tmp.at((size - size % 2)/2).get_amount();
 }
 
-bool CVATRegister::companyExists(const string &name, const string &addr) {
+bool CVATRegister::companyExists(const string &name, const string &addr) const {
     try{
         Company c = this->getCompanyByName(name, addr);
     } catch (std::runtime_error) {
@@ -317,7 +323,7 @@ bool CVATRegister::companyExists(const string &name, const string &addr) {
     return true;
 }
 
-bool CVATRegister::companyExists(const std::string & id) {
+bool CVATRegister::companyExists(const std::string & id) const {
     try{
         Company c = this->getCompanyById(id);
     } catch (std::runtime_error) {
@@ -362,9 +368,6 @@ Company &CVATRegister::getCompanyById(const string &id) {
     throw std::runtime_error("getCompanyById " + id + " not found. ");
 }
 
-CVATRegister::CVATRegister() {
-    iterator = companies_by_name.begin();
-}
 
 
 #ifndef __PROGTEST__
