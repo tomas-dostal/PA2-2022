@@ -183,7 +183,7 @@ public:
 private:
     vector<shared_ptr<Company>> companies_by_id;
     std::vector<shared_ptr<Company>> companies_by_name;
-    vector<Invoice> ounrdered_invoices;
+    vector<Invoice> ordered_invoices;
 
 };
 
@@ -207,7 +207,9 @@ bool CVATRegister::invoice(const string &taxID, unsigned int amount) {
     try{
         shared_ptr<Company> c = getCompanyById(taxID);
         c->total_money += amount;
-        ounrdered_invoices.emplace_back(Invoice(amount));
+        Invoice i = Invoice(amount);
+        ordered_invoices.insert(std::lower_bound(ordered_invoices.begin(), ordered_invoices.end(), i), i);
+        //ordered_invoices.emplace_back();
 
         return true;
     }
@@ -332,13 +334,13 @@ unsigned int CVATRegister::medianInvoice() const {
     // Pokud systém zatím nezpracoval žádnou fakturu, bude vrácena hodnota 0.
 
     // create a copy, sort it.
-    if(this->ounrdered_invoices.empty())
+    if(this->ordered_invoices.empty())
         return 0;
-    vector<Invoice> tmp =  vector<Invoice>(this->ounrdered_invoices);
-    std::sort(tmp.begin(), tmp.end());
+    //vector<Invoice> tmp =  vector<Invoice>(this->ordered_invoices);
+    //std::sort(tmp.begin(), tmp.end());
 
-    unsigned int size = tmp.size();
-    return tmp.at((size - size % 2)/2).get_amount();
+    unsigned int size = this->ordered_invoices.size();
+    return ordered_invoices.at((size - size % 2) / 2).get_amount();
 }
 
 bool CVATRegister::companyExists(const string &name, const string &addr) const {
