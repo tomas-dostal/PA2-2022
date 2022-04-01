@@ -32,18 +32,68 @@ ios_base &( *date_format(const char *fmt))(ios_base &x) {
 //=================================================================================================
 class CDate {
 public:
+    CDate(int year, int month, int day, bool make_valid);
+
     CDate(int year, int month, int day);
 
     bool is_valid(int day, int month, int year);
     friend std::ostream &operator<<(std::ostream &os, const CDate &md);
-
-
+    CDate operator + (const int & d);
 private:
     bool _is_leap_year(int year);
     bool _is_valid_day(int day, int month, int year);
+    bool _is_valid_month(int month){return month > 0 && month <= 12; };
+    bool _is_valid_year(int year){return year >= 2000 && year <= 2030; };
 
     int day, month, year;
+
+    int _get_extra_days_for_month(int day, int month, int year);
 };
+
+
+int CDate::_get_extra_days_for_month(int day, int month, int year) {
+    //January – 31 days
+    //February – 28 days in a common year and 29 days in leap years
+    //March – 31 days
+    //April – 30 days
+    //May – 31 days
+    //June – 30 days
+    //July – 31 days
+    //August – 31 days
+    //September – 30 days
+    //October – 31 days
+    //November – 30 days
+    //December – 31 days
+    switch (month) {
+        case 1:
+            return day - 31;
+        case 2:
+            if(_is_leap_year(year))
+                return day - 29;
+            return day - 28;
+        case 3:
+            return day - 31;
+        case 4:
+            return day - 30;
+        case 5:
+            return day - 31;
+        case 6:
+            return day - 30;
+        case 7:
+            return day - 31;
+        case 8:
+            return day - 31;
+        case 9:
+            return day - 30;
+        case 10:
+            return day - 31;
+        case 11:
+            return day - 30;
+        case 12:
+            return day - 31;
+        default:
+            return 0;
+}
 
 bool CDate::_is_valid_day(int day, int month, int year) {
     //January – 31 days
@@ -109,8 +159,73 @@ CDate::CDate(int year, int month, int day) {
 
 }
 
-friend std::ostream &operator<<(std::ostream &os, const CDate &md) {
+std::ostream & operator<<(std::ostream &os, const CDate &md) {
+    std::cout << std::format("{:04}", year) <<  "-" << std::format("{:02}", month) << "-" <<  std::format("{:02}", day);
     return os << md.year << "-" << md.month << "-" << md.day;
+}
+
+CDate CDate::operator+(const int &d) {
+    return CDate(0, 0, 0);
+}
+
+CDate::CDate(int year, int month, int day, bool make_valid) {
+
+    while(!is_valid(day, month, year)){
+        if(!_is_valid_year(year)){
+            std::cerr << "CDate: try to fix: Year " << year << " is out of range";
+            throw InvalidDateException();
+        }
+        if(!_is_valid_month(month)){
+            // month = 24
+            if(month % 12 == 0 && (month / 12 > 1)){
+                // year += 2-1
+                // month = 12
+                year += (month /12) - 1;
+                month = 12;
+            }
+            else if(month % 12 != 0 && month > 12){
+                // se zbytkem 25
+                // rok += 2
+                // mesic = month % 12;
+
+                // (25-1)/12=2
+                // 2 - 1
+                year += ((month - month % 12) /12);
+                month = month % 12;
+            }
+        }
+        if(!_is_valid_day(day, month, year)){
+            // 31.02.2021
+            //January – 31 days
+            //February – 28 days in a common year and 29 days in leap years
+            //March – 31 days
+            //April – 30 days
+            //May – 31 days
+            //June – 30 days
+            //July – 31 days
+            //August – 31 days
+            //September – 30 days
+            //October – 31 days
+            //November – 30 days
+            //December – 31 days
+
+            int extra = _get_extra_days_for_month(day, month, year);
+            if(extra > 0){
+                month += 1;
+                day - extra + 1;
+            }
+        }
+            month += 1;
+        }
+
+
+
+    }
+        if(!_is_valid_day(day, month, year)){
+            if(!_is_valid_day(year, month + 1, 1){
+
+        }
+    }
 }
 
 
