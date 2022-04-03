@@ -48,8 +48,10 @@ public:
                                         //     Check temp;
                                         // temp.i = i++;
                                         // return temp
+
     CDate operator-(const int &d){return *this + (-1 * d);};
-    int operator - (const CDate & d) const;
+    friend int operator - (const CDate & a, const CDate & b );
+
 
     CDate & operator--();
     CDate operator--(const int);
@@ -201,7 +203,6 @@ std::istream & operator >>(std::istream &is, CDate &d) {
         return is;
     }
 
-    // %Y-%m-%d, tedy např. 2000-01-31
     char y1, y2, y3, y4, m1, m2, d1, d2;
     char del1, del2;
     std::string tmp;
@@ -211,17 +212,18 @@ std::istream & operator >>(std::istream &is, CDate &d) {
 
     iss >> skipws >> y1 >> y2 >> y3 >> y4 >> del1 >> m1 >> m2 >> del2 >> d1 >> d2;
 
-    if (!(del1 == '-'
-          && del2 == '-'
-          && m1 == '0' || m1 == '1'
-                          && d1 == '0' || d1 == '1' || d1 == '2' || d1 == '3'
-                                                                    && y1 == '2' && y2 == '0')) {
+    if (!((del1 == '-'
+          && del2 == '-')
+          && (m1 == '0' || m1 == '1')
+          && (d1 == '0' || d1 == '1' || d1 == '2' || d1 == '3')
+          && (y1 == '2' && y2 == '0'))
+          ) {
         is.setstate(std::ios::failbit);
         return is;
     }
 
     int year, month, day;
-    iss >> skipws >> year >> del1 >> month >> del2 >> day;
+    iss2 >> skipws >> year >> del1 >> month >> del2 >> day;
 
     if (!d._is_valid_day(day, month, year)) {
         std::cerr << "_is_valid_day: " << year << "-" << month << "-" << day << std::endl;
@@ -241,10 +243,10 @@ int CDate::to_days() const {
     days = this->day - 1;
 
     // 24.02.2020
-    for (int m = this->month; m > 1; m -= 1) {
+    for (int m = this->month - 1; m >= 1; m -= 1) {
         days += _how_many_days(m, year);
     }
-    for (int i = year; i > 2000; i--) {
+    for (int i = year - 1; i >= 2000; i--) {
         if (_is_leap_year(i))
             days += 366;
         else days += 365;
@@ -258,8 +260,8 @@ CDate CDate::days_to_date(int days){
     int m = 1;
     int d = 1;
 
-    while(days >= (_is_leap_year(y) ? 365:366)){
-        days -= _is_leap_year(y) ? 365:366;
+    while(days >= (_is_leap_year(y) ? 366:365)){
+        days -= _is_leap_year(y) ? 366:365;
         y++;
     }
     // the rest, try to do some magic with months
@@ -333,7 +335,7 @@ bool CDate::operator < (const CDate &b) const {
 }
 
 bool CDate::operator != (const CDate & b) const {
-    return std::tie(this->year, this->month, this->day) == std::tie(b.year, b.month, b.day);
+    return !(*this == b);
 }
 
 bool CDate::operator == (const CDate & b) const {
@@ -345,10 +347,6 @@ bool CDate::operator>(const CDate &b) const {
 }
 
 ////////////////// +- operators //////////////////
-
-int CDate::operator-(const CDate &d) const{
-    return this->to_days() - d.to_days();
-}
 
 // post-increment, return unmodified copy by value
 CDate CDate::operator++(const int) {
@@ -379,6 +377,10 @@ CDate CDate::operator+(const int &d) const {
     return CDate(this->to_days() + d);
 }
 
+int operator - (const CDate & a, const CDate & b ){
+    return a.to_days() - b.to_days();
+}
+
 CDate &CDate::operator=(const CDate &x) = default;
 
 
@@ -387,6 +389,7 @@ CDate &CDate::operator=(const CDate &x) = default;
 int main(void) {
     ostringstream oss;
     istringstream iss;
+
     CDate my1(2000, 1, 1);
     my1++;
     oss.str("");
@@ -406,6 +409,7 @@ int main(void) {
     CDate a(2000, 1, 2);
     CDate b(2010, 2, 3);
     CDate c(2004, 2, 10);
+
     oss.str("");
     oss << a;
     assert (oss.str() == "2000-01-02");
@@ -424,6 +428,7 @@ int main(void) {
     oss.str("");
     oss << b;
     assert (oss.str() == "2004-08-13");
+    std::cerr<< b - a << std::endl;
     assert (b - a == 185);
     assert ((b == a) == false);
     assert ((b != a) == true);
