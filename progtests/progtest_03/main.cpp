@@ -32,201 +32,354 @@ ios_base &( *date_format(const char *fmt))(ios_base &x) {
 //=================================================================================================
 class CDate {
 public:
-    CDate(int year, int month, int day, bool make_valid);
-
+    CDate(const CDate & d);
+    explicit CDate(int days);
     CDate(int year, int month, int day);
 
     bool is_valid(int day, int month, int year);
-    friend std::ostream &operator<<(std::ostream &os, const CDate &md);
-    CDate operator + (const int & d);
+
+    friend std::ostream &operator << (std::ostream &os, const CDate &d);
+    friend std::istream & operator >> (std::istream &is, CDate &d);
+
+    CDate operator+(const int &d) const;
+
+    CDate & operator++(); // { ++i; }
+    CDate operator++(const int);  // { i++; }
+                                        //     Check temp;
+                                        // temp.i = i++;
+                                        // return temp
+    CDate operator-(const int &d){return *this + (-1 * d);};
+    int operator - (const CDate & d) const;
+
+    CDate & operator--();
+    CDate operator--(const int);
+
+    CDate & operator =  ( const CDate & x );
+
+    bool operator == (const CDate & b) const ;
+    bool operator != (const CDate & b) const ;
+    bool operator < (const CDate & b) const ;
+    bool operator > (const CDate & b) const ;
+    bool operator <= (const CDate & b) const ;
+    bool operator >= (const CDate & b) const ;
+
 private:
-    bool _is_leap_year(int year);
-    bool _is_valid_day(int day, int month, int year);
-    bool _is_valid_month(int month){return month > 0 && month <= 12; };
-    bool _is_valid_year(int year){return year >= 2000 && year <= 2030; };
+    int to_days() const;
+
+    bool _is_leap_year(int year) const;
+
+    bool _is_valid_day(const int & day, const int & month, const int & year) const;
+
+    static bool _is_valid_month(const int & month) { return month > 0 && month <= 12; };
+
+    static bool _is_valid_year(const int & year) { return year >= 2000 && year <= 2030; };
+
+    int _how_many_days(const int & month, const int & year) const;
+
+    CDate days_to_date(int days);
 
     int day, month, year;
 
-    int _get_extra_days_for_month(int day, int month, int year);
 };
 
+bool CDate::_is_valid_day(const int & day, const int & month, const int & year) const{
+        //January – 31 days
+        //February – 28 days in a common year and 29 days in leap years
+        //March – 31 days
+        //April – 30 days
+        //May – 31 days
+        //June – 30 days
+        //July – 31 days
+        //August – 31 days
+        //September – 30 days
+        //October – 31 days
+        //November – 30 days
+        //December – 31 days
 
-int CDate::_get_extra_days_for_month(int day, int month, int year) {
-    //January – 31 days
-    //February – 28 days in a common year and 29 days in leap years
-    //March – 31 days
-    //April – 30 days
-    //May – 31 days
-    //June – 30 days
-    //July – 31 days
-    //August – 31 days
-    //September – 30 days
-    //October – 31 days
-    //November – 30 days
-    //December – 31 days
-    switch (month) {
-        case 1:
-            return day - 31;
-        case 2:
-            if(_is_leap_year(year))
-                return day - 29;
-            return day - 28;
-        case 3:
-            return day - 31;
-        case 4:
-            return day - 30;
-        case 5:
-            return day - 31;
-        case 6:
-            return day - 30;
-        case 7:
-            return day - 31;
-        case 8:
-            return day - 31;
-        case 9:
-            return day - 30;
-        case 10:
-            return day - 31;
-        case 11:
-            return day - 30;
-        case 12:
-            return day - 31;
-        default:
-            return 0;
-}
-
-bool CDate::_is_valid_day(int day, int month, int year) {
-    //January – 31 days
-    //February – 28 days in a common year and 29 days in leap years
-    //March – 31 days
-    //April – 30 days
-    //May – 31 days
-    //June – 30 days
-    //July – 31 days
-    //August – 31 days
-    //September – 30 days
-    //October – 31 days
-    //November – 30 days
-    //December – 31 days
-
-    switch (month) {
-        case 1:
-            return day <= 31;
-        case 2:
-            return (_is_leap_year(year) and day <= 29) or (!_is_leap_year(year) and day <= 28);
-        case 3:
-            return day <= 31;
-        case 4:
-            return day <= 30;
-        case 5:
-            return day <= 31;
-        case 6:
-            return day <= 30;
-        case 7:
-            return day <= 31;
-        case 8:
-            return day <= 31;
-        case 9:
-            return day <= 30;
-        case 10:
-            return day <= 31;
-        case 11:
-            return day <= 30;
-        case 12:
-            return day <= 31;
-        default:
-            return false;
+        switch (month) {
+            case 1:
+                return day <= 31;
+            case 2:
+                return (_is_leap_year(year) and day <= 29) or (!_is_leap_year(year) and day <= 28);
+            case 3:
+                return day <= 31;
+            case 4:
+                return day <= 30;
+            case 5:
+                return day <= 31;
+            case 6:
+                return day <= 30;
+            case 7:
+                return day <= 31;
+            case 8:
+                return day <= 31;
+            case 9:
+                return day <= 30;
+            case 10:
+                return day <= 31;
+            case 11:
+                return day <= 30;
+            case 12:
+                return day <= 31;
+            default:
+                return false;
+        }
     }
+
+int CDate::_how_many_days(const int & month, const int & year) const {
+        //January – 31 days
+        //February – 28 days in a common year and 29 days in leap years
+        //March – 31 days
+        //April – 30 days
+        //May – 31 days
+        //June – 30 days
+        //July – 31 days
+        //August – 31 days
+        //September – 30 days
+        //October – 31 days
+        //November – 30 days
+        //December – 31 days
+
+        switch (month) {
+            case 1:
+                return 31;
+            case 2:
+                if (_is_leap_year(year))
+                    return 29;
+                return 28;
+            case 3:
+                return 31;
+            case 4:
+                return 30;
+            case 5:
+                return 31;
+            case 6:
+                return 30;
+            case 7:
+                return 31;
+            case 8:
+                return 31;
+            case 9:
+                return 30;
+            case 10:
+                return 31;
+            case 11:
+                return 30;
+            case 12:
+                return 31;
+            default:
+                return 0;
+        }
+    }
+
+    bool CDate::is_valid(int day, int month, int year) {
+
+        return (1 <= day && day <= 31) && (1 <= month && month <= 12) && (1900 <= year && year <= 2199) &&
+               _is_valid_day(day, month, year);
+
+    }
+
+
+std::ostream &operator<<(std::ostream &os, const CDate &md) {
+    return os << std::setfill('0') << std::setw(4) << md.year << "-"
+              << std::setfill('0') << std::setw(2) << md.month << "-"
+              << std::setfill('0') << std::setw(2) << md.day;
+     }
+
+
+std::istream & operator >>(std::istream &is, CDate &d) {
+    // operátorem >> lze přečíst instanci CDate ze zadaného streamu.
+    // V povinných testech je na vstupu očekáváno datum v ISO formátu %Y-%m-%d.
+    // Pokud se nepodaří datum načíst (formát, neplatné datum, ...),
+    // operátor zajistí nastavení fail bitu a ponechá původní obsah instance CDate.
+    // Stejně jako výstupní operátor, i vstup lze řídit pomocí manipulátoru date_format,
+    // tato možnost je požadovaná v bonusovém testu.
+
+    if (!is) {
+        std::cerr << "Error opening istream";
+        is.setstate(std::ios::failbit);
+        return is;
+    }
+
+    // %Y-%m-%d, tedy např. 2000-01-31
+    char y1, y2, y3, y4, m1, m2, d1, d2;
+    char del1, del2;
+    std::string tmp;
+    is >> tmp;
+    std::istringstream iss(tmp);
+    std::istringstream iss2(tmp);
+
+    iss >> skipws >> y1 >> y2 >> y3 >> y4 >> del1 >> m1 >> m2 >> del2 >> d1 >> d2;
+
+    if (!(del1 == '-'
+          && del2 == '-'
+          && m1 == '0' || m1 == '1'
+                          && d1 == '0' || d1 == '1' || d1 == '2' || d1 == '3'
+                                                                    && y1 == '2' && y2 == '0')) {
+        is.setstate(std::ios::failbit);
+        return is;
+    }
+
+    int year, month, day;
+    iss >> skipws >> year >> del1 >> month >> del2 >> day;
+
+    if (!d._is_valid_day(day, month, year)) {
+        std::cerr << "_is_valid_day: " << year << "-" << month << "-" << day << std::endl;
+        is.setstate(std::ios::failbit);
+        return is;
+    }
+    d.year = year;
+    d.month = month;
+    d.day = day;
+    return is;
 }
 
-bool CDate::is_valid(int day, int month, int year) {
 
-    return (1 <= day && day <= 31) && (1 <= month && month <= 12) && (1900 <= year && year <= 2199) &&
-           _is_valid_day(day, month, year);
+int CDate::to_days() const {
+
+    int days = 0; // 1.1.2020
+    days = this->day - 1;
+
+    // 24.02.2020
+    for (int m = this->month; m > 1; m -= 1) {
+        days += _how_many_days(m, year);
+    }
+    for (int i = year; i > 2000; i--) {
+        if (_is_leap_year(i))
+            days += 366;
+        else days += 365;
+    }
+
+    return days;
+}
+
+CDate CDate::days_to_date(int days){
+    int y = 2000;
+    int m = 1;
+    int d = 1;
+
+    while(days >= (_is_leap_year(y) ? 365:366)){
+        days -= _is_leap_year(y) ? 365:366;
+        y++;
+    }
+    // the rest, try to do some magic with months
+    while(days >= _how_many_days(m, y)){
+        days -= _how_many_days(m, y);
+        m++;
+    }
+    // days
+    d += days;
+    days = 0;
+    CDate tmp = CDate(y, m, d);
+    return tmp;
 
 }
+
+bool CDate::_is_leap_year(int year) const {
+    // Při řešení úlohy narazíte na problematiku přestupných roků.
+    // Rok je považován za přestupný, pokud je dělitelný 4 (např. 2020, 2024, ...).
+
+    // Výjimku mají roky dělitelné 100, které nejsou přestupné (např. roky 1900 a 2100 nebyly/nebudou přestupné).
+    // Výjimku z této výjimky mají roky dělitelné 400, které naopak jsou přestupné (např. rok 2000 byl přestupný).
+    // Úlohu však zjednodušuje to, že jsou zadávané roky pouze z omezeného rozmezí 2000 - 2030.
+
+    if(year % 400 == 0)
+        return true;
+    else if(year % 100 == 0)
+        return false;
+    else if(year % 4 == 0)
+        return true;
+    return false;
+}
+
+////////////////// Constructors //////////////////
+
+CDate::CDate(int days) {
+    *this = this->days_to_date(days++);
+}
+
+CDate::CDate(const CDate & d) {
+    this->day = d.day;
+    this->month = d.month;
+    this->year = d.year;
+}
+
 
 CDate::CDate(int year, int month, int day) {
     if (is_valid(day, month, year)) {
         this->day = day;
         this->month = month;
         this->year = year;
-    }
-    else {
-        std::cerr << "InvalidDateException year: " + to_string(year) + "month: " + to_string(month) + "day: " + to_string(day) + " Is invalid";
+    } else {
+        std::cerr << "InvalidDateException year: " + to_string(year) + "month: " + to_string(month) + "day: " +
+                     to_string(day) + " Is invalid";
         throw InvalidDateException();
     }
 
 }
 
-std::ostream & operator<<(std::ostream &os, const CDate &md) {
-    std::cout << std::format("{:04}", year) <<  "-" << std::format("{:02}", month) << "-" <<  std::format("{:02}", day);
-    return os << md.year << "-" << md.month << "-" << md.day;
+
+////////////////// Comparison operators //////////////////
+
+bool CDate::operator>=(const CDate &b) const {
+    return !(*this < b);
+}
+bool CDate::operator<=(const CDate &b) const {
+    return *this == b || *this < b;
 }
 
-CDate CDate::operator+(const int &d) {
-    return CDate(0, 0, 0);
+bool CDate::operator < (const CDate &b) const {
+    return std::tie(this->year, this->month, this->day) < std::tie(b.year, b.month, b.day);
 }
 
-CDate::CDate(int year, int month, int day, bool make_valid) {
-
-    while(!is_valid(day, month, year)){
-        if(!_is_valid_year(year)){
-            std::cerr << "CDate: try to fix: Year " << year << " is out of range";
-            throw InvalidDateException();
-        }
-        if(!_is_valid_month(month)){
-            // month = 24
-            if(month % 12 == 0 && (month / 12 > 1)){
-                // year += 2-1
-                // month = 12
-                year += (month /12) - 1;
-                month = 12;
-            }
-            else if(month % 12 != 0 && month > 12){
-                // se zbytkem 25
-                // rok += 2
-                // mesic = month % 12;
-
-                // (25-1)/12=2
-                // 2 - 1
-                year += ((month - month % 12) /12);
-                month = month % 12;
-            }
-        }
-        if(!_is_valid_day(day, month, year)){
-            // 31.02.2021
-            //January – 31 days
-            //February – 28 days in a common year and 29 days in leap years
-            //March – 31 days
-            //April – 30 days
-            //May – 31 days
-            //June – 30 days
-            //July – 31 days
-            //August – 31 days
-            //September – 30 days
-            //October – 31 days
-            //November – 30 days
-            //December – 31 days
-
-            int extra = _get_extra_days_for_month(day, month, year);
-            if(extra > 0){
-                month += 1;
-                day - extra + 1;
-            }
-        }
-            month += 1;
-        }
-
-
-
-    }
-        if(!_is_valid_day(day, month, year)){
-            if(!_is_valid_day(year, month + 1, 1){
-
-        }
-    }
+bool CDate::operator != (const CDate & b) const {
+    return std::tie(this->year, this->month, this->day) == std::tie(b.year, b.month, b.day);
 }
+
+bool CDate::operator == (const CDate & b) const {
+    return std::tie(this->year, this->month, this->day) == std::tie(b.year, b.month, b.day);
+}
+
+bool CDate::operator>(const CDate &b) const {
+    return !(*this < b) && (*this != b);
+}
+
+////////////////// +- operators //////////////////
+
+int CDate::operator-(const CDate &d) const{
+    return this->to_days() - d.to_days();
+}
+
+// post-increment, return unmodified copy by value
+CDate CDate::operator++(const int) {
+    CDate original = CDate(*this);
+    *this = *this + 1;
+    return original;
+}
+
+// post-increment, return unmodified copy by value
+CDate CDate::operator--(const int) {
+    CDate original = CDate(*this);
+    *this = *this - 1;
+    return original;
+}
+
+
+CDate & CDate::operator++() {
+    *this = *this + 1;
+    return *this;
+}
+
+CDate & CDate::operator--() {
+    *this = *this - 1;
+    return *this;
+}
+
+CDate CDate::operator+(const int &d) const {
+    return CDate(this->to_days() + d);
+}
+
+CDate &CDate::operator=(const CDate &x) = default;
 
 
 #ifndef __PROGTEST__
@@ -234,6 +387,21 @@ CDate::CDate(int year, int month, int day, bool make_valid) {
 int main(void) {
     ostringstream oss;
     istringstream iss;
+    CDate my1(2000, 1, 1);
+    my1++;
+    oss.str("");
+    oss << my1;
+    assert (oss.str() == "2000-01-02");
+    ++my1;
+    oss.str("");
+    oss << my1;
+    assert (oss.str() == "2000-01-03");
+    CDate my2(2000, 1, 1);
+    my2 = my2 + 366;
+    oss.str("");
+    oss << my2;
+    std::cerr << my2;
+    assert (oss.str() == "2001-01-01");
 
     CDate a(2000, 1, 2);
     CDate b(2010, 2, 3);
@@ -250,6 +418,7 @@ int main(void) {
     a = a + 1500;
     oss.str("");
     oss << a;
+    std::cerr << oss.str() << std::endl;
     assert (oss.str() == "2004-02-10");
     b = b - 2000;
     oss.str("");
