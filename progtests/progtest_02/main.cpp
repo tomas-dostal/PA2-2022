@@ -19,116 +19,84 @@ using namespace std;
 #endif /* __PROGTEST__ */
 
 
-
 class Invoice; // declared lated
 
-class Company{
+class Company {
 public:
-    Company(std::string name, std::string address, std::string tax_id):
-                name(std::move(name)), address(std::move(address)), tax_id(std::move(tax_id)){
+    Company(std::string name, std::string address, std::string tax_id) :
+            name(std::move(name)), address(std::move(address)), tax_id(std::move(tax_id)) {
     };
 
-    bool operator == (const Company & c) const;
-    bool operator == (const std::string & id) const;
-
-        bool operator < (const Company & c) const;
-    bool  deactivate(){
-        if(active) {
-            active = !active;
-            return true;
-        }
-        return false;
-    }
-    const bool is_active() const {return this->active; };
-
     friend class CompanyByIdComparatorLower;
-    friend class CompanyByIdComparatorEqual;
+
     friend class CompanyByNameComparatorLower;
+
     friend class CompanyByNameComparatorEqual;
 
     unsigned int total_money = 0;
 
-    const std::string & get_tax_id() const { return this->tax_id; };
-    const string & get_address() const;
-    const string & get_name() const;
+    const std::string &get_tax_id() const { return this->tax_id; };
 
+    const string &get_address() const;
+
+    const string &get_name() const;
 
 private:
-    std::string name , address, tax_id;
-    bool active = true;
+    std::string name, address, tax_id;
 };
 
 class Invoice {
 public:
-    Invoice(const unsigned int amount): amount(amount){};
-    bool operator < (const Invoice & i) const;
-    unsigned int get_amount() const {return this->amount;};
+    explicit Invoice(const unsigned int amount) : amount(amount) {};
+
+    bool operator<(const Invoice &i) const;
+
+    unsigned int get_amount() const { return this->amount; };
 private:
     unsigned int amount;
 };
 
-bool Invoice::operator<(const Invoice & i) const {
-    return std::tie(this->amount) < std::tie( i.amount);
+bool Invoice::operator<(const Invoice &i) const {
+    return this->amount < i.amount;
 }
 
 class CompanyByIdComparatorLower {
 public:
-    bool operator()(const shared_ptr<Company> a,
-                    const shared_ptr<Company> b) const
-    {
-        // The member function returns 0 if all the characters in the compared
-        // contents compare equal, a negative value if the first character that
-        // does not match compares to less in the object than in the comparing string,
-        // and a positive value in the opposite case.
+    bool operator()(const shared_ptr<Company> &a,
+                    const shared_ptr<Company> &b) const {
         return a->tax_id.compare(b->tax_id) < 0;
     }
 };
 
-class CompanyByIdComparatorEqual {
+class CompanyByNameComparatorLower {
 public:
-    bool operator()(const shared_ptr<Company> a,
-                    const shared_ptr<Company> b) const
-    {
-        // The member function returns 0 if all the characters in the compared
-        // contents compare equal, a negative value if the first character that
-        // does not match compares to less in the object than in the comparing string,
-        // and a positive value in the opposite case.
-        if (a->get_tax_id() == b->get_tax_id()) {
-            return true;
-        }
-        return false;
-    }
-};
-class CompanyByNameComparatorLower{
-public:
-    bool operator()(const shared_ptr<Company>& a,
-                    const shared_ptr<Company>& b) const
-    {
-
+    bool operator()(const shared_ptr<Company> &a,
+                    const shared_ptr<Company> &b) const {
+        // Name + address comparison is case-insensitive
         if (strcasecmp(a->name.c_str(), b->name.c_str()) < 0) {
             return true;
-        }
-        else if ( strcasecmp(a->name.c_str(), b->name.c_str()) == 0) {
-            return  strcasecmp(a->address.c_str(), b->address.c_str()) < 0;
+        } else if (strcasecmp(a->name.c_str(), b->name.c_str()) == 0) {
+            return strcasecmp(a->address.c_str(), b->address.c_str()) < 0;
         }
         return false;
     }
 };
 
-class CompanyByNameComparatorEqual{
+class CompanyByNameComparatorEqual {
 public:
-    bool operator()(const std::shared_ptr<Company>  a,
-                    const std::shared_ptr<Company> b) const
-    {
-        return strcasecmp(a->get_name().c_str(), b->get_name().c_str()) == 0 && strcasecmp(a->get_address().c_str(), b->get_address().c_str()) == 0;
+    bool operator()(const std::shared_ptr<Company> &a,
+                    const std::shared_ptr<Company> &b) const {
+        // Name + address comparison is case-insensitive
+        return strcasecmp(a->get_name().c_str(), b->get_name().c_str()) == 0
+               && strcasecmp(a->get_address().c_str(), b->get_address().c_str()) == 0;
     }
 };
 
-const string & Company::get_name() const {
+const string &Company::get_name() const {
     return this->name;
 }
 
-const string & Company::get_address() const {
+const string &Company::get_address() const {
     return this->address;
 }
 
@@ -143,15 +111,13 @@ public:
                     const string &taxID);
 
     shared_ptr<Company> getCompanyByIdConst(const string &id) const;
+
     shared_ptr<Company> getCompanyById(const string &id);
 
-    const shared_ptr<Company> getCompanyByNameConst(const string &name, const string &addr) const;
+    shared_ptr<Company> getCompanyByNameConst(const string &name, const string &addr) const;
+
     shared_ptr<Company> getCompanyByName(const string &name, const string &addr);
 
-    bool companyExists(const string &name,
-                       const string &addr) const;
-
-    bool companyExists(const string &id) const;
 
     bool cancelCompany(const string &name,
                        const string &addr);
@@ -187,179 +153,7 @@ private:
 
 };
 
-bool CVATRegister::newCompany(const string &name, const string &addr, const string &taxID) {
-    // try to find the company in register
-    if(companyExists(name, addr) || companyExists(taxID))
-        return false;
-    shared_ptr<Company> foo = make_shared<Company>(Company(name, addr, taxID));
-    // create a new company
-
-    companies_by_id.insert(std::lower_bound(companies_by_id.begin(), companies_by_id.end(),  foo, CompanyByIdComparatorLower()), foo);
-    // this one is just for searching, actual money count is stored in companies_by_id. Because I don't want to use pointers.
-    companies_by_name.insert(std::lower_bound(companies_by_name.begin(), companies_by_name.end(), foo,  CompanyByNameComparatorLower()), foo);
-
-    return true;
-}
-
-bool CVATRegister::invoice(const string &taxID, unsigned int amount) {
-    // maybe just keep the sum of invoices inside company
-    // and store invoices ordered by amount inside company?
-    try{
-        shared_ptr<Company> c = getCompanyById(taxID);
-        c->total_money += amount;
-        Invoice i = Invoice(amount);
-        ordered_invoices.insert(std::lower_bound(ordered_invoices.begin(), ordered_invoices.end(), i), i);
-        //ordered_invoices.emplace_back();
-
-        return true;
-    }
-    catch (std::runtime_error const&){
-        return false;
-    }
-}
-
-bool CVATRegister::cancelCompany(const string &taxID) {
-    // as the inovices should be available even after the company is removed, just set flag removed=true.
-
-    try {
-        shared_ptr<Company> c = (getCompanyById(taxID));
-        shared_ptr<Company> c2 = (getCompanyByName(c->get_name(), c->get_address()));
-
-        this->companies_by_name.erase(std::remove(this->companies_by_name.begin(), this->companies_by_name.end(), c), this->companies_by_name.end());
-        this->companies_by_id.erase(std::remove(this->companies_by_id.begin(), this->companies_by_id.end(), c2), this->companies_by_id.end());
-
-        return true;
-    }
-    catch(std::out_of_range const&){
-        return false;
-    }
-    catch(std::runtime_error const&){
-        return false;
-    }
-}
-
-bool CVATRegister::cancelCompany(const string &name, const string &addr) {
-    // call get_company_id, then delegate it
-    try {
-        shared_ptr<Company> c = (getCompanyByName(name, addr));
-        shared_ptr<Company> c2 = (getCompanyById(c->get_tax_id()));
-
-        this->companies_by_name.erase(std::remove(this->companies_by_name.begin(), this->companies_by_name.end(), c), this->companies_by_name.end());
-        this->companies_by_id.erase(std::remove(this->companies_by_id.begin(), this->companies_by_id.end(), c2), this->companies_by_id.end());
-
-        return true;
-    }
-    catch(std::runtime_error const&){
-        return false;
-    }
-    catch(std::out_of_range const&){
-        return false;
-    }
-}
-
-bool CVATRegister::invoice(const string &name, const string &addr, unsigned int amount) {
-    // find_company_by_name().add_invoice() // inserts inside vector for comany,
-    // insert it as well to the register, this one needs to be ordered.
-    // -> binary search
-
-    try{
-        shared_ptr<Company> c = getCompanyByName(name, addr);
-        return invoice(c->get_tax_id(), amount);
-    }
-    catch (std::runtime_error const&){
-        return false;
-    }
-}
-
-bool CVATRegister::audit(const string &name, const string &addr, unsigned int &sumIncome) const {
-    // find company by id, then delegate it
-    try{
-        shared_ptr<Company> c = getCompanyByNameConst(name, addr);
-        sumIncome = c->total_money;
-        return true;
-    }
-    catch (std::runtime_error const&){
-        return false;
-    }
-}
-
-bool CVATRegister::audit(const string &taxID, unsigned int &sumIncome) const {
-    // return sum stored in company.total
-    try{
-        shared_ptr<Company> c = getCompanyByIdConst(taxID);
-        sumIncome = c->total_money;
-        return true;
-    }
-    catch (std::runtime_error const&){
-        return false;
-    }
-}
-
-bool CVATRegister::nextCompany(string &name, string &addr) const {
-    // nejdriv vezmi a podle name a addr najdi nejakou formu.
-    // Do tech parametru name a addr vrat o jedno vetsi firmu
-
-    auto tmp = make_shared<Company>(Company(name, addr, ""));
-    CompanyByNameComparatorLower comparatorLower = CompanyByNameComparatorLower();
-
-    auto it = std::upper_bound(companies_by_name.begin(), companies_by_name.end(), tmp, comparatorLower);
-
-    // tohle mozna nefunguje
-    if (it != companies_by_name.end()){
-        name = (*it)->get_name();
-        addr = (*it)->get_address();
-        return true;
-    }
-    return false;
-}
-
-bool CVATRegister::firstCompany(string &name, string &addr) const{
-    // uplne prvni prvek pole
-    if(!companies_by_name.empty()){
-        addr = this->companies_by_name.front()->get_address();
-        name = this->companies_by_name.front()->get_name();
-        return true;
-    }
-    return false;
-}
-
-unsigned int CVATRegister::medianInvoice() const {
-    // this one will be tricky. Maybe store ordered in register.
-    // vyhledá medián hodnoty faktury.
-    // Do vypočteného mediánu se započtou všechny úspěšně zpracované faktury
-    // zadané voláním invoice. Tedy nezapočítávají se faktury, které nešlo přiřadit
-    // (volání invoice selhalo), ale započítávají se všechny dosud registrované faktury,
-    // tedy při výmazu firmy se neodstraňují její faktury z výpočtu mediánu. Pokud je
-    // v systému zadaný sudý počet faktur, vezme se vyšší ze dvou prostředních hodnot.
-    // Pokud systém zatím nezpracoval žádnou fakturu, bude vrácena hodnota 0.
-
-    // create a copy, sort it.
-    if(this->ordered_invoices.empty())
-        return 0;
-    //vector<Invoice> tmp =  vector<Invoice>(this->ordered_invoices);
-    //std::sort(tmp.begin(), tmp.end());
-
-    unsigned int size = this->ordered_invoices.size();
-    return ordered_invoices.at((size - size % 2) / 2).get_amount();
-}
-
-bool CVATRegister::companyExists(const string &name, const string &addr) const {
-    try{
-        shared_ptr<Company> c = this->getCompanyByNameConst(name, addr);
-    } catch (std::runtime_error const&) {
-        return false;
-    }
-    return true;
-}
-
-bool CVATRegister::companyExists(const std::string & id) const {
-    try{
-        shared_ptr<Company> c = this->getCompanyByIdConst(id);
-    } catch (std::runtime_error const&) {
-        return false;
-    }
-    return true;
-}
+///////////////////  Helper methods  ////////////////////
 
 shared_ptr<Company> CVATRegister::getCompanyByName(const string &name, const string &addr) {
     shared_ptr<Company> tmp = make_shared<Company>(Company(name, addr, ""));
@@ -369,14 +163,15 @@ shared_ptr<Company> CVATRegister::getCompanyByName(const string &name, const str
     CompanyByNameComparatorEqual comparatorEqual = CompanyByNameComparatorEqual();
 
     auto it = std::lower_bound(companies_by_name.begin(), companies_by_name.end(), tmp, comparatorLower);
-    if (it != companies_by_name.end() && comparatorEqual((*it), tmp)){
+    if (it != companies_by_name.end() && comparatorEqual((*it), tmp)) {
         return getCompanyById((*it)->get_tax_id()); // aaah, crap it. Money is stored just in the ID one
     }
     std::cerr << "getCompanyByName " + name + ", address: " + addr + " not found. " << std::endl;
-    throw std::runtime_error("getCompanyByName " + name + ", address: " + addr + " not found. ");
+    return {nullptr};
+    // throw std::runtime_error("getCompanyByName " + name + ", address: " + addr + " not found. ");
 }
 
-const shared_ptr<Company> CVATRegister::getCompanyByNameConst(const string &name, const string &addr) const {
+shared_ptr<Company> CVATRegister::getCompanyByNameConst(const string &name, const string &addr) const {
     shared_ptr<Company> tmp = make_shared<Company>(Company(name, addr, ""));
 
     //Company tmp = Company(name, addr, "");
@@ -384,25 +179,27 @@ const shared_ptr<Company> CVATRegister::getCompanyByNameConst(const string &name
     CompanyByNameComparatorEqual comparatorEqual = CompanyByNameComparatorEqual();
 
     auto it = std::lower_bound(companies_by_name.begin(), companies_by_name.end(), tmp, comparatorLower);
-    if (it != companies_by_name.end() && comparatorEqual((*it), tmp)){
+    if (it != companies_by_name.end() && comparatorEqual((*it), tmp)) {
         return getCompanyByIdConst((*it)->get_tax_id()); // aaah, crap it. Money is stored just in the ID one
     }
     std::cerr << "getCompanyByName " + name + ", address: " + addr + " not found. " << std::endl;
-    throw std::runtime_error("getCompanyByName " + name + ", address: " + addr + " not found. ");
+    return shared_ptr<Company>(nullptr);
+    //throw std::runtime_error("getCompanyByName " + name + ", address: " + addr + " not found. ");
 }
+
 shared_ptr<Company> CVATRegister::getCompanyById(const string &id) {
     shared_ptr<Company> tmp = make_shared<Company>(Company("", "", id));
     //Company tmp = Company("", "", id);
     CompanyByIdComparatorLower comparatorLower = CompanyByIdComparatorLower();
 
     auto it = std::lower_bound(companies_by_id.begin(), companies_by_id.end(), tmp, comparatorLower);
-    if (it != companies_by_id.end() && (*it)->get_tax_id() == tmp->get_tax_id()){
+    if (it != companies_by_id.end() && (*it)->get_tax_id() == tmp->get_tax_id()) {
         return (*it);
 
     }
     std::cerr << "getCompanyById " + id + " not found. " << std::endl;
-    throw std::runtime_error ("getCompanyById " + id + " not found. ");
-
+    //throw std::runtime_error ("getCompanyById " + id + " not found. ");
+    return shared_ptr<Company>(nullptr);
 
 }
 
@@ -412,11 +209,194 @@ shared_ptr<Company> CVATRegister::getCompanyByIdConst(const string &id) const {
     CompanyByIdComparatorLower cmp = CompanyByIdComparatorLower();
 
     auto it = std::lower_bound(companies_by_id.begin(), companies_by_id.end(), tmp, cmp);
-    if (it != companies_by_id.end() && (*it)->get_tax_id() == tmp->get_tax_id()){
+    if (it != companies_by_id.end() && (*it)->get_tax_id() == tmp->get_tax_id()) {
         return (*it);
     }
     std::cerr << "getCompanyById " + id + " not found. " << std::endl;
-    throw std::runtime_error("getCompanyById " + id + " not found. ");
+    return shared_ptr<Company>(nullptr);
+    // throw std::runtime_error("getCompanyById " + id + " not found. ");
+}
+
+//////////////////////// Required interface /////////////////////////
+
+bool CVATRegister::newCompany(const string &name, const string &addr, const string &taxID) {
+    /// Creates a new company if not exist. Combination of case-insensitive name and address
+    /// has to be unique.
+    /// @param name: Name of company, case insensitive
+    /// @param addr: Address of the company, case insensitive
+    /// @param taxID: Tax ID, case sensitive
+    /// @return true if created, otherwise false.
+
+    shared_ptr<Company> c1 = this->getCompanyByNameConst(name, addr);
+    shared_ptr<Company> c2 = this->getCompanyByIdConst(taxID);
+    if (!(c1 == nullptr && c2 == nullptr))
+        return false; // already exists
+
+    shared_ptr<Company> company = make_shared<Company>(Company(name, addr, taxID));
+    // create a new company
+
+    companies_by_id.insert(
+            std::lower_bound(companies_by_id.begin(), companies_by_id.end(), company, CompanyByIdComparatorLower()),
+            company);
+    companies_by_name.insert(
+            std::lower_bound(companies_by_name.begin(), companies_by_name.end(), company,
+                             CompanyByNameComparatorLower()),
+            company);
+
+    return true;
+}
+
+bool CVATRegister::invoice(const string &taxID, unsigned int amount) {
+    /// Create invoice for a company (searched by name and addr)
+    /// @param name: Name of company
+    /// @param address: Address of the company
+    /// @param amount: How much
+    /// @returns true if company found and invoice created, otherwise false;
+
+    shared_ptr<Company> c = getCompanyById(taxID);
+    if (!c)
+        return false;
+
+    c->total_money += amount;
+    Invoice i = Invoice(amount);
+    ordered_invoices.insert(std::lower_bound(ordered_invoices.begin(), ordered_invoices.end(), i), i);
+
+    return true;
+}
+
+bool CVATRegister::invoice(const string &name, const string &addr, unsigned int amount) {
+    /// Create invoice for a company (searched by name and addr)
+    /// @param name: Name of company
+    /// @param address: Address of the company
+    /// @param amount: How much
+    /// @returns true if company found and invoice created, otherwise false;
+
+    // find_company_by_name().add_invoice() // inserts inside vector for comany,
+    // insert it as well to the register, this one needs to be ordered.
+    // -> binary search
+
+    shared_ptr<Company> c = getCompanyByName(name, addr);
+    if (!c)
+        return false;
+    return invoice(c->get_tax_id(), amount);
+
+}
+
+
+bool CVATRegister::cancelCompany(const string &taxID) {
+    /// Erase company from companies_by_name and companies_by_id if exists.
+    /// Keep all the invoices associated with this company.
+    /// @param taxID: company unique  identification
+    /// @return true if success, false if company does not exist or already canceled
+
+    shared_ptr<Company> c = (getCompanyById(taxID));
+    if (!c)
+        return false;
+    shared_ptr<Company> c2 = (getCompanyByName(c->get_name(), c->get_address()));
+
+    this->companies_by_name.erase(std::remove(this->companies_by_name.begin(), this->companies_by_name.end(), c),
+                                  this->companies_by_name.end());
+    this->companies_by_id.erase(std::remove(this->companies_by_id.begin(), this->companies_by_id.end(), c2),
+                                this->companies_by_id.end());
+
+    return true;
+}
+
+bool CVATRegister::cancelCompany(const string &name, const string &addr) {
+    /// Erase company from companies_by_name and companies_by_id if exists.
+    /// Keep all the invoices associated with this company.
+    /// @param name: name, case insensitive, name+addr needs to be unique
+    /// @param addr: address, case insensitive, name+addr needs to be unique
+    /// @return true if success, false if company does not exist or already canceled
+
+    shared_ptr<Company> c = (getCompanyByName(name, addr));
+    if (!c)
+        return false;
+    shared_ptr<Company> c2 = (getCompanyById(c->get_tax_id()));
+
+
+    this->companies_by_name.erase(std::remove(this->companies_by_name.begin(), this->companies_by_name.end(), c),
+                                  this->companies_by_name.end());
+    this->companies_by_id.erase(std::remove(this->companies_by_id.begin(), this->companies_by_id.end(), c2),
+                                this->companies_by_id.end());
+
+    return true;
+}
+
+
+bool CVATRegister::audit(const string &name, const string &addr, unsigned int &sumIncome) const {
+    /// return sum stored in company total
+    /// @param name Company name
+    /// @param addr Company address
+    /// @param sumIncome Return parameter - sum of all invoices issued by this company
+    /// @return true if company found, otherwise false
+    shared_ptr<Company> c = getCompanyByNameConst(name, addr);
+    if (!c)
+        return false;
+    sumIncome = c->total_money;
+    return true;
+
+}
+
+bool CVATRegister::audit(const string &taxID, unsigned int &sumIncome) const {
+    /// return sum stored in company total
+    /// @param taxID Make audit for this company
+    /// @param sumIncome Return parameter - sum of all invoices issued by this company
+    /// @return true if company found, otherwise false
+
+    shared_ptr<Company> c = getCompanyByIdConst(taxID);
+    if (!c)
+        return false;
+    sumIncome = c->total_money;
+    return true;
+}
+
+bool CVATRegister::nextCompany(string &name, string &addr) const {
+    /// Find first company matching by name and address. Return next to this one.
+    /// Use return parameters name and addr.
+
+    auto tmp = make_shared<Company>(Company(name, addr, ""));
+    CompanyByNameComparatorLower comparatorLower = CompanyByNameComparatorLower();
+
+    auto it = std::upper_bound(companies_by_name.begin(), companies_by_name.end(), tmp, comparatorLower);
+
+    if (it != companies_by_name.end()) {
+        name = (*it)->get_name();
+        addr = (*it)->get_address();
+        return true;
+    }
+    return false;
+}
+
+bool CVATRegister::firstCompany(string &name, string &addr) const {
+    /// @return name and addr of the alphabetically first company in the parameters.
+    /// @return true if find, otherwise false;
+
+    if (!companies_by_name.empty()) {
+        addr = this->companies_by_name.front()->get_address();
+        name = this->companies_by_name.front()->get_name();
+        return true;
+    }
+    return false;
+}
+
+unsigned int CVATRegister::medianInvoice() const {
+    /// Return median of the invoice
+    ///
+    /// If there is an odd number of invoices, return the upper mid
+    /// If there is an even number of invoices, return the mid one.
+    /// If there is no invoice, return 0
+    /// only registered invoices (search did not fail) are in game.
+
+    // ideally this method is not const, so I can sort the ordered invoices here
+    // and not waste my time doing it in the invoice method. Unfortunately,
+    // const stuff is there.
+
+    if (this->ordered_invoices.empty())
+        return 0;
+
+    unsigned int size = this->ordered_invoices.size();
+    return ordered_invoices.at((size - size % 2) / 2).get_amount();
 }
 
 
@@ -506,5 +486,6 @@ int main(void) {
 
     return EXIT_SUCCESS;
 }
+
 
 #endif /* __PROGTEST__ */
