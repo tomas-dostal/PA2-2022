@@ -1,4 +1,5 @@
 #ifndef __PROGTEST__
+
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
@@ -17,6 +18,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
+
 using namespace std;
 #endif /* __PROGTEST__ */
 
@@ -41,35 +43,42 @@ ios_base &( *date_format(const char *fmt))(ios_base &x) {
 
 class CDate {
 public:
-    CDate(const CDate & d);
+    CDate(const CDate &d);
+
     explicit CDate(int days);
+
     CDate(int year, int month, int day);
 
     bool is_valid(int day, int month, int year);
 
-    friend std::ostream &operator << (std::ostream &os, const CDate &d);
+    friend std::ostream &operator<<(std::ostream &os, const CDate &d);
 
-    CDate & operator =  ( const CDate & x );
+    CDate &operator=(const CDate &x);
 
-    bool operator == (const CDate & b) const ;
-    bool operator != (const CDate & b) const ;
-    bool operator < (const CDate & b) const ;
-    bool operator > (const CDate & b) const ;
-    bool operator <= (const CDate & b) const ;
-    bool operator >= (const CDate & b) const ;
+    bool operator==(const CDate &b) const;
+
+    bool operator!=(const CDate &b) const;
+
+    bool operator<(const CDate &b) const;
+
+    bool operator>(const CDate &b) const;
+
+    bool operator<=(const CDate &b) const;
+
+    bool operator>=(const CDate &b) const;
 
 private:
     int to_days() const;
 
     bool _is_leap_year(int year) const;
 
-    bool _is_valid_day(const int & day, const int & month, const int & year) const;
+    bool _is_valid_day(const int &day, const int &month, const int &year) const;
 
-    static bool _is_valid_month(const int & month) { return month > 0 && month <= 12; };
+    static bool _is_valid_month(const int &month) { return month > 0 && month <= 12; };
 
-    static bool _is_valid_year(const int & year) { return year >= 2000 && year <= 2030; };
+    static bool _is_valid_year(const int &year) { return year >= 2000 && year <= 2030; };
 
-    int _how_many_days(const int & month, const int & year) const;
+    int _how_many_days(const int &month, const int &year) const;
 
     CDate days_to_date(int days);
 
@@ -77,7 +86,7 @@ private:
 
 };
 
-bool CDate::_is_valid_day(const int & day, const int & month, const int & year) const{
+bool CDate::_is_valid_day(const int &day, const int &month, const int &year) const {
     //January – 31 days
     //February – 28 days in a common year and 29 days in leap years
     //March – 31 days
@@ -121,7 +130,7 @@ bool CDate::_is_valid_day(const int & day, const int & month, const int & year) 
     }
 }
 
-int CDate::_how_many_days(const int & month, const int & year) const {
+int CDate::_how_many_days(const int &month, const int &year) const {
     //January – 31 days
     //February – 28 days in a common year and 29 days in leap years
     //March – 31 days
@@ -175,7 +184,6 @@ bool CDate::is_valid(int day, int month, int year) {
 }
 
 
-
 std::ostream &operator<<(std::ostream &os, const CDate &md) {
     // tm {
     //	int	tm_sec;		/* seconds after the minute [0-60] */
@@ -192,10 +200,10 @@ std::ostream &operator<<(std::ostream &os, const CDate &md) {
     // 2.1.2000 was sunday
 
     string formatter = "%Y";
-    struct tm my_time = {0,0,0,md.day, md.month, md.year - 100, (md.to_days() - CDate(2000, 1, 2).to_days()) % 6, (md.to_days() - CDate(2000, 1, 1).to_days()),
-                         0,0, nullptr};
+    struct tm my_time = {0, 0, 0, md.day, md.month, md.year - 100, (md.to_days() - CDate(2000, 1, 2).to_days()) % 6,
+                         (md.to_days() - CDate(2000, 1, 1).to_days()),
+                         0, 0, nullptr};
     std::cout << "Test formatter: " << std::put_time(&my_time, formatter.c_str()) << '\n';
-
 
 
     return os << std::setfill('0') << std::setw(4) << md.year << "-"
@@ -221,17 +229,17 @@ int CDate::to_days() const {
     return days;
 }
 
-CDate CDate::days_to_date(int days){
+CDate CDate::days_to_date(int days) {
     int y = 2000;
     int m = 1;
     int d = 1;
 
-    while(days >= (_is_leap_year(y) ? 366:365)){
-        days -= _is_leap_year(y) ? 366:365;
+    while (days >= (_is_leap_year(y) ? 366 : 365)) {
+        days -= _is_leap_year(y) ? 366 : 365;
         y++;
     }
     // the rest, try to do some magic with months
-    while(days >= _how_many_days(m, y)){
+    while (days >= _how_many_days(m, y)) {
         days -= _how_many_days(m, y);
         m++;
     }
@@ -251,11 +259,11 @@ bool CDate::_is_leap_year(int year) const {
     // Výjimku z této výjimky mají roky dělitelné 400, které naopak jsou přestupné (např. rok 2000 byl přestupný).
     // Úlohu však zjednodušuje to, že jsou zadávané roky pouze z omezeného rozmezí 2000 - 2030.
 
-    if(year % 400 == 0)
+    if (year % 400 == 0)
         return true;
-    else if(year % 100 == 0)
+    else if (year % 100 == 0)
         return false;
-    else if(year % 4 == 0)
+    else if (year % 4 == 0)
         return true;
     return false;
 }
@@ -266,7 +274,7 @@ CDate::CDate(int days) {
     *this = this->days_to_date(days++);
 }
 
-CDate::CDate(const CDate & d) {
+CDate::CDate(const CDate &d) {
     this->day = d.day;
     this->month = d.month;
     this->year = d.year;
@@ -291,19 +299,20 @@ CDate::CDate(int year, int month, int day) {
 bool CDate::operator>=(const CDate &b) const {
     return !(*this < b);
 }
+
 bool CDate::operator<=(const CDate &b) const {
     return *this == b || *this < b;
 }
 
-bool CDate::operator < (const CDate &b) const {
+bool CDate::operator<(const CDate &b) const {
     return std::tie(this->year, this->month, this->day) < std::tie(b.year, b.month, b.day);
 }
 
-bool CDate::operator != (const CDate & b) const {
+bool CDate::operator!=(const CDate &b) const {
     return !(*this == b);
 }
 
-bool CDate::operator == (const CDate & b) const {
+bool CDate::operator==(const CDate &b) const {
     return std::tie(this->year, this->month, this->day) == std::tie(b.year, b.month, b.day);
 }
 
@@ -325,14 +334,16 @@ public:
 };
 
 
-
 class Item {
 public:
-    Item(const CDate& expiration, int quantity);
+    Item(const CDate &expiration, int quantity);
 
-    void add_new ( const CDate& expiration, int quantity);
-    void get (int quantity);
+    void add_new(const CDate &expiration, int quantity);
+
+    void get(int quantity);
+
     int available() const;
+
 private:
     deque<std::pair<CDate, int>> item_versions;
     int avail = 0;
@@ -342,16 +353,15 @@ int Item::available() const {
     return this->avail;
 }
 
-void Item::get (const int quantity){
+void Item::get(const int quantity) {
     int requested = quantity;
-    while(requested > 0){
+    while (requested > 0) {
         auto current = item_versions.begin();
-        if(current->second <= requested) {
-             requested -=  current->second;
-             this->avail -=current->second;
-             item_versions.pop_front();
-        }
-        else { // requested < current->second
+        if (current->second <= requested) {
+            requested -= current->second;
+            this->avail -= current->second;
+            item_versions.pop_front();
+        } else { // requested < current->second
             int tmp = requested;
             current->second -= tmp;
             this->avail -= tmp;
@@ -360,15 +370,14 @@ void Item::get (const int quantity){
     }
 }
 
-void Item::add_new(const CDate& expiration, const int quantity) {
+void Item::add_new(const CDate &expiration, const int quantity) {
     int i = quantity;
-    std::pair<CDate, int> tmp (expiration, i);
+    std::pair<CDate, int> tmp(expiration, i);
     CDatePairComparatorLower cmp;
     auto it = std::lower_bound(item_versions.begin(), item_versions.end(), tmp, cmp);
-    if(it->first == expiration){
+    if (it->first == expiration) {
         it->second += quantity;
-    }
-    else {
+    } else {
         item_versions.insert(it, tmp);
     }
 
@@ -380,47 +389,49 @@ Item::Item(const CDate &expiration, int quantity) {
 }
 
 
-class CSupermarket
-{
-  public:
+class CSupermarket {
+public:
     //default constructor
     CSupermarket() = default;
-    // store   ( name, expiryDate, count )
-    CSupermarket & store  ( std::string name, CDate expiryDate, int count );
 
-    void sell  ( list<pair<string, int>> shoppingList );
+    // store   ( name, expiryDate, count )
+    CSupermarket &store(std::string name, CDate expiryDate, int count);
+
+    void sell(list<pair<string, int>> shoppingList);
 
     // expired ( date ) const
-    list<pair<string,int>> expired( CDate at ) const{};
+    list<pair<string, int>> expired(CDate at) const {};
 
-  private:
+private:
 
-    shared_ptr<Item> findItemByName(const std::string & name);
-    shared_ptr<Item> findItemByMisspelledName(const std::string & name){};
+    shared_ptr<Item> findItemByName(const std::string &name);
+
+    shared_ptr<Item> findItemByMisspelledName(const std::string &name);
+
+    static bool compare_string(const std::string &target, const std::string &x, int allowed_errors);
 
     map<std::string, Item> stored_items;
 
 };
 
 
-CSupermarket & CSupermarket::store  ( std::string name, CDate expiryDate, int count ){
+CSupermarket &CSupermarket::store(std::string name, CDate expiryDate, int count) {
 
     auto it = stored_items.find(name);
 
     // not found
-    if ( it == stored_items.end() ) {
+    if (it == stored_items.end()) {
         stored_items.insert({name, Item(expiryDate, count)});
-    }
-    else {
+    } else {
         (*it).second.add_new(expiryDate, count);
     }
     return *this;
 }
 
-void CSupermarket::sell ( list<pair<string, int>> shoppingList ) {
-    for(pair<string, int> l : shoppingList){
-        shared_ptr<Item> tmp  = findItemByName(l.first);
-        if(tmp == nullptr){
+void CSupermarket::sell(list<pair<string, int>> shoppingList) {
+    for (pair<string, int> l: shoppingList) {
+        shared_ptr<Item> tmp = findItemByName(l.first);
+        if (tmp == nullptr) {
             tmp = findItemByMisspelledName(l.first);
             // pokud se nepodaří nalézt (tedy neexistuje žádné zboží lišící se právě v jednom znaku, nebo existuje
             // více různých zboží lišících se v jednom znaku, nebude se vydávat žádné zboží.
@@ -428,115 +439,194 @@ void CSupermarket::sell ( list<pair<string, int>> shoppingList ) {
             // pokud neexistuje zboží přesně stejného jména, hledá se zboží, kde se název liší v jednom znaku
             // - překlepu (stále rozlišujeme malá/velká písmena). Pokud se podaří najít právě jedno takové zboží,
             // bude vybráno,
-            if(tmp != nullptr){
-                tmp.get()->get(l.second);
+            if (tmp != nullptr) {
+                tmp.get(l.second);
             }
-        }
-        else {
+        } else {
             cout << "";
         }
 
     }
 }
 
-shared_ptr<Item> CSupermarket::findItemByName(const std::string & name) {
+shared_ptr<Item> CSupermarket::findItemByName(const std::string &name) {
     auto it = this->stored_items.find(name);
     if (it == stored_items.end())
         return nullptr;
     return make_shared<Item>((*it).second);
 }
 
+bool CSupermarket::compare_string(const std::string &target, const std::string &x, int allowed_errors) {
+//    if (abs((int)(target.size() - x.size())) > allowed_errors) {
+//        return false;
+//    }
+    if (target.size() != x.size()) {
+        return false;
+    }
+    auto it_target = target.begin();
+    auto it_x = x.begin();
+
+    int errors = 0;
+    while (it_target != target.end() || it_x != x.end()) {
+        if (*it_target != *it_x)
+            errors++;
+
+        if (it_target != target.end()) {
+            ++it_target;
+        }
+        if (it_x != x.end()) {
+            ++it_x;
+        }
+        if (errors >= allowed_errors)
+            return false;
+    }
+    return true;
+
+}
+
+shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
+    vector<Item> results;
+
+    for (auto item: this->stored_items) {
+        if (compare_string(name, item.first, 1)) {
+            results.push_back(item.second);
+        }
+    }
+    if (results.size() > 1 || results.size() == 0)
+        return nullptr;
+    return make_shared<Item>(*results.begin());
+}
+
 
 #ifndef __PROGTEST__
-int main ( void )
-{
-  CSupermarket s;
-  s . store ( "bread", CDate ( 2016, 4, 30 ), 100 )
-    . store ( "butter", CDate ( 2016, 5, 10 ), 10 )
-    . store ( "beer", CDate ( 2016, 8, 10 ), 50 )
-    . store ( "bread", CDate ( 2016, 4, 25 ), 100 )
-    . store ( "okey", CDate ( 2016, 7, 18 ), 5 );
 
-  list<pair<string,int> > l0 = s . expired ( CDate ( 2018, 4, 30 ) );
-  assert ( l0 . size () == 4 );
-  assert ( ( l0 == list<pair<string,int> > { { "bread", 200 }, { "beer", 50 }, { "butter", 10 }, { "okey", 5 } } ) );
+int main(void) {
+    CSupermarket s;
+    s.store("bread", CDate(2016, 4, 30), 100)
+            .store("butter", CDate(2016, 5, 10), 10)
+            .store("beer", CDate(2016, 8, 10), 50)
+            .store("bread", CDate(2016, 4, 25), 100)
+            .store("okey", CDate(2016, 7, 18), 5);
 
-  list<pair<string,int> > l1 { { "bread", 2 }, { "Coke", 5 }, { "butter", 20 } };
-  s . sell ( l1 );
-  assert ( l1 . size () == 2 );
-  assert ( ( l1 == list<pair<string,int> > { { "Coke", 5 }, { "butter", 10 } } ) );
+    list<pair<string, int> > l0 = s.expired(CDate(2018, 4, 30));
+    assert (l0.size() == 4);
+    assert ((l0 == list<pair<string, int> >{{"bread",  200},
+                                            {"beer",   50},
+                                            {"butter", 10},
+                                            {"okey",   5}}));
 
-  list<pair<string,int> > l2 = s . expired ( CDate ( 2016, 4, 30 ) );
-  assert ( l2 . size () == 1 );
-  assert ( ( l2 == list<pair<string,int> > { { "bread", 98 } } ) );
+    list<pair<string, int> > l1{{"bread",  2},
+                                {"Coke",   5},
+                                {"butter", 20}};
+    s.sell(l1);
+    assert (l1.size() == 2);
+    assert ((l1 == list<pair<string, int> >{{"Coke",   5},
+                                            {"butter", 10}}));
 
-  list<pair<string,int> > l3 = s . expired ( CDate ( 2016, 5, 20 ) );
-  assert ( l3 . size () == 1 );
-  assert ( ( l3 == list<pair<string,int> > { { "bread", 198 } } ) );
+    list<pair<string, int> > l2 = s.expired(CDate(2016, 4, 30));
+    assert (l2.size() == 1);
+    assert ((l2 == list<pair<string, int> >{{"bread", 98}}));
 
-  list<pair<string,int> > l4 { { "bread", 105 } };
-  s . sell ( l4 );
-  assert ( l4 . size () == 0 );
-  assert ( ( l4 == list<pair<string,int> > {  } ) );
+    list<pair<string, int> > l3 = s.expired(CDate(2016, 5, 20));
+    assert (l3.size() == 1);
+    assert ((l3 == list<pair<string, int> >{{"bread", 198}}));
 
-  list<pair<string,int> > l5 = s . expired ( CDate ( 2017, 1, 1 ) );
-  assert ( l5 . size () == 3 );
-  assert ( ( l5 == list<pair<string,int> > { { "bread", 93 }, { "beer", 50 }, { "okey", 5 } } ) );
+    list<pair<string, int> > l4{{"bread", 105}};
+    s.sell(l4);
+    assert (l4.size() == 0);
+    assert ((l4 == list<pair<string, int> >{}));
 
-  s . store ( "Coke", CDate ( 2016, 12, 31 ), 10 );
+    list<pair<string, int> > l5 = s.expired(CDate(2017, 1, 1));
+    assert (l5.size() == 3);
+    assert ((l5 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"okey",  5}}));
 
-  list<pair<string,int> > l6 { { "Cake", 1 }, { "Coke", 1 }, { "cake", 1 }, { "coke", 1 }, { "cuke", 1 }, { "Cokes", 1 } };
-  s . sell ( l6 );
-  assert ( l6 . size () == 3 );
-  assert ( ( l6 == list<pair<string,int> > { { "cake", 1 }, { "cuke", 1 }, { "Cokes", 1 } } ) );
+    s.store("Coke", CDate(2016, 12, 31), 10);
 
-  list<pair<string,int> > l7 = s . expired ( CDate ( 2017, 1, 1 ) );
-  assert ( l7 . size () == 4 );
-  assert ( ( l7 == list<pair<string,int> > { { "bread", 93 }, { "beer", 50 }, { "Coke", 7 }, { "okey", 5 } } ) );
+    list<pair<string, int> > l6{{"Cake",  1},
+                                {"Coke",  1},
+                                {"cake",  1},
+                                {"coke",  1},
+                                {"cuke",  1},
+                                {"Cokes", 1}};
+    s.sell(l6);
+    assert (l6.size() == 3);
+    assert ((l6 == list<pair<string, int> >{{"cake",  1},
+                                            {"cuke",  1},
+                                            {"Cokes", 1}}));
 
-  s . store ( "cake", CDate ( 2016, 11, 1 ), 5 );
+    list<pair<string, int> > l7 = s.expired(CDate(2017, 1, 1));
+    assert (l7.size() == 4);
+    assert ((l7 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"Coke",  7},
+                                            {"okey",  5}}));
 
-  list<pair<string,int> > l8 { { "Cake", 1 }, { "Coke", 1 }, { "cake", 1 }, { "coke", 1 }, { "cuke", 1 } };
-  s . sell ( l8 );
-  assert ( l8 . size () == 2 );
-  assert ( ( l8 == list<pair<string,int> > { { "Cake", 1 }, { "coke", 1 } } ) );
+    s.store("cake", CDate(2016, 11, 1), 5);
 
-  list<pair<string,int> > l9 = s . expired ( CDate ( 2017, 1, 1 ) );
-  assert ( l9 . size () == 5 );
-  assert ( ( l9 == list<pair<string,int> > { { "bread", 93 }, { "beer", 50 }, { "Coke", 6 }, { "okey", 5 }, { "cake", 3 } } ) );
+    list<pair<string, int> > l8{{"Cake", 1},
+                                {"Coke", 1},
+                                {"cake", 1},
+                                {"coke", 1},
+                                {"cuke", 1}};
+    s.sell(l8);
+    assert (l8.size() == 2);
+    assert ((l8 == list<pair<string, int> >{{"Cake", 1},
+                                            {"coke", 1}}));
 
-  list<pair<string,int> > l10 { { "cake", 15 }, { "Cake", 2 } };
-  s . sell ( l10 );
-  assert ( l10 . size () == 2 );
-  assert ( ( l10 == list<pair<string,int> > { { "cake", 12 }, { "Cake", 2 } } ) );
+    list<pair<string, int> > l9 = s.expired(CDate(2017, 1, 1));
+    assert (l9.size() == 5);
+    assert ((l9 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"Coke",  6},
+                                            {"okey",  5},
+                                            {"cake",  3}}));
 
-  list<pair<string,int> > l11 = s . expired ( CDate ( 2017, 1, 1 ) );
-  assert ( l11 . size () == 4 );
-  assert ( ( l11 == list<pair<string,int> > { { "bread", 93 }, { "beer", 50 }, { "Coke", 6 }, { "okey", 5 } } ) );
+    list<pair<string, int> > l10{{"cake", 15},
+                                 {"Cake", 2}};
+    s.sell(l10);
+    assert (l10.size() == 2);
+    assert ((l10 == list<pair<string, int> >{{"cake", 12},
+                                             {"Cake", 2}}));
 
-  list<pair<string,int> > l12 { { "Cake", 4 } };
-  s . sell ( l12 );
-  assert ( l12 . size () == 0 );
-  assert ( ( l12 == list<pair<string,int> > {  } ) );
+    list<pair<string, int> > l11 = s.expired(CDate(2017, 1, 1));
+    assert (l11.size() == 4);
+    assert ((l11 == list<pair<string, int> >{{"bread", 93},
+                                             {"beer",  50},
+                                             {"Coke",  6},
+                                             {"okey",  5}}));
 
-  list<pair<string,int> > l13 = s . expired ( CDate ( 2017, 1, 1 ) );
-  assert ( l13 . size () == 4 );
-  assert ( ( l13 == list<pair<string,int> > { { "bread", 93 }, { "beer", 50 }, { "okey", 5 }, { "Coke", 2 } } ) );
+    list<pair<string, int> > l12{{"Cake", 4}};
+    s.sell(l12);
+    assert (l12.size() == 0);
+    assert ((l12 == list<pair<string, int> >{}));
 
-  list<pair<string,int> > l14 { { "Beer", 20 }, { "Coke", 1 }, { "bear", 25 }, { "beer", 10 } };
-  s . sell ( l14 );
-  assert ( l14 . size () == 1 );
-  assert ( ( l14 == list<pair<string,int> > { { "beer", 5 } } ) );
+    list<pair<string, int> > l13 = s.expired(CDate(2017, 1, 1));
+    assert (l13.size() == 4);
+    assert ((l13 == list<pair<string, int> >{{"bread", 93},
+                                             {"beer",  50},
+                                             {"okey",  5},
+                                             {"Coke",  2}}));
 
-  s . store ( "ccccb", CDate ( 2019, 3, 11 ), 100 )
-    . store ( "ccccd", CDate ( 2019, 6, 9 ), 100 )
-    . store ( "dcccc", CDate ( 2019, 2, 14 ), 100 );
+    list<pair<string, int> > l14{{"Beer", 20},
+                                 {"Coke", 1},
+                                 {"bear", 25},
+                                 {"beer", 10}};
+    s.sell(l14);
+    assert (l14.size() == 1);
+    assert ((l14 == list<pair<string, int> >{{"beer", 5}}));
 
-  list<pair<string,int> > l15 { { "ccccc", 10 } };
-  s . sell ( l15 );
-  assert ( l15 . size () == 1 );
-  assert ( ( l15 == list<pair<string,int> > { { "ccccc", 10 } } ) );
+    s.store("ccccb", CDate(2019, 3, 11), 100)
+            .store("ccccd", CDate(2019, 6, 9), 100)
+            .store("dcccc", CDate(2019, 2, 14), 100);
 
-  return EXIT_SUCCESS;
+    list<pair<string, int> > l15{{"ccccc", 10}};
+    s.sell(l15);
+    assert (l15.size() == 1);
+    assert ((l15 == list<pair<string, int> >{{"ccccc", 10}}));
+
+    return EXIT_SUCCESS;
 }
+
 #endif /* __PROGTEST__ */
