@@ -332,6 +332,30 @@ public:
         return a.first < b.first;
     }
 };
+class CDatePairComparatorLowerDate {
+public:
+    bool operator()(const std::pair<CDate, int> &a,
+                    const CDate &b) const {
+        return a.first < b;
+    }
+};
+
+class CDatePairDateStringStuffComparatorLower {
+public:
+    bool operator()(const pair<CDate, pair<string, int>> &a,
+                    const pair<CDate, string> & b) const {
+        return std::tie(a.first, a.second.first) < std::tie(b.first, b.second);
+    }
+};
+
+class CDatePairPairDateStringComparatorLower {
+public:
+    bool operator()(const pair<CDate, pair<string, int>> &a,
+                    const pair<CDate, pair<string, int>> & b) const {
+        return std::tie(a.first, a.second.first) < std::tie(b.first, b.second.first);
+    }
+};
+
 
 
 class Item {
@@ -341,6 +365,8 @@ public:
     void add_new(const CDate &expiration, int quantity);
 
     void get(int quantity);
+
+    int how_many_expired(const CDate &at);
 
     int available() const;
 
@@ -388,6 +414,15 @@ Item::Item(const CDate &expiration, int quantity) {
     avail += quantity;
 }
 
+int Item::how_many_expired(const CDate &at) {
+    CDatePairComparatorLowerDate cmp;
+    auto it = std::lower_bound(item_versions.begin(), item_versions.end(), at, cmp);
+    if((*it).first == at){
+        return it - item_versions.begin();
+    }
+    return it - item_versions.begin() - 1;
+}
+
 
 class CSupermarket {
 public:
@@ -400,7 +435,7 @@ public:
     void sell(list<pair<string, int>> shoppingList);
 
     // expired ( date ) const
-    list<pair<string, int>> expired(CDate at) const {};
+    list<pair<string, int>> expired(CDate at) const;
 
 private:
 
@@ -440,10 +475,10 @@ void CSupermarket::sell(list<pair<string, int>> shoppingList) {
             // - překlepu (stále rozlišujeme malá/velká písmena). Pokud se podaří najít právě jedno takové zboží,
             // bude vybráno,
             if (tmp != nullptr) {
-                tmp.get(l.second);
+                tmp.get()->get(l.second);
             }
         } else {
-            cout << "";
+            tmp.get()->get(l.second);
         }
 
     }
@@ -495,6 +530,31 @@ shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
     if (results.size() > 1 || results.size() == 0)
         return nullptr;
     return make_shared<Item>(*results.begin());
+}
+
+list<pair<string, int>> CSupermarket::expired(CDate at) const {
+    CDatePairDateStringStuffComparatorLower cmp;
+    list<pair<CDate, pair<string, int>>> result;
+
+    for(auto item: this->stored_items){
+        int expired = item.second.how_many_expired(at);
+        if(expired > 0){
+            // todo insert by date
+            auto it = std::lower_bound(result.begin(), result.end(), std::pair<CDate, std::string>(at, item.first), cmp);
+            // pair<CDate, pair<string, int>>
+            //result.insert(it, pair<CDate, pair<string, int>>(at, pair<string, int>(item.first, expired)));
+            result.emplace_back(at, pair<string, int>(item.first, expired));
+        }
+    }
+    CDatePairPairDateStringComparatorLower cmp2;
+    result.sort(cmp2);
+
+    // now I need to get rid of the date
+    list<pair<string, int>> final_result;
+    for(auto item: result){
+        final_result.push_back(item.second);
+    }
+    return final_result;
 }
 
 
