@@ -199,13 +199,6 @@ std::ostream &operator<<(std::ostream &os, const CDate &md) {
     //	char	*tm_zone;	/* timezone abbreviation */
     // 2.1.2000 was sunday
 
-    string formatter = "%Y";
-    struct tm my_time = {0, 0, 0, md.day, md.month, md.year - 100, (md.to_days() - CDate(2000, 1, 2).to_days()) % 6,
-                         (md.to_days() - CDate(2000, 1, 1).to_days()),
-                         0, 0, nullptr};
-    std::cout << "Test formatter: " << std::put_time(&my_time, formatter.c_str()) << '\n';
-
-
     return os << std::setfill('0') << std::setw(4) << md.year << "-"
               << std::setfill('0') << std::setw(2) << md.month << "-"
               << std::setfill('0') << std::setw(2) << md.day;
@@ -327,89 +320,102 @@ CDate &CDate::operator=(const CDate &x) = default;
 
 class CDatePairComparatorLower {
 public:
-    bool operator()(const std::pair<CDate, int> &a,
-                    const std::pair<CDate, int> &b) const {
-        return a.first < b.first;
+    bool operator()(const std::shared_ptr<std::pair<CDate, int>> &a,
+                    const std::shared_ptr<std::pair<CDate, int>> &b) const {
+        return a->first < b->first;
     }
 };
+
 class CDatePairComparatorLowerDate {
 public:
-    bool operator()(const std::pair<CDate, int> &a,
+    bool operator()(const std::shared_ptr<std::pair<CDate, int>> &a,
                     const CDate &b) const {
-        return a.first < b;
+        return a->first < b;
     }
 };
 
 class CDatePairDateStringStuffComparatorLower {
 public:
     bool operator()(const pair<CDate, pair<string, int>> &a,
-                    const pair<CDate, string> & b) const {
+                    const pair<CDate, string> &b) const {
         return std::tie(a.first, a.second.first) < std::tie(b.first, b.second);
     }
 };
 
-class CDatePairPairDateStringComparatorLower {
+class CPairStringIntComparatorHigher {
 public:
-    bool operator()(const pair<CDate, pair<string, int>> &a,
-                    const pair<CDate, pair<string, int>> & b) const {
-        return std::tie(a.first, a.second.first) < std::tie(b.first, b.second.first);
+    bool operator()(const pair<string, int> &a,
+                    const pair<string, int> &b) const {
+        return a.second > b.second;
     }
 };
 
 
-
 class Item {
 public:
-    Item(const CDate &expiration, int quantity);
+    Item(const CDate &expiration, int quantity, const std::string &name);
 
     void add_new(const CDate &expiration, int quantity);
 
-    void get(int quantity);
+    int get(int quantity);
+
+    std::string &get_name();
 
     int how_many_expired(const CDate &at);
 
     int available() const;
 
+    friend std::ostream &operator<<(std::ostream &os, const Item &i);
+
 private:
-    deque<std::pair<CDate, int>> item_versions;
     int avail = 0;
+    std::string name;
+protected:
+    deque<shared_ptr<std::pair<CDate, int>>> item_versions;
 };
 
 int Item::available() const {
     return this->avail;
 }
 
-void Item::get(const int quantity) {
-    int requested = quantity;
-    while (requested > 0) {
+int Item::get(const int quantity) {
+    int requested_remaining = quantity;
+    while (requested_remaining > 0) {
+        // request not fullfilled
+        if (item_versions.empty()) {
+            return quantity - requested_remaining;
+        }
         auto current = item_versions.begin();
-        if (current->second <= requested) {
-            requested -= current->second;
-            this->avail -= current->second;
+        if (current->get()->second <= requested_remaining) {
+            requested_remaining -= current->get()->second;
+            this->avail -= current->get()->second;
+            current->get()->second = 0;
             item_versions.pop_front();
-        } else { // requested < current->second
-            int tmp = requested;
-            current->second -= tmp;
+        } else { // requested_remaining < current->second
+            int tmp = requested_remaining;
+            current->get()->second -= tmp;
             this->avail -= tmp;
-            requested -= tmp;
+            requested_remaining -= tmp;
         }
     }
+    return quantity - requested_remaining;
 }
 
 void Item::add_new(const CDate &expiration, const int quantity) {
     int i = quantity;
-    std::pair<CDate, int> tmp(expiration, i);
+    std::shared_ptr<std::pair<CDate, int>> tmp = make_shared<std::pair<CDate, int>>(
+            std::pair<CDate, int>(expiration, i));
     CDatePairComparatorLower cmp;
     auto it = std::lower_bound(item_versions.begin(), item_versions.end(), tmp, cmp);
-    if (it->first == expiration) {
-        it->second += quantity;
+    if (!item_versions.empty() && it->get()->first == expiration) {
+        it->get()->second += quantity;
     } else {
         item_versions.insert(it, tmp);
     }
 
 }
 
-Item::Item(const CDate &expiration, int quantity) {
+Item::Item(const CDate &expiration, int quantity, const std::string &name) : name(name) {
     add_new(expiration, quantity);
     avail += quantity;
 }
@@ -417,10 +423,28 @@ Item::Item(const CDate &expiration, int quantity) {
 int Item::how_many_expired(const CDate &at) {
     CDatePairComparatorLowerDate cmp;
     auto it = std::lower_bound(item_versions.begin(), item_versions.end(), at, cmp);
-    if((*it).first == at){
-        return it - item_versions.begin();
+    int iters;
+    //if (!(!*it) && (*it)->first > at)
+    //    iters = (it - item_versions.begin());
+    //else
+    iters = (it - item_versions.begin() - 1);
+
+    int ret = 0;
+    for (int i = 0; i <= iters; i++) {
+        ret += item_versions[i].get()->second;
     }
-    return it - item_versions.begin() - 1;
+    return ret;
+}
+
+std::ostream &operator<<(std::ostream &os, const Item &i) {
+    for (auto x: i.item_versions) {
+        std::cout << " item " << i.name << "  " << x.get()->first << " : " << x.get()->second << std::endl;
+    }
+    return os;
+}
+
+std::string &Item::get_name() {
+    return this->name;
 }
 
 
@@ -432,10 +456,13 @@ public:
     // store   ( name, expiryDate, count )
     CSupermarket &store(std::string name, CDate expiryDate, int count);
 
-    void sell(list<pair<string, int>> shoppingList);
+    // this is also a return parameter
+    void sell(list<pair<string, int>> &shopping_list);
 
     // expired ( date ) const
-    list<pair<string, int>> expired(CDate at) const;
+    list<pair<string, int>> expired(const CDate &at) const;
+
+    friend std::ostream &operator<<(std::ostream &os, CSupermarket &s);
 
 private:
 
@@ -455,30 +482,54 @@ CSupermarket &CSupermarket::store(std::string name, CDate expiryDate, int count)
     auto it = stored_items.find(name);
 
     // not found
+    //      map<std::string, Item> stored_items;
     if (it == stored_items.end()) {
-        stored_items.insert({name, Item(expiryDate, count)});
+        Item item = Item(expiryDate, count, name);
+        stored_items.insert({name, item});
     } else {
         (*it).second.add_new(expiryDate, count);
     }
     return *this;
 }
 
-void CSupermarket::sell(list<pair<string, int>> shoppingList) {
-    for (pair<string, int> l: shoppingList) {
-        shared_ptr<Item> tmp = findItemByName(l.first);
+void CSupermarket::sell(list<pair<string, int>> &shopping_list) {
+    list<pair<string, int>> res;
+    std::cout << "----------------------------------------------" << std::endl;
+    std::cout << "Selling from list of size " << shopping_list.size() << std::endl;
+    for (auto item: shopping_list) {
+        std::cout << item.first << ": " << item.second << std::endl;
+    }
+
+    for (auto shopping_list_item = shopping_list.begin(); shopping_list_item != shopping_list.end();) {
+
+        shared_ptr<Item> tmp = findItemByName(shopping_list_item->first);
         if (tmp == nullptr) {
-            tmp = findItemByMisspelledName(l.first);
+            tmp = findItemByMisspelledName(shopping_list_item->first);
             // pokud se nepodaří nalézt (tedy neexistuje žádné zboží lišící se právě v jednom znaku, nebo existuje
             // více různých zboží lišících se v jednom znaku, nebude se vydávat žádné zboží.
 
             // pokud neexistuje zboží přesně stejného jména, hledá se zboží, kde se název liší v jednom znaku
             // - překlepu (stále rozlišujeme malá/velká písmena). Pokud se podaří najít právě jedno takové zboží,
             // bude vybráno,
-            if (tmp != nullptr) {
-                tmp.get()->get(l.second);
-            }
+        }
+
+        if (!tmp) {
+            ++shopping_list_item;
+
         } else {
-            tmp.get()->get(l.second);
+            int sold = tmp->get(shopping_list_item->second);
+
+            if (sold == shopping_list_item->second)
+                shopping_list.erase(shopping_list_item++);
+            else {
+                shopping_list_item->second -= sold;
+                ++shopping_list_item;
+            }
+
+            // remove item from store if zero on stock
+            if(tmp->available() == 0){
+                this->stored_items.erase(tmp->get_name());
+            }
         }
 
     }
@@ -492,17 +543,14 @@ shared_ptr<Item> CSupermarket::findItemByName(const std::string &name) {
 }
 
 bool CSupermarket::compare_string(const std::string &target, const std::string &x, int allowed_errors) {
-//    if (abs((int)(target.size() - x.size())) > allowed_errors) {
-//        return false;
-//    }
-    if (target.size() != x.size()) {
+    if (abs((int) target.size() - (int) x.size()) < allowed_errors) {
         return false;
     }
     auto it_target = target.begin();
     auto it_x = x.begin();
 
     int errors = 0;
-    while (it_target != target.end() || it_x != x.end()) {
+    for(int i = 0; i < max(target.size(), x.size()); i++){
         if (*it_target != *it_x)
             errors++;
 
@@ -521,42 +569,45 @@ bool CSupermarket::compare_string(const std::string &target, const std::string &
 
 shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
     vector<Item> results;
-
+    vector<string> names;
     for (auto item: this->stored_items) {
         if (compare_string(name, item.first, 1)) {
             results.push_back(item.second);
         }
     }
-    if (results.size() > 1 || results.size() == 0)
+    if (results.size() > 1 || results.empty())
         return nullptr;
     return make_shared<Item>(*results.begin());
 }
 
-list<pair<string, int>> CSupermarket::expired(CDate at) const {
-    CDatePairDateStringStuffComparatorLower cmp;
-    list<pair<CDate, pair<string, int>>> result;
+list<pair<string, int>> CSupermarket::expired(const CDate &at) const {
+    //CDatePairDateStringStuffComparatorLower cmp;
+    list<pair<string, int>> result;
 
-    for(auto item: this->stored_items){
+    for (auto item: this->stored_items) {
         int expired = item.second.how_many_expired(at);
-        if(expired > 0){
+        if (expired > 0) {
             // todo insert by date
-            auto it = std::lower_bound(result.begin(), result.end(), std::pair<CDate, std::string>(at, item.first), cmp);
+            //auto it = std::lower_bound(result.begin(), result.end(), std::pair<CDate, std::string>(at, item.first), cmp);
             // pair<CDate, pair<string, int>>
             //result.insert(it, pair<CDate, pair<string, int>>(at, pair<string, int>(item.first, expired)));
-            result.emplace_back(at, pair<string, int>(item.first, expired));
+            result.emplace_back(pair<string, int>(item.first, expired));
         }
     }
-    CDatePairPairDateStringComparatorLower cmp2;
-    result.sort(cmp2);
 
-    // now I need to get rid of the date
-    list<pair<string, int>> final_result;
-    for(auto item: result){
-        final_result.push_back(item.second);
-    }
-    return final_result;
+    CPairStringIntComparatorHigher cmp2;
+    result.sort(cmp2);
+    return result;
+
 }
 
+std::ostream &operator<<(std::ostream &os, CSupermarket &s) {
+    for (auto const &keyValue: s.stored_items) {
+        std::cout << keyValue.first << " : " << std::endl;
+        std::cout << keyValue.second; // Value
+    }
+    return os;
+}
 
 #ifndef __PROGTEST__
 
@@ -567,19 +618,25 @@ int main(void) {
             .store("beer", CDate(2016, 8, 10), 50)
             .store("bread", CDate(2016, 4, 25), 100)
             .store("okey", CDate(2016, 7, 18), 5);
-
+    std::cout << s << std::endl << std::endl;
     list<pair<string, int> > l0 = s.expired(CDate(2018, 4, 30));
     assert (l0.size() == 4);
     assert ((l0 == list<pair<string, int> >{{"bread",  200},
                                             {"beer",   50},
                                             {"butter", 10},
                                             {"okey",   5}}));
-
     list<pair<string, int> > l1{{"bread",  2},
                                 {"Coke",   5},
                                 {"butter", 20}};
     s.sell(l1);
+    std::cout << s << std::endl << std::endl;
     assert (l1.size() == 2);
+    list<pair<string, int> > l0_again = s.expired(CDate(2018, 4, 30));
+    assert ((l0_again == list<pair<string, int> >{{"bread", 198},
+                                                  {"beer",  50},
+                                                  {"okey",  5}}));
+
+
     assert ((l1 == list<pair<string, int> >{{"Coke",   5},
                                             {"butter", 10}}));
 
