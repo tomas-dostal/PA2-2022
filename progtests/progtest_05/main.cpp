@@ -543,7 +543,7 @@ shared_ptr<Item> CSupermarket::findItemByName(const std::string &name) {
 }
 
 bool CSupermarket::compare_string(const std::string &target, const std::string &x, int allowed_errors) {
-    if (abs((int) target.size() - (int) x.size()) < allowed_errors) {
+    if (abs((int) target.size() - (int) x.size()) > 0) {
         return false;
     }
     auto it_target = target.begin();
@@ -560,7 +560,7 @@ bool CSupermarket::compare_string(const std::string &target, const std::string &
         if (it_x != x.end()) {
             ++it_x;
         }
-        if (errors >= allowed_errors)
+        if (errors > allowed_errors)
             return false;
     }
     return true;
