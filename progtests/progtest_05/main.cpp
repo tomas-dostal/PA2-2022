@@ -406,6 +406,7 @@ void Item::add_new(const CDate &expiration, const int quantity) {
     std::shared_ptr<std::pair<CDate, int>> tmp = make_shared<std::pair<CDate, int>>(
             std::pair<CDate, int>(expiration, i));
     CDatePairComparatorLower cmp;
+    this->avail += quantity;
     auto it = std::lower_bound(item_versions.begin(), item_versions.end(), tmp, cmp);
     if (!item_versions.empty() && it->get()->first == expiration) {
         it->get()->second += quantity;
@@ -417,7 +418,6 @@ void Item::add_new(const CDate &expiration, const int quantity) {
 
 Item::Item(const CDate &expiration, int quantity, const std::string &name) : name(name) {
     add_new(expiration, quantity);
-    avail += quantity;
 }
 
 int Item::how_many_expired(const CDate &at) {
@@ -472,7 +472,7 @@ private:
 
     static bool compare_string(const std::string &target, const std::string &x, int allowed_errors);
 
-    map<std::string, Item> stored_items;
+    map<std::string, std::shared_ptr<Item>> stored_items;
 
 };
 
@@ -484,40 +484,41 @@ CSupermarket &CSupermarket::store(std::string name, CDate expiryDate, int count)
     // not found
     //      map<std::string, Item> stored_items;
     if (it == stored_items.end()) {
-        Item item = Item(expiryDate, count, name);
-        stored_items.insert({name, item});
+        stored_items.insert({name, make_shared<Item>(Item(expiryDate, count, name))});
     } else {
-        (*it).second.add_new(expiryDate, count);
+        (*it).second->add_new(expiryDate, count);
     }
     return *this;
 }
 
 void CSupermarket::sell(list<pair<string, int>> &shopping_list) {
-    list<pair<string, int>> res;
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "Selling from list of size " << shopping_list.size() << std::endl;
+
+    vector<shared_ptr<Item>> found;
     for (auto item: shopping_list) {
         std::cout << item.first << ": " << item.second << std::endl;
+        // pokud se nepodaří nalézt (tedy neexistuje žádné zboží lišící se právě v jednom znaku, nebo existuje
+        // více různých zboží lišících se v jednom znaku, nebude se vydávat žádné zboží.
+
+        // pokud neexistuje zboží přesně stejného jména, hledá se zboží, kde se název liší v jednom znaku
+        // - překlepu (stále rozlišujeme malá/velká písmena). Pokud se podaří najít právě jedno takové zboží,
+        // bude vybráno,
+
+        shared_ptr<Item> tmp = findItemByName(item.first);
+        if (tmp == nullptr)
+            tmp = findItemByMisspelledName(item.first);
+        found.push_back(tmp);
     }
+    std::vector<shared_ptr<Item>>::iterator found_iterator = std::begin(found);
 
+    // now process what was
     for (auto shopping_list_item = shopping_list.begin(); shopping_list_item != shopping_list.end();) {
-
-        shared_ptr<Item> tmp = findItemByName(shopping_list_item->first);
-        if (tmp == nullptr) {
-            tmp = findItemByMisspelledName(shopping_list_item->first);
-            // pokud se nepodaří nalézt (tedy neexistuje žádné zboží lišící se právě v jednom znaku, nebo existuje
-            // více různých zboží lišících se v jednom znaku, nebude se vydávat žádné zboží.
-
-            // pokud neexistuje zboží přesně stejného jména, hledá se zboží, kde se název liší v jednom znaku
-            // - překlepu (stále rozlišujeme malá/velká písmena). Pokud se podaří najít právě jedno takové zboží,
-            // bude vybráno,
-        }
-
-        if (!tmp) {
+        if (!(*found_iterator)) {
             ++shopping_list_item;
 
         } else {
-            int sold = tmp->get(shopping_list_item->second);
+            int sold = (*found_iterator)->get(shopping_list_item->second);
 
             if (sold == shopping_list_item->second)
                 shopping_list.erase(shopping_list_item++);
@@ -527,10 +528,11 @@ void CSupermarket::sell(list<pair<string, int>> &shopping_list) {
             }
 
             // remove item from store if zero on stock
-            if(tmp->available() == 0){
-                this->stored_items.erase(tmp->get_name());
+            if ((*found_iterator)->available() == 0) {
+                this->stored_items.erase((*found_iterator)->get_name());
             }
         }
+        ++found_iterator;
 
     }
 }
@@ -539,18 +541,18 @@ shared_ptr<Item> CSupermarket::findItemByName(const std::string &name) {
     auto it = this->stored_items.find(name);
     if (it == stored_items.end())
         return nullptr;
-    return make_shared<Item>((*it).second);
+    return (*it).second;
 }
 
 bool CSupermarket::compare_string(const std::string &target, const std::string &x, int allowed_errors) {
-    if (abs((int) target.size() - (int) x.size()) > 0) {
+    if (target.size() != x.size()) {
         return false;
     }
     auto it_target = target.begin();
     auto it_x = x.begin();
 
     int errors = 0;
-    for(int i = 0; i < max(target.size(), x.size()); i++){
+    for (int i = 0; i < max(target.size(), x.size()); i++) {
         if (*it_target != *it_x)
             errors++;
 
@@ -568,7 +570,7 @@ bool CSupermarket::compare_string(const std::string &target, const std::string &
 }
 
 shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
-    vector<Item> results;
+    vector<shared_ptr<Item>> results;
     vector<string> names;
     for (auto item: this->stored_items) {
         if (compare_string(name, item.first, 1)) {
@@ -577,7 +579,7 @@ shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
     }
     if (results.size() > 1 || results.empty())
         return nullptr;
-    return make_shared<Item>(*results.begin());
+    return *results.begin();
 }
 
 list<pair<string, int>> CSupermarket::expired(const CDate &at) const {
@@ -585,7 +587,7 @@ list<pair<string, int>> CSupermarket::expired(const CDate &at) const {
     list<pair<string, int>> result;
 
     for (auto item: this->stored_items) {
-        int expired = item.second.how_many_expired(at);
+        int expired = item.second->how_many_expired(at);
         if (expired > 0) {
             // todo insert by date
             //auto it = std::lower_bound(result.begin(), result.end(), std::pair<CDate, std::string>(at, item.first), cmp);
@@ -604,7 +606,7 @@ list<pair<string, int>> CSupermarket::expired(const CDate &at) const {
 std::ostream &operator<<(std::ostream &os, CSupermarket &s) {
     for (auto const &keyValue: s.stored_items) {
         std::cout << keyValue.first << " : " << std::endl;
-        std::cout << keyValue.second; // Value
+        std::cout << *(keyValue.second); // Value
     }
     return os;
 }
@@ -631,10 +633,10 @@ int main(void) {
     s.sell(l1);
     std::cout << s << std::endl << std::endl;
     assert (l1.size() == 2);
-    list<pair<string, int> > l0_again = s.expired(CDate(2018, 4, 30));
-    assert ((l0_again == list<pair<string, int> >{{"bread", 198},
-                                                  {"beer",  50},
-                                                  {"okey",  5}}));
+    l0 = s.expired(CDate(2018, 4, 30));
+    assert ((l0 == list<pair<string, int> >{{"bread", 198},
+                                            {"beer",  50},
+                                            {"okey",  5}}));
 
 
     assert ((l1 == list<pair<string, int> >{{"Coke",   5},
@@ -661,6 +663,11 @@ int main(void) {
 
     s.store("Coke", CDate(2016, 12, 31), 10);
 
+    l0 = s.expired(CDate(2030, 4, 30));
+    assert ((l0 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"Coke",  10},
+                                            {"okey",  5}}));
     list<pair<string, int> > l6{{"Cake",  1},
                                 {"Coke",  1},
                                 {"cake",  1},
@@ -673,6 +680,13 @@ int main(void) {
                                             {"cuke",  1},
                                             {"Cokes", 1}}));
 
+    l0 = s.expired(CDate(2030, 4, 30));
+    assert ((l0 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"Coke",  7},
+                                            {"okey",  5}}));
+
+
     list<pair<string, int> > l7 = s.expired(CDate(2017, 1, 1));
     assert (l7.size() == 4);
     assert ((l7 == list<pair<string, int> >{{"bread", 93},
@@ -681,12 +695,25 @@ int main(void) {
                                             {"okey",  5}}));
 
     s.store("cake", CDate(2016, 11, 1), 5);
+    l0 = s.expired(CDate(2030, 4, 30));
+    assert ((l0 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"Coke",  7},
+                                            {"okey",  5},
+                                            {"cake",  5}})
+            ||
+            (l0 == list<pair<string, int> >{{"bread", 93},
+                                            {"beer",  50},
+                                            {"Coke",  7},
+                                            {"cake",  5},
+                                            {"okey",  5}}));
 
-    list<pair<string, int> > l8{{"Cake", 1},
+    list<pair<string, int> > l8{{"Cake", 1}, //
                                 {"Coke", 1},
                                 {"cake", 1},
-                                {"coke", 1},
+                                {"coke", 1}, //
                                 {"cuke", 1}};
+
     s.sell(l8);
     assert (l8.size() == 2);
     assert ((l8 == list<pair<string, int> >{{"Cake", 1},
