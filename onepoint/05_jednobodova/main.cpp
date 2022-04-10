@@ -33,11 +33,17 @@ public:
     bool operator < (const CTimeStamp &other) const;
     bool operator == (const CTimeStamp &other) const;
     bool operator <= (const CTimeStamp &other) const;
+    bool operator >= (const CTimeStamp &other) const;
+
 
 };
 bool CTimeStamp::operator <= (const CTimeStamp &other) const {
     return *this < other || *this == other;
 }
+bool CTimeStamp::operator >= (const CTimeStamp &other) const {
+    return other < *this || *this == other;
+}
+
 bool CTimeStamp::operator == (const CTimeStamp &other) const {
     return tie( this->year,
                 this->month,
@@ -73,10 +79,6 @@ bool CTimeStamp::operator < (const CTimeStamp &other) const {
 }
 class CContact
 {
-private:
-    CTimeStamp timeStamp;
-    int phone1;
-    int phone2;
 
 public:
     CContact(CTimeStamp _timeStamp, int _phone1, int _phone2):
@@ -86,7 +88,7 @@ public:
 
     };
     
-    int returnPeerPhone(int myPhone);
+    int returnPeerPhone(const int &myPhone) const;
 
     // okay, progtest throws compilation error on this, let's to it by Java way and create getters
     // instead of friend class ::CEFaceMask;
@@ -96,6 +98,10 @@ public:
     
     bool operator < (const CContact &other) const;
     bool operator < (const CTimeStamp &other) const;
+private:
+    CTimeStamp timeStamp;
+    int phone1;
+    int phone2;
 };
 
 int CContact::getPhone1() const{
@@ -109,7 +115,7 @@ CTimeStamp CContact::getTimeStamp() const {
     return this->timeStamp;
 }
 
-int CContact::returnPeerPhone(int myPhone){
+int CContact::returnPeerPhone(const int & myPhone) const{
         if(myPhone == this->phone1)
             return this->phone2;
         else return  this->phone1;
@@ -196,13 +202,15 @@ public:
     // getInfectedGroup ( phone, timeStamp )
     // getSuperSpreaders ()
 
-    vector<int> getSuperSpreaders();
+    vector<int> getSuperSpreaders(CTimeStamp form, CTimeStamp to);
+
+    // not required
     vector<int>  getInfectedGroup ( int phone, CTimeStamp timeStamp);
 
     bool recursiveSearch(unsigned long position, int numberFrom, vector<int> &found, bool searchBackwards,
                     CTimeStamp hardFrom) const;
 };
-
+/* removed from requirements
 vector<int> CEFaceMask::getInfectedGroup(int phone, CTimeStamp timeStamp) {
 
     vector<int> results;
@@ -232,16 +240,13 @@ vector<int> CEFaceMask::getInfectedGroup(int phone, CTimeStamp timeStamp) {
     return results;
 }
 
+
 bool CEFaceMask::recursiveSearch(unsigned long position, int numberFrom, vector<int> &found, bool searchBackwards, CTimeStamp hardFrom) const {
     while((!searchBackwards && ((position + 1) <= this->contacts.size())) // normal direction
         || (searchBackwards && ((position) >= 1 ))) { // reverse direction
 
         CContact c = this->contacts.at(position);
 
-        /*cout << "Looking for contacts from infected: " << numberFrom << " from position " << position << " / " <<  this->contacts.size() << endl;
-        for( auto f: found)
-            cout << f << " " ;
-        cout << endl; */
 
         if((!searchBackwards && (c.getPhone1() == numberFrom)) || (searchBackwards && (c.getPhone1() == numberFrom && c.getTimeStamp() == hardFrom))  ){
             // insert to the right position
@@ -279,24 +284,43 @@ bool CEFaceMask::recursiveSearch(unsigned long position, int numberFrom, vector<
     return false;
 }
 
-vector<int> CEFaceMask::getSuperSpreaders() {
+*/
+vector<int>  CEFaceMask::getSuperSpreaders (CTimeStamp  from, CTimeStamp  to){
+    map<int, int> contact_results;
 
-    // operator < is already ocupied for CSpreader (compared by phone number), need to do it this way :/
-    int max = 0;
-    for (CSpreader cSpreader: this->spreaders) {
-        if(cSpreader.numberOfContacts > max)
-            max = cSpreader.numberOfContacts;
-    }
+    for(auto contact : this->contacts){
+        if(contact.getTimeStamp() >= from && contact.getTimeStamp() <= to){
+            auto p1 = contact_results.find(contact.getPhone1());
+            if(p1 != contact_results.end())
+                p1->second++;
+            else
+                contact_results.insert({contact.getPhone1(), 1});
 
-    vector<int> res;
-    for (CSpreader cSpreader: this->spreaders) {
-        if(cSpreader.numberOfContacts == max){
-            auto it = std::lower_bound(res.begin(), res.end(), cSpreader.phone);
-            res.insert(it, cSpreader.phone);
-            //res.push_back(cSpreader.phone);
+            auto p2 = contact_results.find(contact.getPhone2());
+            if(p2 != contact_results.end())
+                p2->second++;
+            else
+                contact_results.insert({contact.getPhone2(), 1});
+
         }
     }
-    return res;
+
+    vector<int> results;
+    int current_max = 0;
+    for(auto const& [key, value]: contact_results)
+    {
+        if(value == current_max){
+            results.push_back(key);
+        }
+        if(value > current_max){
+            results.clear();
+            current_max = value;
+            results.push_back(key);
+        }
+        std::cout<<" key="<<key;
+        std::cout<<" value="<<value<<std::endl;
+    }
+    return results;
 }
 
 CEFaceMask::CEFaceMask() {
@@ -310,69 +334,17 @@ CEFaceMask::CEFaceMask() {
 #ifndef __PROGTEST__
 int main ()
 {
-   /*
-  CEFaceMask test;
+    CEFaceMask test;
 
-  test . addContact ( CContact ( CTimeStamp ( 2021, 1, 10, 12, 40, 10 ), 111111111, 222222222 ) );
-  test . addContact ( CContact ( CTimeStamp ( 2021, 1, 12, 12, 40, 10 ), 333333333, 222222222 ) )
-       . addContact ( CContact ( CTimeStamp ( 2021, 2, 14, 15, 30, 28 ), 222222222, 444444444 ) );
-  test . addContact ( CContact ( CTimeStamp ( 2021, 2, 15, 18, 0, 0 ), 555555555, 444444444 ) );
-  assert ( test . getSuperSpreaders ( ) == (vector<int> {222222222}) );
-  test . addContact ( CContact ( CTimeStamp ( 2021, 3, 20, 18, 0, 0 ), 444444444, 666666666 ) );
-  assert ( test . getInfectedGroup ( 222222222, CTimeStamp ( 2021, 1, 11, 17, 17, 17 ) ) == (vector<int> {222222222, 333333333, 444444444, 555555555, 666666666}) );
-  test . addContact ( CContact ( CTimeStamp ( 2021, 3, 25, 0, 0, 0 ), 111111111, 666666666 ) );
-  assert ( test . getSuperSpreaders ( ) == (vector<int> {222222222, 444444444}) );
-  assert ( test . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 1, 0, 0, 0 ) ) == (vector<int> {111111111, 222222222, 333333333, 444444444, 555555555, 666666666}) );
-  assert ( test . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 3, 26, 0, 0, 0 ) ) == (vector<int> {111111111}) );
-  assert ( test . getInfectedGroup ( 222222222, CTimeStamp ( 2021, 2, 15, 17, 17, 17 ) ) == (vector<int> {222222222}) );
-  assert ( test . getInfectedGroup ( 222222222, CTimeStamp ( 2021, 1, 11, 17, 17, 17 ) ) == (vector<int> {111111111, 222222222, 333333333, 444444444, 555555555, 666666666}) );
-
-  CEFaceMask test2;
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 1, 0, 0, 0 ) ) == (vector<int> {111111111}) );
-
-    test2 . addContact ( CContact ( CTimeStamp ( 2021, 1, 10, 12, 40, 10 ), 111111111, 222222222 ) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 1, 0, 0, 0 ) ) == (vector<int> {111111111, 222222222}) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 10, 12, 40, 10 ) ) == (vector<int> {111111111, 222222222}) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 10, 12, 40, 11 ) ) == (vector<int> {111111111}) );
-    test2 . addContact ( CContact ( CTimeStamp ( 2021, 1, 11, 12, 40, 10 ), 111111111, 333333333 ) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 1, 0, 0, 0 ) ) == (vector<int> {111111111, 222222222, 333333333}) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 11, 12, 40, 9 ) ) == (vector<int> {111111111,  333333333}) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 12, 12, 40, 9 ) ) == (vector<int> {111111111}) );
-    test2 . addContact ( CContact ( CTimeStamp ( 2000, 1, 11, 12, 40, 10 ), 111111111, 333333333 ) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 2021, 1, 12, 12, 40, 9 ) ) == (vector<int> {111111111}) );
-    assert ( test2 . getInfectedGroup ( 111111111, CTimeStamp ( 1900, 1, 11, 12, 40, 9 ) ) == (vector<int> {111111111, 222222222, 333333333}) );
-    // does not exists
-    assert ( test2 . getInfectedGroup ( 999999999, CTimeStamp ( 1900, 1, 11, 12, 40, 9 ) ) == (vector<int> {999999999}) );
-
-
-    CEFaceMask test3;
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) , 111111111, 222222222 ));
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) , 111111111, 333333333 ));
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) , 111111111, 444444444 ));
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) , 111111111, 555555555 ));
-
-    assert ( test3 . getSuperSpreaders ( ) == (vector<int> {111111111}) );
-
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) , 999999999, 888888888 ));
-
-    assert ( test3 . getInfectedGroup ( 111111111, CTimeStamp ( 2000, 12, 1, 0, 0, 0 ) ) == (vector<int> {111111111}) );
-    assert ( test3 . getInfectedGroup ( 555555555, CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) ) == (vector<int> {111111111, 222222222, 333333333, 444444444, 555555555}) );
-    assert ( test3 . getInfectedGroup ( 333333333, CTimeStamp ( 2000, 1, 1, 0, 0, 1 ) ) == (vector<int> {111111111, 222222222, 333333333, 444444444, 555555555}) );
-
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 2 ) , 111111111, 555555555 ));
-    assert ( test3 . getInfectedGroup ( 555555555, CTimeStamp ( 2000, 1, 1, 0, 0, 2 ) ) == (vector<int> {111111111, 555555555}) );
-
-    test3 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 0, 0, 3 ) , 333333333, 555555555 ));
-*/
-    CEFaceMask test4;
-    test4 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 1, 1, 1 ) , 555555555, 666666666 ));
-    test4 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 1, 1, 1 ) , 111111111, 222222222 ));
-    test4 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 1, 1, 1 ) , 333333333, 444444444 ));
-    assert ( test4 . getSuperSpreaders ( ) == (vector<int> {111111111, 222222222, 333333333, 444444444, 555555555, 666666666}) );
-
-    test4 . addContact ( CContact ( CTimeStamp ( 2000, 1, 1, 1, 1, 1 ) , 111111111, 555555555 ));
-    assert ( test4 . getSuperSpreaders ( ) == (vector<int> {111111111, 555555555}) );
-
+    test . addContact ( CContact ( CTimeStamp ( 2021, 1, 10, 12, 40, 10 ), 111111111, 222222222 ) );
+    test . addContact ( CContact ( CTimeStamp ( 2021, 1, 12, 12, 40, 10 ), 333333333, 222222222 ) )
+            . addContact ( CContact ( CTimeStamp ( 2021, 2, 14, 15, 30, 28 ), 222222222, 444444444 ) );
+    test . addContact ( CContact ( CTimeStamp ( 2021, 2, 15, 18, 0, 0 ), 555555555, 444444444 ) );
+    assert ( test . getSuperSpreaders ( CTimeStamp ( 2021, 1, 1, 0, 0, 0 ), CTimeStamp ( 2022, 1, 1, 0, 0, 0 ) ) == (vector<int> {222222222}) );
+    test . addContact ( CContact ( CTimeStamp ( 2021, 3, 20, 18, 0, 0 ), 444444444, 666666666 ) );
+    test . addContact ( CContact ( CTimeStamp ( 2021, 3, 25, 0, 0, 0 ), 111111111, 666666666 ) );
+    assert ( test . getSuperSpreaders ( CTimeStamp ( 2021, 1, 1, 0, 0, 0 ), CTimeStamp ( 2022, 1, 1, 0, 0, 0 ) ) == (vector<int> {222222222, 444444444}) );
+    return 0;
     return 0;
 }
 #endif /* __PROGTEST__ */
