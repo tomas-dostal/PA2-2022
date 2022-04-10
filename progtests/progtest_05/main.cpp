@@ -43,17 +43,12 @@ ios_base &( *date_format(const char *fmt))(ios_base &x) {
 
 class CDate {
 public:
-    CDate(const CDate &d);
-
-    explicit CDate(int days);
 
     CDate(int year, int month, int day);
 
     bool is_valid(int day, int month, int year);
 
     friend std::ostream &operator<<(std::ostream &os, const CDate &d);
-
-    CDate &operator=(const CDate &x);
 
     bool operator==(const CDate &b) const;
 
@@ -68,7 +63,6 @@ public:
     bool operator>=(const CDate &b) const;
 
 private:
-    int to_days() const;
 
     bool _is_leap_year(int year) const;
 
@@ -76,11 +70,9 @@ private:
 
     static bool _is_valid_month(const int &month) { return month > 0 && month <= 12; };
 
-    static bool _is_valid_year(const int &year) { return year >= 2000 && year <= 2030; };
+    static bool _is_valid_year(const int &year) { return true; };
 
     int _how_many_days(const int &month, const int &year) const;
-
-    CDate days_to_date(int days);
 
     int day, month, year;
 
@@ -130,119 +122,20 @@ bool CDate::_is_valid_day(const int &day, const int &month, const int &year) con
     }
 }
 
-int CDate::_how_many_days(const int &month, const int &year) const {
-    //January – 31 days
-    //February – 28 days in a common year and 29 days in leap years
-    //March – 31 days
-    //April – 30 days
-    //May – 31 days
-    //June – 30 days
-    //July – 31 days
-    //August – 31 days
-    //September – 30 days
-    //October – 31 days
-    //November – 30 days
-    //December – 31 days
-
-    switch (month) {
-        case 1:
-            return 31;
-        case 2:
-            if (_is_leap_year(year))
-                return 29;
-            return 28;
-        case 3:
-            return 31;
-        case 4:
-            return 30;
-        case 5:
-            return 31;
-        case 6:
-            return 30;
-        case 7:
-            return 31;
-        case 8:
-            return 31;
-        case 9:
-            return 30;
-        case 10:
-            return 31;
-        case 11:
-            return 30;
-        case 12:
-            return 31;
-        default:
-            return 0;
-    }
-}
-
 bool CDate::is_valid(int day, int month, int year) {
-
-    return (1 <= day && day <= 31) && (1 <= month && month <= 12) && (1900 <= year && year <= 2199) &&
-           _is_valid_day(day, month, year);
+    return true;
+    //return (1 <= day && day <= 31) && (1 <= month && month <= 12) && /*(1900 <= year && year <= 2199) &&*/
+    //       _is_valid_day(day, month, year);
 
 }
 
 
 std::ostream &operator<<(std::ostream &os, const CDate &md) {
-    // tm {
-    //	int	tm_sec;		/* seconds after the minute [0-60] */
-    //	int	tm_min;		/* minutes after the hour [0-59] */
-    //	int	tm_hour;	/* hours since midnight [0-23] */
-    //	int	tm_mday;	/* day of the month [1-31] */
-    //	int	tm_mon;		/* months since January [0-11] */
-    //	int	tm_year;	/* years since 1900 */
-    //	int	tm_wday;	/* days since Sunday [0-6] */
-    //	int	tm_yday;	/* days since January 1 [0-365] */
-    //	int	tm_isdst;	/* Daylight Savings Time flag */
-    //	long	tm_gmtoff;	/* offset from UTC in seconds */
-    //	char	*tm_zone;	/* timezone abbreviation */
-    // 2.1.2000 was sunday
-
     return os << std::setfill('0') << std::setw(4) << md.year << "-"
               << std::setfill('0') << std::setw(2) << md.month << "-"
               << std::setfill('0') << std::setw(2) << md.day;
 }
 
-int CDate::to_days() const {
-
-    int days = 0; // 1.1.2020
-    days = this->day - 1;
-
-    // 24.02.2020
-    for (int m = this->month - 1; m >= 1; m -= 1) {
-        days += _how_many_days(m, year);
-    }
-    for (int i = year - 1; i >= 2000; i--) {
-        if (_is_leap_year(i))
-            days += 366;
-        else days += 365;
-    }
-
-    return days;
-}
-
-CDate CDate::days_to_date(int days) {
-    int y = 2000;
-    int m = 1;
-    int d = 1;
-
-    while (days >= (_is_leap_year(y) ? 366 : 365)) {
-        days -= _is_leap_year(y) ? 366 : 365;
-        y++;
-    }
-    // the rest, try to do some magic with months
-    while (days >= _how_many_days(m, y)) {
-        days -= _how_many_days(m, y);
-        m++;
-    }
-    // days
-    d += days;
-    days = 0;
-    CDate tmp = CDate(y, m, d);
-    return tmp;
-
-}
 
 bool CDate::_is_leap_year(int year) const {
     // Při řešení úlohy narazíte na problematiku přestupných roků.
@@ -263,17 +156,6 @@ bool CDate::_is_leap_year(int year) const {
 
 ////////////////// Constructors //////////////////
 
-CDate::CDate(int days) {
-    *this = this->days_to_date(days++);
-}
-
-CDate::CDate(const CDate &d) {
-    this->day = d.day;
-    this->month = d.month;
-    this->year = d.year;
-}
-
-
 CDate::CDate(int year, int month, int day) {
     if (is_valid(day, month, year)) {
         this->day = day;
@@ -285,7 +167,6 @@ CDate::CDate(int year, int month, int day) {
         throw InvalidDateException();
     }
 }
-
 
 ////////////////// Comparison operators //////////////////
 
@@ -313,8 +194,6 @@ bool CDate::operator>(const CDate &b) const {
     return !(*this < b) && (*this != b);
 }
 
-CDate &CDate::operator=(const CDate &x) = default;
-
 
 ////////////////////////////////////////////////////////////////////
 
@@ -331,14 +210,6 @@ public:
     bool operator()(const std::shared_ptr<std::pair<CDate, int>> &a,
                     const CDate &b) const {
         return a->first < b;
-    }
-};
-
-class CDatePairDateStringStuffComparatorLower {
-public:
-    bool operator()(const pair<CDate, pair<string, int>> &a,
-                    const pair<CDate, string> &b) const {
-        return std::tie(a.first, a.second.first) < std::tie(b.first, b.second);
     }
 };
 
@@ -381,7 +252,7 @@ int Item::available() const {
 int Item::get(const int quantity) {
     int requested_remaining = quantity;
     while (requested_remaining > 0) {
-        // request not fullfilled
+        // request not fulfilled
         if (item_versions.empty()) {
             return quantity - requested_remaining;
         }
@@ -408,7 +279,7 @@ void Item::add_new(const CDate &expiration, const int quantity) {
     CDatePairComparatorLower cmp;
     this->avail += quantity;
     auto it = std::lower_bound(item_versions.begin(), item_versions.end(), tmp, cmp);
-    if (!item_versions.empty() && it->get()->first == expiration) {
+    if (!item_versions.empty() && it != item_versions.end() && it->get()->first == expiration) {
         it->get()->second += quantity;
     } else {
         item_versions.insert(it, tmp);
@@ -421,16 +292,12 @@ Item::Item(const CDate &expiration, int quantity, const std::string &name) : nam
 }
 
 int Item::how_many_expired(const CDate &at) {
-    CDatePairComparatorLowerDate cmp;
-    auto it = std::lower_bound(item_versions.begin(), item_versions.end(), at, cmp);
-    int iters;
-    //if (!(!*it) && (*it)->first > at)
-    //    iters = (it - item_versions.begin());
-    //else
-    iters = (it - item_versions.begin() - 1);
+    CDatePairComparatorLower cmp;
+    auto it = std::lower_bound(item_versions.begin(), item_versions.end(),
+                               make_shared<pair<CDate, int>>(make_pair(at, 0)), cmp);
 
     int ret = 0;
-    for (int i = 0; i <= iters; i++) {
+    for (int i = 0; i <= (it - item_versions.begin() - 1); i++) {
         ret += item_versions[i].get()->second;
     }
     return ret;
@@ -438,7 +305,7 @@ int Item::how_many_expired(const CDate &at) {
 
 std::ostream &operator<<(std::ostream &os, const Item &i) {
     for (auto x: i.item_versions) {
-        std::cout << " item " << i.name << "  " << x.get()->first << " : " << x.get()->second << std::endl;
+        os << " item " << i.name << "  " << x.get()->first << " : " << x.get()->second << std::endl;
     }
     return os;
 }
@@ -478,26 +345,25 @@ private:
 
 
 CSupermarket &CSupermarket::store(std::string name, CDate expiryDate, int count) {
+    if (count <= 0)
+        return *this;
 
     auto it = stored_items.find(name);
 
-    // not found
-    //      map<std::string, Item> stored_items;
     if (it == stored_items.end()) {
         stored_items.insert({name, make_shared<Item>(Item(expiryDate, count, name))});
     } else {
         (*it).second->add_new(expiryDate, count);
     }
     return *this;
+
 }
 
 void CSupermarket::sell(list<pair<string, int>> &shopping_list) {
-    std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "Selling from list of size " << shopping_list.size() << std::endl;
-
+    // std::cout << "----------------------------------------------" << std::endl;
+    // std::cout << "Selling from list of size " << shopping_list.size() << std::endl;
     vector<shared_ptr<Item>> found;
     for (auto item: shopping_list) {
-        std::cout << item.first << ": " << item.second << std::endl;
         // pokud se nepodaří nalézt (tedy neexistuje žádné zboží lišící se právě v jednom znaku, nebo existuje
         // více různých zboží lišících se v jednom znaku, nebude se vydávat žádné zboží.
 
@@ -511,6 +377,7 @@ void CSupermarket::sell(list<pair<string, int>> &shopping_list) {
         found.push_back(tmp);
     }
     std::vector<shared_ptr<Item>>::iterator found_iterator = std::begin(found);
+
 
     // now process what was
     for (auto shopping_list_item = shopping_list.begin(); shopping_list_item != shopping_list.end();) {
@@ -545,14 +412,14 @@ shared_ptr<Item> CSupermarket::findItemByName(const std::string &name) {
 }
 
 bool CSupermarket::compare_string(const std::string &target, const std::string &x, int allowed_errors) {
-    if (target.size() != x.size()) {
+    if (target.size() != x.size())
         return false;
-    }
+
     auto it_target = target.begin();
     auto it_x = x.begin();
 
     int errors = 0;
-    for (int i = 0; i < max(target.size(), x.size()); i++) {
+    for (long unsigned int i = 0; i < max(target.size(), x.size()); i++) {
         if (*it_target != *it_x)
             errors++;
 
@@ -571,11 +438,9 @@ bool CSupermarket::compare_string(const std::string &target, const std::string &
 
 shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
     vector<shared_ptr<Item>> results;
-    vector<string> names;
     for (auto item: this->stored_items) {
-        if (compare_string(name, item.first, 1)) {
+        if (compare_string(name, item.first, 1))
             results.push_back(item.second);
-        }
     }
     if (results.size() > 1 || results.empty())
         return nullptr;
@@ -583,30 +448,25 @@ shared_ptr<Item> CSupermarket::findItemByMisspelledName(const string &name) {
 }
 
 list<pair<string, int>> CSupermarket::expired(const CDate &at) const {
-    //CDatePairDateStringStuffComparatorLower cmp;
     list<pair<string, int>> result;
 
     for (auto item: this->stored_items) {
         int expired = item.second->how_many_expired(at);
-        if (expired > 0) {
-            // todo insert by date
-            //auto it = std::lower_bound(result.begin(), result.end(), std::pair<CDate, std::string>(at, item.first), cmp);
-            // pair<CDate, pair<string, int>>
-            //result.insert(it, pair<CDate, pair<string, int>>(at, pair<string, int>(item.first, expired)));
+        if (expired > 0)
             result.emplace_back(pair<string, int>(item.first, expired));
-        }
     }
 
     CPairStringIntComparatorHigher cmp2;
     result.sort(cmp2);
+
     return result;
 
 }
 
 std::ostream &operator<<(std::ostream &os, CSupermarket &s) {
-    for (auto const &keyValue: s.stored_items) {
-        std::cout << keyValue.first << " : " << std::endl;
-        std::cout << *(keyValue.second); // Value
+    for (auto const &key_value: s.stored_items) {
+        os << key_value.first << " : " << std::endl;
+        os << *(key_value.second);
     }
     return os;
 }
@@ -620,7 +480,6 @@ int main(void) {
             .store("beer", CDate(2016, 8, 10), 50)
             .store("bread", CDate(2016, 4, 25), 100)
             .store("okey", CDate(2016, 7, 18), 5);
-    std::cout << s << std::endl << std::endl;
     list<pair<string, int> > l0 = s.expired(CDate(2018, 4, 30));
     assert (l0.size() == 4);
     assert ((l0 == list<pair<string, int> >{{"bread",  200},
@@ -631,7 +490,6 @@ int main(void) {
                                 {"Coke",   5},
                                 {"butter", 20}};
     s.sell(l1);
-    std::cout << s << std::endl << std::endl;
     assert (l1.size() == 2);
     l0 = s.expired(CDate(2018, 4, 30));
     assert ((l0 == list<pair<string, int> >{{"bread", 198},
@@ -769,6 +627,116 @@ int main(void) {
     s.sell(l15);
     assert (l15.size() == 1);
     assert ((l15 == list<pair<string, int> >{{"ccccc", 10}}));
+
+
+    CSupermarket s2;
+    s2.store("heroin", CDate(2020, 1, 1), 2);
+    list<pair<string, int> > ls2_1{{"herOin", 20},
+    };
+    s2.sell(ls2_1);
+    s2.sell(ls2_1);
+    assert (ls2_1.size() == 1);
+    assert ((ls2_1 == list<pair<string, int> >{{"herOin", 18}}));
+
+    s2.store("heroin", CDate(2020, 1, 1), 2);
+    s2.store("heroin", CDate(2019, 1, 1), 8);
+
+
+    list<pair<string, int> > ls2_2{{"heroin", 11},
+    };
+    s2.sell(ls2_2);
+    assert (ls2_2.size() == 1);
+    assert ((ls2_2 == list<pair<string, int> >{{"heroin", 1}}));
+
+    s2.store("heroin", CDate(2020, 1, 1), 0);
+
+    s2.sell(ls2_2);
+    assert (ls2_2.size() == 1);
+    assert ((ls2_2 == list<pair<string, int> >{{"heroin", 1}}));
+
+    s2.store("cannabis", CDate(1942, 1, 1), 0);
+    list<pair<string, int> > ls2_3 = s2.expired(CDate(2400, 2, 29));
+    assert (ls2_3.size() == 0);
+    assert ((ls2_3 == list<pair<string, int> >{}));
+
+    /////////////////////////////////////////////////////////////
+
+    s2.store("fit", CDate(2020, 2, 1), 2);
+    s2.store("fafit", CDate(2020, 5, 1), 1);
+    s2.store("fail", CDate(2020, 1, 1), 10);
+
+    list<pair<string, int> > ls2_expired = s2.expired(CDate(2400, 2, 29));
+    assert (ls2_expired.size() == 3);
+    assert ((ls2_expired == list<pair<string, int> >{{"fail",  10},
+                                                     {"fit",   2},
+                                                     {"fafit", 1}}));
+
+    // erase last item of the shopping list
+    list<pair<string, int> > ls2_5{{"fit",  1},
+                                   {"fail", 1}};
+    s2.sell(ls2_5);
+    assert (ls2_5.size() == 0);
+    assert ((ls2_5 == list<pair<string, int> >{}));
+
+    ls2_expired = s2.expired(CDate(2400, 2, 29));
+    assert (ls2_expired.size() == 3);
+    assert ((ls2_expired == list<pair<string, int> >{{"fail",  9},
+                                                     {"fafit", 1},
+                                                     {"fit",   1}}));
+    // erase first item of the shopping list
+
+    list<pair<string, int> > ls2_6{{"fit", 1}};
+    s2.sell(ls2_6);
+    assert (ls2_6.size() == 0);
+    assert ((ls2_6 == list<pair<string, int> >{}));
+
+    ls2_expired = s2.expired(CDate(2400, 2, 29));
+    assert (ls2_expired.size() == 2);
+    assert ((ls2_expired == list<pair<string, int> >{{"fail",  9},
+                                                     {"fafit", 1}}));
+
+    s2.store("fit", CDate(2020, 5, 4), 2);
+
+    // erase mid item of the shopping list
+
+    list<pair<string, int> > ls2_7{{"fafit", 2}};
+    s2.sell(ls2_7);
+    assert (ls2_7.size() == 1);
+    assert ((ls2_7 == list<pair<string, int> >{{"fafit", 1}}));
+
+    s2.store("fafit", CDate(2020, 12, 4), 1);
+    s2.sell(ls2_7);
+    assert (ls2_7.size() == 0);
+    assert ((ls2_7 == list<pair<string, int> >{}));
+
+
+    //////////////////////// edge cases ///////////////////
+    CSupermarket s3;
+    list<pair<string, int> > ls3_1{{"fail", 20}};
+    s3.sell(ls3_1);
+    assert (ls3_1.size() == 1);
+    assert ((ls3_1 == list<pair<string, int> >{{"fail", 20}}));
+
+    ls3_1 = {{"fail", -20}};
+    s3.sell(ls3_1);
+    assert (ls3_1.size() == 1);
+    assert ((ls3_1 == list<pair<string, int> >{{"fail", -20}}));
+
+    s3.store("fail", CDate(2020, 5, 4), 123);
+    ls3_1 = {{"fail", -20}};
+    s3.sell(ls3_1);
+    assert (ls3_1.size() == 1);
+    assert ((ls3_1 == list<pair<string, int> >{{"fail", -20}}));
+
+    ls3_1 = {{"", 1}};
+    s3.sell(ls3_1);
+    assert (ls3_1.size() == 1);
+    assert ((ls3_1 == list<pair<string, int> >{{"", 1}}));
+
+    ls3_1 = {{"", 0}};
+    s3.sell(ls3_1);
+    assert (ls3_1.size() == 1);
+    assert ((ls3_1 == list<pair<string, int> >{{"", 0}}));
 
     return EXIT_SUCCESS;
 }
