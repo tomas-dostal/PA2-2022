@@ -39,7 +39,7 @@ public:
 
     [[nodiscard]] virtual bool equal(const CTypeBasic &other) const = 0;
 
-    [[nodiscard]] virtual CTypeBasic *clone() const = 0;
+    [[nodiscard]] virtual shared_ptr<CTypeBasic> clone() const = 0;
 
     bool operator!=(const CTypeBasic &other) const {
         return !this->equal(other);
@@ -74,8 +74,8 @@ public:
         return !(ptr == nullptr);
     }
 
-    [[nodiscard]] CTypeBasic *clone() const override {
-        return new CDataTypeInt(*this);
+    [[nodiscard]] shared_ptr<CTypeBasic>clone() const override {
+        return make_shared<CDataTypeInt>(CDataTypeInt(*this));
     };
 private:
     int data;
@@ -95,8 +95,8 @@ public:
         os << "double";
     };
 
-    CTypeBasic *clone() const override {
-        return new CDataTypeDouble(*this);
+    shared_ptr<CTypeBasic> clone() const override {
+        return make_shared<CDataTypeDouble>(CDataTypeDouble(*this));
     };
 
     virtual bool equal(const CTypeBasic &other) const override {
@@ -141,8 +141,8 @@ public:
 
     }
 
-    [[nodiscard]] CTypeBasic *clone() const override {
-        return new CDataTypeEnum(*this);
+    [[nodiscard]] shared_ptr<CTypeBasic> clone() const override {
+        return make_shared<CDataTypeEnum>(CDataTypeEnum(*this));
     };
 
     virtual bool equal_value(const CTypeBasic &other) const {
@@ -231,8 +231,8 @@ public:
         return true;
     }
 
-    CTypeBasic *clone() const {
-        return new CDataTypeStruct(*this);
+    shared_ptr<CTypeBasic> clone() const {
+        return make_shared<CDataTypeStruct>(CDataTypeStruct(*this));
     };
 
     const CTypeBasic &field(const string &s) const {
@@ -246,7 +246,7 @@ public:
     }
 
 private:
-    vector<std::pair<std::string, CTypeBasic *>> data;
+    vector<std::pair<std::string, shared_ptr<CTypeBasic>>> data;
     // todo remove the clone it
 
 };
