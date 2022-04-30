@@ -28,93 +28,255 @@ using namespace std;
 
 class CTypeBasic {
 public:
-    // virtual  ~CTypeBasic(void);
-    static size_t getSize() { return size; };
-    CTypeBasic()= default;
+
+    //virtual ~CTypeBasic() = default;
+
+    virtual size_t getSize() const = 0;
+
     friend std::ostream &operator<<(std::ostream &os, const CTypeBasic &c);
 
-    template<class T>
-    bool operator==(T &other) {
-        return getType() == other.getType();
-    };
-    template<class T>
-    bool operator!=(T &other) {
-        return !(*this == other);
+    virtual void print(ostream &os) const = 0;
+
+    [[nodiscard]] virtual bool equal(const CTypeBasic &other) const = 0;
+
+    [[nodiscard]] virtual CTypeBasic *clone() const = 0;
+
+    bool operator!=(const CTypeBasic &other) const {
+        return !this->equal(other);
     };
 
-protected:
-    const std::string getType() const { return typeid(*this).name(); };;
-    static int size;
-
-    void str(std::ostream & os) const { os << getType(); }
+    bool operator==(const CTypeBasic &other) const {
+        return this->equal(other);
+    }
 };
 
-std::ostream &operator<<(ostream &os, const CTypeBasic & c) {
-    c.str(os);
+std::ostream &operator<<(ostream &os, const CTypeBasic &c) {
+    c.print(os);
     return os;
 }
 
-class CDataTypeInt : CTypeBasic {
+class CDataTypeInt : public CTypeBasic {
 public:
-    explicit CDataTypeInt(int data): data(data){ size = 4;};
+    explicit CDataTypeInt(int data) : CTypeBasic(), data(data) {};
+
+    CDataTypeInt() : CTypeBasic() { data = 0; };
+
+    //virtual ~CDataTypeInt() override = default;
+
+    virtual size_t getSize() const { return 4; };
+
+    virtual void print(ostream &os) const override {
+        os << "int";
+    }
+
+    virtual bool equal(const CTypeBasic &other) const override {
+        const CDataTypeInt *ptr = dynamic_cast<const CDataTypeInt *>( &other );
+        return !(ptr == nullptr);
+    }
+
+    [[nodiscard]] CTypeBasic *clone() const override {
+        return new CDataTypeInt(*this);
+    };
 private:
     int data;
 };
 
-class CDataTypeDouble : CTypeBasic {
+class CDataTypeDouble : public CTypeBasic {
 public:
-    explicit CDataTypeDouble(double data): data(data){ size = 8; };
+    explicit CDataTypeDouble(double data) : data(data) {};
+
+    //virtual ~CDataTypeDouble() override = default;
+
+    virtual size_t getSize() const { return 8; };
+
+    CDataTypeDouble() : CTypeBasic() { data = 0.0; };
+
+    virtual void print(ostream &os) const override {
+        os << "double";
+    };
+
+    CTypeBasic *clone() const override {
+        return new CDataTypeDouble(*this);
+    };
+
+    virtual bool equal(const CTypeBasic &other) const override {
+        const CDataTypeDouble *ptr = dynamic_cast<const CDataTypeDouble *>( &other );
+        return !(ptr == nullptr);
+    }
+
 private:
     double data;
 };
 
-class CDataTypeEnum : CTypeBasic {
+
+class CDataTypeEnum : public CTypeBasic {
 public:
-    CDataTypeEnum(){ size = 4;};
-    void add(const std::string& value){
-        std::pair<std::set<std::string>::iterator,bool> ret = data.insert(value);
-        // already exists
-        if (!ret.second)
-            throw new invalid_argument("Duplicate enum value: " + value);
+    CDataTypeEnum() : CTypeBasic() {};
+
+    //virtual ~CDataTypeEnum() override = default;
+
+    virtual size_t getSize() const { return 4; };
+
+    CDataTypeEnum &add(const std::string &value) {
+
+        for(auto item: data)
+            if(item == value)
+                throw invalid_argument("Duplicate enum value: " + value);
+
+        data.push_back(value);
+
+        return *this;
     }
-    template<class T>
-    bool operator==(T &other) {
-        return (getType() == other.getType() && data == other->data)
-    };
-    template<class T>
-    bool operator!=(T &other) {
-        return !(*this == other);
-    };
-protected:
-    void str(std::ostream & os) const {
+
+    virtual void print(ostream &os) const {
+        os << "enum" << std::endl;
         os << "{" << std::endl;
-        for(std::string item : data)
-            os << item << std::endl;
+        for (long unsigned int i = 0; i < data.size(); i++)
+            if(i == data.size() - 1)
+                os <<  "  " << data[i] << std::endl;
+            else
+                os << "  " << data[i] << "," << std::endl;
+
+        os << "}" << std::endl;
+
+    }
+
+    [[nodiscard]] CTypeBasic *clone() const override {
+        return new CDataTypeEnum(*this);
+    };
+
+    virtual bool equal_value(const CTypeBasic &other) const {
+        const CDataTypeEnum *ptr = dynamic_cast<const CDataTypeEnum *>( &other );
+        return ptr != nullptr;
+    }
+
+    virtual bool equal(const CTypeBasic &other) const {
+        const CDataTypeEnum *ptr = dynamic_cast<const CDataTypeEnum *>( &other );
+        if (ptr == nullptr)
+            return false;
+        return data == ptr->data;
     }
 private:
-    std::set<std::string> data;
+
+    std::vector<std::string> data;
 };
 
-class CDataTypeStruct {
+class CDataTypeStruct : public CTypeBasic {
 public:
-    template<typename T_> CDataTypeStruct & addField(std::string name, T_ val) {
-        auto it = this->data.find(name);
-        if (it != mymap.end())
-            mymap.erase (it);
+    CDataTypeStruct() : CTypeBasic() {};
 
+    /*virtual ~CDataTypeStruct() override {
+        for(auto item: data){
+            delete item.second;
+        }
+    };*/
+
+    virtual size_t getSize() const {
+        size_t result = 0;
+        for (auto item: data) {
+            result += item.second->getSize();
+        }
+        return result;
+    };
+
+    CDataTypeStruct &addField(const std::string &name, const CTypeBasic &c) {
+        for(auto item: data){
+            if(name == item.first)
+                throw invalid_argument("Duplicate field: "+ name);
+        }
+        data.emplace_back(name, c.clone());
+
+        return *this;
     }
-private:
-    template<class K, class T>
 
-    std::map<K, T > data;
+    virtual void print(ostream &os) const override {
+        os << "struct" << std::endl;
+        os << "{" << std::endl;
+        for (const auto& item: data) {
+
+            stringstream ss;
+            ss << *item.second;
+
+            std::string tmp;
+
+            long unsigned int i = 0;
+            while(std::getline(ss,tmp,'\n')){
+                os << "  " << tmp;
+                if(i > 0)
+                    os << std::endl;
+                i++;
+            }
+
+            if(i > 0)
+                os << " ";
+            os << " " << item.first << ";" << std::endl;
+
+
+        }
+        os << "}" << std::endl;
+    }
+
+    virtual bool equal(const CTypeBasic &other) const {
+        // porovná tento typ s jiným typem, vrátí true, pokud jsou oba typy shodné (oba typy jsou struktury,
+        // mají stejný počet složek, složky na každé pozici mají stejný typ, jména složek se ale mohou lišit),
+        const CDataTypeStruct *ptr = dynamic_cast<const CDataTypeStruct *>( &other );
+        if (ptr == nullptr)
+            return false;
+        if(ptr->data.size() != this->data.size())
+            return false;
+        for(long unsigned int i = 0; i < this->data.size(); i++){
+            if(*(this->data[i].second) != *(ptr->data[i].second))
+                return false;
+        }
+        return true;
+    }
+
+    CTypeBasic *clone() const {
+        return new CDataTypeStruct(*this);
+    };
+
+    const CTypeBasic &field(const string &s) const {
+
+        for (auto item: data) {
+            if (item.first == s) {
+                return *(item.second);
+            }
+        }
+        throw invalid_argument("Unknown field: " + s);
+    }
+
+private:
+    vector<std::pair<std::string, CTypeBasic *>> data;
+    // todo remove the clone it
+
 };
 
 #ifndef __PROGTEST__
 
 static bool whitespaceMatch(const string &a,
                             const string &b) {
-    // todo
+
+    std::string::const_iterator it1 = a.begin();
+    std::string::const_iterator it2 = b.begin();
+
+    while (!(it1 == a.end() && it2 == b.end()))
+    {
+        while(isspace(*it1) && it1 != a.end())
+            it1++;
+        while(isspace(*it2) && it2 != b.end())
+            it2++;
+
+        if((*it1) != (*it2))
+            return false;
+        else {
+            if(it1 != a.end())
+                it1++;
+            if(it2 != b.end())
+                it2++;
+        }
+    }
     return true;
+
 }
 
 template<typename T_>
@@ -122,6 +284,9 @@ static bool whitespaceMatch(const T_ &x,
                             const string &ref) {
     ostringstream oss;
     oss << x;
+
+    std::cout << "whitespaceMatch" << std::endl << std::endl << x <<  std::endl <<  std::endl;
+    std::cout << "REF" <<  std::endl << std::endl << ref << std::endl;
     return whitespaceMatch(oss.str(), ref);
 }
 
@@ -162,6 +327,14 @@ int main(void) {
             add("BROKEN").
             add("DEAD")).
             addField("m_Ratio", CDataTypeInt());
+    //    CDataTypeStruct a = CDataTypeStruct().
+    //            addField("m_Length", CDataTypeInt()).
+    //            addField("m_Status", CDataTypeEnum().
+    //            add("NEW").
+    //            add("FIXED").
+    //            add("BROKEN").
+    //            add("DEAD")).
+    //            addField("m_Ratio", CDataTypeDouble());
     assert (whitespaceMatch(a, "struct\n"
                                "{\n"
                                "  int m_Length;\n"
