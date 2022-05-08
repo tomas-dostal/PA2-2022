@@ -58,7 +58,17 @@ Program (nejspíše) bude mít k dispozici minimalistické grafické uživatelsk
 vygenerovaného obrazu scény a bude umožňovat export do formátu, ve kterém si jej uživatelé s menší představivostí budou 
 moci zobrazit mimo tspain(t), kde to nebude takový pain. 
 
-Polymorfismus plánuji využít u vykreslování objektů, případně u enkodéru výstupních dat. 
+### Polymorfismus 
 
-===================
-This iS PAIN by Tom
+Polymorfismus plánuji využít u vykreslování objektů, případně u enkodéru výstupních dat. Co se vykreslování objektů týče, 
+tam plánuji mít větší množství tříd, které od sebe různě dědí, pro nějakým způsobem podobné objekty. 
+Například čtverec je speciálním případem obdélníku a v podstatě jsou to jenom čtyři čáry, u kterých je nějaká kolmost, 
+či rovnoběžnost, budou tedy vlastně moci sdílet metodu Draw() od předka PolyLine, naopak třeba kruh, či elipsa budou mít 
+oproti PolyLine metodu Draw() rozdílnou. Toto se nejspíše může ještě změnit i v závislosti na výstupním formátu, kde 
+se například u SVG docela hodí využít basic shapes, které jsou v podstatě identické s těmi z tspain(t), naopak například 
+formátu BMP by zjednodušený přístup "prostě to poskládat z úseček" ušetřil nemálo práce. 
+
+Šikovným návrhem rozhraní se pak dá pomocí vstupních a výstupních streamů udělat rozhraní pracující např. jak interaktivně
+s std::cin a std::cout, tak například se soubory (vlastní "formát", který je definovaný jako set instrukcí, které by jinak 
+byly zadané do terminálu)
+
