@@ -3,6 +3,11 @@
   * @date 08.05.2022
   */
 
-int main(void){
-    return 0;
-}
+#pragma once
+
+#include "Polyline.h"
+
+class Rectangle: Polyline {
+
+
+};
