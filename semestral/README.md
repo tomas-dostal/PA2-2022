@@ -40,12 +40,13 @@ nedělní odpoledne, výčtem
 - Progtestí šeď (#aaaaaa)
 - Tam, kde oko nedohlédne (#828272)
 - V hloubi duše (#000000)
-- Šrotuji o sto šest - barva zkoušky (#ff00ff)
+- Brain overflow - barva zkoušky (#ff00ff)
 - Jako doma - standardní barva progtestu (#00ff00)
 - Zkompilováno s chybami (#c04000)
 - Zábava na víkend - barva zadání ulohy (#0099cb)
 - Zelená "Už tam skoro jsme" (#80c000)
 - Zelená Vítězství (#00c000)
+- Načítání - bílá (#ffffff)
 
 
 Kde bychom ale byli, kdyby se zde neobjevila nějaká všeobsažná zároveň absolutně nicneříkající chybová hláška, či jejich
