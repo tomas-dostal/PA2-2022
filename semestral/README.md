@@ -1,10 +1,6 @@
-Připomínám, že termín odevzdání semestrální práce je 12.6.2022.
-Termíny online obhajob semestrálních prací (na platformě Teams) jsou vypsány na pondělky 16.5., 23.5., 6.6., 13.6. a 20.6. Pondělí 30.5. n
+# tspain(t)
 
-
-
-
-
+## Zadání z progtestu
 Naprogramujte jednoduchý nástroj pro zobrazení obrázků definovaných v textovém souboru.
 
 Program musí splňovat následující funkcionality:
@@ -31,3 +27,37 @@ Další informace:
 
 Možno implementovat i sekvenci obrázků (video)
 
+## Rozšíření zadání
+
+Jen málokdo se nesetkal se "starým dobrým" malováním, MSPAINT. 
+
+Toto "rozšíření" populárního programu cílí na studenty BI-PA2, kteří již mají za sebou (mnozí dokonce vícekrát) krásné 
+chvilky strávené laděním kódu, který z nějakého důvodu padá a oni netuší proč. Z populárního prostředí Progtestu si program
+tspain(t) bere jen to nejlepší - striktní uživatelský vstup, který pakliže neodpovídá specifikaci, vede k ukončení programu. 
+Mimo jiné nabízí jenom omezené množství barev, které studentům pojmenovaných příhodně podle jejich oblíbeného programu na 
+nedělní odpoledne, výčtem 
+
+- Progtestí šeď (#aaaaaa)
+- Tam, kde oko nedohlédne (#828272)
+- V hloubi duše (#000000)
+- Šrotuji o sto šest - barva zkoušky (#ff00ff)
+- Jako doma - standardní barva progtestu (#00ff00)
+- Zkompilováno s chybami (#c04000)
+- Zábava na víkend - barva zadání ulohy (#0099cb)
+- Zelená "Už tam skoro jsme" (#80c000)
+- Zelená Vítězství (#00c000)
+
+
+Kde bychom ale byli, kdyby se zde neobjevila nějaká všeobsažná zároveň absolutně nicneříkající chybová hláška, či jejich
+kombinace? V blíže nespecifikovaných okamžicích je uživatel potěšen starou známou hláškou 
+"Program provedl neplatnou operaci a byl ukončen (Segmentation fault/Bus error/Memory limit exceeded/Stack limit exceeded)",
+či její variací. 
+
+Program (nejspíše) bude mít k dispozici minimalistické grafické uživatelské rozhraní umožňující přinejmenším zobrazení 
+vygenerovaného obrazu scény a bude umožňovat export do formátu, ve kterém si jej uživatelé s menší představivostí budou 
+moci zobrazit mimo tspain(t), kde to nebude takový pain. 
+
+Polymorfismus plánuji využít u vykreslování objektů, případně u enkodéru výstupních dat. 
+
+===================
+This iS PAIN by Tom
