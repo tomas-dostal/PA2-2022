@@ -6,11 +6,14 @@
 #pragma once
 
 
+#include "Shape.h"
+#include "Line.h"
+
 class Polyline: Shape {
 public:
     Polyline() = delete;
-    Polyline(std::vector<shared_ptr<Line>> lines): lines(lines);
+    Polyline(std::vector<std::shared_ptr<Line>> lines): lines(lines){};
 
 private:
-    std::vector<shared_ptr<Line>> lines;
+    std::vector<std::shared_ptr<Line>> lines;
 };
