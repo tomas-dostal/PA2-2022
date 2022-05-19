@@ -11,8 +11,9 @@
 
 class Shape {
 public:
-    virtual void Draw(Interface & interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
-    virtual bool operator == (const Shape & s) = 0;
+    virtual void
+    Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
+    virtual bool operator==(const Shape &s) = 0;
 
 protected:
     Pos center;

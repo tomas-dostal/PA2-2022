@@ -13,8 +13,9 @@ class ColorPalett {
 public:
     ColorPalett();
 
-    static void addIfNotExists(const std::string & name, const std::shared_ptr<Color> c) ;
-    std::shared_ptr<Color> getColorByName(const std::string & name) const;
+    static void addIfNotExists(const std::string &name, const std::shared_ptr<Color> c);
+
+    std::shared_ptr<Color> getColorByName(const std::string &name) const;
 
     static std::map<std::string, std::shared_ptr<Color>> colors;
 

@@ -8,14 +8,17 @@
 
 class Pos {
 public:
-    Pos(): x(0), y(0){};
-    Pos(int x, int y): x(x), y(y){};
+    Pos() : x(0), y(0) {};
 
-    Pos(const Pos & p) = default;
-    Pos & operator = (const Pos & p)= default;
+    Pos(int x, int y) : x(x), y(y) {};
 
-    bool operator == (const Pos & p) const{return this->x == p.x && this->y == p.y;};
-    bool operator != (const Pos & p) const{return !(*this == p);};
+    Pos(const Pos &p) = default;
+
+    Pos &operator=(const Pos &p) = default;
+
+    bool operator==(const Pos &p) const { return this->x == p.x && this->y == p.y; };
+
+    bool operator!=(const Pos &p) const { return !(*this == p); };
 
     int x, y;
 };

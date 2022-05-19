@@ -5,9 +5,9 @@
 
 #include "ColorPalett.h"
 
-std::shared_ptr<Color> ColorPalett::getColorByName(const std::string & name) const{
+std::shared_ptr<Color> ColorPalett::getColorByName(const std::string &name) const {
 
-    std::map<std::string,std::shared_ptr<Color>>::iterator i = colors.find(name);
+    std::map<std::string, std::shared_ptr<Color>>::iterator i = colors.find(name);
 
     if (i == colors.end()) {
         throw std::invalid_argument("getColorByName: " + name + "not found. ");
@@ -16,8 +16,8 @@ std::shared_ptr<Color> ColorPalett::getColorByName(const std::string & name) con
 }
 
 
-void ColorPalett::addIfNotExists(const std::string & name, const std::shared_ptr<Color> c) {
-    std::map<std::string,std::shared_ptr<Color>>::iterator i = colors.find(name);
+void ColorPalett::addIfNotExists(const std::string &name, const std::shared_ptr<Color> c) {
+    std::map<std::string, std::shared_ptr<Color>>::iterator i = colors.find(name);
     if (i == colors.end()) {
         colors.insert({name, c});
     }

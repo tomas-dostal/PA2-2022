@@ -9,11 +9,13 @@
 #include "Pos.h"
 #include "Interface.h"
 
-class Circle: Shape {
+class Circle : Shape {
 public:
     Circle() = delete;
-    Circle(Pos & center, size_t diameter):  diameter(diameter){this->center = center;};
-    void Draw(Interface & interface);
+
+    Circle(Pos &center, size_t diameter) : diameter(diameter) { this->center = center; };
+
+    void Draw(Interface &interface);
 
 private:
     size_t diameter;
