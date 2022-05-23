@@ -9,7 +9,7 @@
 #include "string"
 #include "Color.h"
 #include "Pos.h"
-
+#include "Formatter.h"
 class Interface {
 public:
     Interface(std::istream &is, std::ostream &os);
@@ -20,13 +20,16 @@ public:
 
     std::shared_ptr<Color> PromptColor() const;
 
-
-private:
-    std::istream &is;
-    std::ostream &os;
+    void PrintHelp(std::string help);
 
     Pos PromptPos();
 
     Pos PromptPos(const std::string &msg);
+
+private:
+    std::istream &is;
+    std::ostream &os;
+    std::unique_ptr<Formatter> formatter;
+
 
 };

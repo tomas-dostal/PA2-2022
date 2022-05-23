@@ -8,4 +8,9 @@
 
 #pragma once
 
+#include "FormatterParams.h"
 #include "Command.h"
+
+Command SetCommand();
+Command HelpCommand(const std::vector<Command> commands);
+Command QuitCommand();

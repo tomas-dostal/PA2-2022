@@ -3,8 +3,6 @@
   * @date 19.05.2022
   */
 
-#pragma once
-
 
 #include "FormatterParams.h"
 #include "vector"
@@ -12,12 +10,13 @@
 #include "set"
 
 FormatterParams::FormatterParams() {
-    params = std::vector<std::string>();
+    this->params = std::vector<std::string>();
 }
 
 FormatterParams::FormatterParams(const std::initializer_list<std::string> &initializerList) {
+    this->params = std::vector<std::string>();
     for (auto it = initializerList.begin(); it != initializerList.end(); ++it) {
-        params.emplace_back(static_cast<std::string>(*it))
+        this->params.emplace_back(static_cast<std::string>(*it));
     }
 }
 

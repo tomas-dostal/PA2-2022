@@ -5,7 +5,7 @@
 
 #include "Tspaint.h"
 
-void Tspaint::Init() {
+Tspaint::Tspaint() {
 
     isRunning = true;
 
@@ -22,7 +22,6 @@ void Tspaint::Init() {
     colorPalette->addIfNotExists("GREEN__IM_DONE", std::make_shared<Color>(Color(0, 192, 0)));
     colorPalette->addIfNotExists("WHITE__LOADING", std::make_shared<Color>(Color(255, 255, 255)));
     colorPalette->addIfNotExists("YELLOW__FIT", std::make_shared<Color>(Color(240, 171, 0)));
-
 
 }
 

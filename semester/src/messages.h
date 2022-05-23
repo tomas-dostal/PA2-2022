@@ -19,6 +19,7 @@ const char *const COMMAND_SHOW = "show";
 const char *const COMMAND_NEW = "new";
 const char *const COMMAND_DELETE = "delete";
 
+
 const char *const SHAPE_LINE = "line";
 const char *const SHAPE_POLYLINE = "polyline";
 const char *const SHAPE_RECTANGLE = "rectangle";
@@ -27,9 +28,12 @@ const char *const SHAPE_CIRCLE = "circle";
 const char *const SHAPE_ELIPSYS = "elipsys";
 
 
-const char *const PROMPT_COMMAND = "PROMPT_COMMAND";
-const char *const INVALID_INPUT = "INVALID_INPUT";
-const char *const UNKNOWN_COMMAND = "UNKNOWN_COMMAND";
+const char *const PROMPT_COMMAND = "Enter a command: ";
+const char *const INVALID_INPUT = "Invalid input";
+const char *const UNKNOWN_COMMAND = "Unknown command '$'";
+
+const char *const HELP_HELP = "Prints this help";
+const char *const HELP_QUIT = "Ends this pain(t)";
 
 const char *const HELP_SET = "HELP_SET";
 const char *const HELP_DRAW = "HELP_DRAW";

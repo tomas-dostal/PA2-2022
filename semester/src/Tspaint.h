@@ -9,7 +9,7 @@
 
 class Tspaint {
 public:
-    void Init();
+    Tspaint();
 
     bool IsRunning();
 

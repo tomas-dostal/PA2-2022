@@ -8,10 +8,10 @@
 
 #include "Formatter.h"
 
-#include <utility>
-#include "FormatterParams.h"
-#include "regex"
 
+std::string Formatter::FillPlaceholder(const FormatterParams &formaterParams) {
+    return FillPlaceholder(Formatter::PLACEHOLDER, formaterParams);
+}
 std::string Formatter::FillPlaceholder(const std::string &text, const FormatterParams &formaterParams) {
     std::string result = text;
     size_t start_pos;

@@ -8,21 +8,15 @@
 #include "Command.h"
 #include "Tspaint.h"
 
-#include <utility>
 
-Command::Command(std::string name, std::string help,
-                 const function<void(std::unique_ptr<Tspaint> &, std::shared_ptr<Interface> &)> &execute)
-        : name(move(name)), help(move(help)), execute(execute), options(options) {}
+Command::Command(std::string name, std::string help, const std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> &execute)
+        : name(move(name)), help(move(help)), execute(execute) {
 
-void Command::Execute(std::unique_ptr<Tspaint> &tspaint, std::shared_ptr<Interface> &interface) {
+}
+
+void Command::Execute(std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
     execute(tspaint, interface);
 }
-
-void Command::Exit(Application application) {
-
-}
-
-Command::Command(const std::vector<std::shared_ptr<Command>> &options) : options(options) {}
 
 
 

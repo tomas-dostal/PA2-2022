@@ -5,16 +5,20 @@
 
 #pragma once
 
-
 #include "Interface.h"
-#include "CommandParameters.h"
 #include "Command.h"
+#include "Tspaint.h"
+#include "CommandParameters.h"
+#include "messages.h"
+#include "CommandImpl.h"
 
 class Application {
 
 
 public:
-    explicit Application(Interface &interface);
+    Application() = delete;
+
+    Application(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint);
 
     ~Application() = default;
 
@@ -24,14 +28,15 @@ public:
 
     void Run();
 
+protected:
+    Application &RegisterCommand(const Command &c);
+    std::shared_ptr<Command> getCommandByName(const std::string name);
 
 private:
+    bool isRunning;
     std::vector<Command> commands;
     std::shared_ptr<Interface> interface;
+    std::shared_ptr<Tspaint> tspaint;
 
-    Application &RegisterCommand(const Command &c);
-
-    bool isRunning;
-
-    Application &RegisterOption(const std::string name, const CommandParameters &commandParameters);
+   // Application &RegisterOption(const std::string name, const CommandParameters &commandParameters);
 };

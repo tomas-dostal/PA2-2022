@@ -3,8 +3,6 @@
   * @date 19.05.2022
   */
 
-#pragma once
-
 
 
 //*    set color <id>;
@@ -41,28 +39,42 @@
 
 #include "CommandImpl.h"
 #include "messages.h"
-#include "FormatterParams.h"
 
+/*
 Command SetCommand() {
     return Command{
-            COMMAND_HELP,
+            COMMAND_SET,
             HELP_SET,
-            [](Tspaint &tspaint, const Interface &interface) {
-                Command &command = interface.PromptCommandOption({"color"});
-                command.Execute(tspaint, interface);
+            [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                std::string commamndName = interface->PromptCommand([]{
 
-                Coord coord = interface.PromptColor(PROMPT_MARK, {}, [&tspaint](const CCoord &coord) {
-                    return game.IsValid(coord);
-                }, ERROR_INVALID_COORD);
+                });
+                // todo
+                return true;
+            }
+    };
+}*/
 
-                if (game.MarkMine(coord)) {
-                    interface.Message(SUCCESS_MARK, FormatterParams{coord});
-                    interface.PrintGame(game.Draw());
-                } else {
-                    interface.Message(ERROR_INVALID_MARK, FormatterParams{coord});
-                }
-
+Command HelpCommand (const std::vector<Command> commands)
+{
+    return Command {
+        COMMAND_HELP,
+            HELP_HELP,
+            [ &commands ] (std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface ) {
+                for ( const auto & c : commands )
+                    //if ( c.second.IsActive( game ) )
+                        interface->PrintHelp( c.Help() );
                 return true;
             }
     };
 }
+
+Command QuitCommand ()
+{
+    return Command {
+        COMMAND_QUIT,
+            HELP_QUIT,
+            [] (std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface ) { return false; }
+    };
+}
+

@@ -12,31 +12,25 @@
 #include "Tspaint.h"
 #include "Interface.h"
 #include "Tspaint.h"
-#include "Application.h"
 
 class Command {
 private:
     std::string name;
-    static std::string help;
+    std::string help;
     std::string example;
-    std::function<void(Tspaint &, Interface &)> execute;
+
+    std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> execute;
 
 public:
-    Command(std::string name, std::string help, const std::function<void(Tspaint &, Interface &)> &execute);
+    Command(std::string name, std::string help, const std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> &execute);
 
-    void Execute(Tspaint &tspaint, Interface &interface);
+    void Execute(std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface);
 
-    const std::string &Name() const { return name; };
+    const std::string & Name() const { return name; };
 
-    const std::string &Help() const { return help; };
+    const std::string & Help() const { return help; };
 
-    const std::string &Example() const { return example; };
-
-    static void New(Application application);
-
-    static void Exit(Application application);
-};
-
+    const std::string & Example() const { return example; };
 
 };
 

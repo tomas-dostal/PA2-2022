@@ -7,11 +7,11 @@
 #include "Interface.h"
 #include "Color.h"
 #include "Helper.h"
-#include "ColorPalett.h"
+#include "ColorPalette.h"
 #include "Pos.h"
 #include "messages.h"
 #include "FormatterParams.h"
-
+#include "Formatter.h"
 
 Pos Interface::PromptPos(const std::string &msg) {
     this->os << msg << std::endl;
@@ -33,10 +33,10 @@ Pos Interface::PromptPos(const std::string &msg) {
 
 std::shared_ptr<Color> Interface::PromptColor() const {
 
-    this->os << "Enter color <r> <g> <b> <name>  or <id>" << std::to_string(ColorPalett::colors.size() - 1)
+    this->os << "Enter color <r> <g> <b> <name>  or <id>" << std::to_string(ColorPalette::colors.size() - 1)
              << "] to choose from list: " << std::endl;
     int i = 0;
-    for (auto const &[key, value]: ColorPalett::colors) {
+    for (auto const &[key, value]: ColorPalette::colors) {
         this->os << i << ")" << key << std::endl;
     }
 
@@ -55,7 +55,7 @@ std::shared_ptr<Color> Interface::PromptColor() const {
             ss >> name;
             if (Helper::_isInRange(a, 0, 255) && Helper::_isInRange(b, 0, 255) && Helper::_isInRange(c, 0, 255)) {
                 auto color = std::make_shared<Color>(Color(a, b, c));
-                ColorPalett::addIfNotExists(name, color);
+                ColorPalette::addIfNotExists(name, color);
                 return color;
             } else {
                 os << "Unable to create color, acceptable range (0-255) not matching r: " << a << ", g: " << b
@@ -81,19 +81,18 @@ std::shared_ptr<Color> Interface::PromptColor() const {
 std::string Interface::PromptCommand(const std::function<bool(const std::string &)> &valid) const {
     std::string command;
     while (true) {
-        os << fomatter.FillPlaceholder(PROMPT_COMMAND) << std::endl;
+        os << formatter->FillPlaceholder({PROMPT_COMMAND}) << std::endl;
 
         if (!(is >> command)) {
-            os << fomatter.FillPlaceholder(INVALID_INPUT) << std::endl;
+            os << formatter->FillPlaceholder({INVALID_INPUT}) << std::endl;
         } else if (!valid(command)) {
             std::string tmp = COMMAND_HELP;
-            os << fomatter.FillPlaceholder(UNKNOWN_COMMAND, FormatterParams({command, tmp})) << std::endl;
+            os << formatter->FillPlaceholder(UNKNOWN_COMMAND, FormatterParams({command, tmp})) << std::endl;
         }
-    } else {
-        return command;
+        else {
+            return command;
+        }
     }
-
-    ClearLine();
 }
 
 std::string Interface::PromptCommandOption(const std::function<size_t(const std::string &)> &valid) const {
@@ -101,7 +100,9 @@ std::string Interface::PromptCommandOption(const std::function<size_t(const std:
 }
 
 Interface::Interface(std::istream &is, std::ostream &os) : is(is), os(os) {
-    this->formatter = Formatter();
+    this->formatter = std::make_unique<Formatter>(Formatter(std::map<std::string, std::string>()));
+}
 
-
+void Interface::PrintHelp(std::string help) {
+    os << "HELP: "<< help << std::endl;
 }

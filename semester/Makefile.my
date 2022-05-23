@@ -1,0 +1,3 @@
+build/tspaint: src/main.cpp src/Application.cpp src/Application.h src/Circle.cpp src/Circle.h src/Color.cpp src/Color.h src/ColorPalette.cpp src/ColorPalette.h src/Command.cpp src/Command.h src/CommandImpl.cpp src/CommandImpl.h src/CommandParameters.cpp src/CommandParameters.h src/Formatter.cpp src/Formatter.h src/FormatterParams.cpp src/FormatterParams.h src/Helper.cpp src/Helper.h src/Interface.cpp src/Interface.h src/Line.cpp src/Line.h src/messages.h src/Polyline.cpp src/Polyline.h src/Pos.cpp src/Pos.h src/Rectangle.cpp src/Rectangle.h src/Shape.cpp src/Shape.h src/Tspaint.cpp src/Tspaint.h
+	mkdir -p build
+	g++ -Wall -pedantic -Wextra -std=c++17

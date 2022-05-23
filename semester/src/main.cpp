@@ -3,7 +3,7 @@
   * @date 08.05.2022
   */
 
-#include<iostream>
+#include <iostream>
 #include "Application.h"
 #include "Interface.h"
 #include "Command.h"
@@ -13,8 +13,10 @@ int main(void) {
 
 
     std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(std::cin, std::cout));
-    Application app(interface);
-    app.RegisterCommand(Command::New(app))
+    Application app(interface, std::make_unique<Tspaint>(Tspaint()));
+    app.Run();
+
+    /*app.RegisterCommand(Command::New(app))
             .RegisterCommand()
             .RegisterCommand();
 
@@ -23,7 +25,7 @@ int main(void) {
                     .RegisterOption("fill", CommandParameters({"id", int}))
                     .RegisterOption("fill", CommandParameters({"r", int}, {"g", int}, {"b", int})
                             .RegisterOption("thickness", CommandParameters({"thickness", int});
-
+*/
     // from these I will always try to parse.
     // First the main command, then the option,
     // then the arguments
@@ -64,9 +66,4 @@ int main(void) {
 
     )
     */
-    .RegisterBuilder("file", CMapLoader{});
-    app.Run();
-
-
-    return Application{}.Run();
 }
