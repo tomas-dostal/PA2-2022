@@ -3,9 +3,9 @@
   * @date 13.05.2022
   */
 
-#include "ColorPalett.h"
+#include "ColorPalette.h"
 
-std::shared_ptr<Color> ColorPalett::getColorByName(const std::string &name) const {
+std::shared_ptr<Color> ColorPalette::getColorByName(const std::string &name) const {
 
     std::map<std::string, std::shared_ptr<Color>>::iterator i = colors.find(name);
 
@@ -16,13 +16,13 @@ std::shared_ptr<Color> ColorPalett::getColorByName(const std::string &name) cons
 }
 
 
-void ColorPalett::addIfNotExists(const std::string &name, const std::shared_ptr<Color> c) {
+void ColorPalette::addIfNotExists(const std::string &name, const std::shared_ptr<Color> c) {
     std::map<std::string, std::shared_ptr<Color>>::iterator i = colors.find(name);
     if (i == colors.end()) {
         colors.insert({name, c});
     }
 }
 
-ColorPalett::ColorPalett() {
+ColorPalette::ColorPalette() {
 
 }

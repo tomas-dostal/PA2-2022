@@ -9,9 +9,9 @@
 #include <map>
 #include "Color.h"
 
-class ColorPalett {
+class ColorPalette {
 public:
-    ColorPalett();
+    ColorPalette();
 
     static void addIfNotExists(const std::string &name, const std::shared_ptr<Color> c);
 

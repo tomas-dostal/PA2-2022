@@ -9,7 +9,7 @@ void Tspaint::Init() {
 
     isRunning = true;
 
-    colorPalette = std::make_unique<ColorPalett>(ColorPalett());
+    colorPalette = std::make_unique<ColorPalette>(ColorPalette());
 
     colorPalette->addIfNotExists("GRAY__PROGTEST", std::make_shared<Color>(Color(170, 170, 170)));
     colorPalette->addIfNotExists("GRAY__OUT_OF_SIGHT", std::make_shared<Color>(Color(255, 87, 51)));

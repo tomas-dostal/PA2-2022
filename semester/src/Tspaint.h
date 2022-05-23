@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "ColorPalett.h"
+#include "ColorPalette.h"
 
 class Tspaint {
 public:
@@ -14,6 +14,6 @@ public:
     bool IsRunning();
 
 private:
-    std::unique_ptr<ColorPalett> colorPalette;
+    std::unique_ptr<ColorPalette> colorPalette;
     bool isRunning;
 };
