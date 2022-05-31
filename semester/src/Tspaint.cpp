@@ -18,3 +18,7 @@ Tspaint::Tspaint(): colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists("WHITE__LOADING", std::make_shared<Color>(Color(255, 255, 255)));
     colorPalette.addIfNotExists("YELLOW__FIT", std::make_shared<Color>(Color(240, 171, 0)));
 }
+
+void Tspaint::AddShape(std::shared_ptr<Shape> shape) {
+    this->shapes.push_back(shape);
+}

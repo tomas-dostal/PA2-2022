@@ -5,6 +5,8 @@
   */
 
 #include "Application.h"
+
+#include <utility>
 #include "ProgtestErrors.h"
 #include "constants.h"
 
@@ -14,17 +16,10 @@ Application &Application::RegisterCommand(const Command &command) {
     return *this;
 }
 
-/*
-Application &Application::RegisterOption(const std::string name, const CommandParameters &commandParameters) {
-
-    commands.end().options.push_back({name, commandParameters});
-    return *this;
-}
-*/
-
-Application::Application(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint): interface(interface), tspaint(tspaint), isRunning(true) {
+Application::Application(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint): isRunning(true), interface(std::move(interface)), tspaint(std::move(tspaint)) {
 
     commands.emplace_back(SetCommand());
+    commands.emplace_back(SaveCommand());
     commands.emplace_back(QuitCommand());
     commands.emplace_back(HelpCommand(std::make_shared<std::vector<Command>>(commands)));
 }

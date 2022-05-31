@@ -4,8 +4,6 @@
   * @basedon example semester work available on https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
   */
 
-#pragma once
-
 #include "Formatter.h"
 
 

@@ -4,6 +4,7 @@
   */
 
 
+#include <utility>
 #include "messages.h"
 //*    set color <id>;
 //    set color <r> <g> <b>;
@@ -17,7 +18,7 @@
 //    draw polyline <pos_start> [<pos_i>...]
 //
 //    draw circle <pos_center> <diameter>
-//    draw elipsis todo
+//    draw ellipse <pos_center> <radius_x>, <radius_y>,
 //
 //    draw rectangle <pos_left_bottom>  <pos_right_top>
 //
@@ -44,7 +45,9 @@
 #include "any"
 #include "Helper.h"
 #include "constants.h"
-
+#include "iostream"
+#include "ExportSVG.h"
+#include "ExportTspaint.h"
 
 //    set color <id>;
 //    set color <r> <g> <b>;
@@ -55,6 +58,101 @@
 //    set thickness <int>;
 
 std::vector<std::string> setOptions = {"color", "background"};
+std::vector<std::string> saveFormats = {"svg", "tspaint"};
+Command DrawCommand() {
+    return Command{
+            COMMAND_DRAW,
+            HELP_DRAW,
+            [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+
+
+                auto newCircle = [&interface, &tspaint]() {
+                    // tspaint->AddShape(interface->PromptCircle());
+                };
+                /* {"name",
+                 "help",
+                 interface prompt}
+                 */
+
+
+
+                std::map<std::string, std::function<void(void)>> setOptions{
+                        // {"color", setColor},
+
+                };
+
+                std::vector<std::string> setOptionKeys;
+                for (const auto &[key, _]: setOptions) {
+                    setOptionKeys.push_back(key);
+                }
+
+                std::string commandName = interface->PromptOption(
+                        setOptionKeys, [&setOptionKeys](const std::string &commandName) {
+                            return std::find(setOptionKeys.begin(), setOptionKeys.end(), commandName) !=
+                                   setOptionKeys.end();
+                        }
+                );
+
+                std::any_cast<std::function<void(void)>>(setOptions[commandName])();
+
+                return true;
+            }
+    };
+}
+
+Command SaveCommand() {
+    return Command{
+            COMMAND_SAVE,
+            HELP_SAVE,
+            [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+
+                std::string format = interface->PromptOption(saveFormats);
+                std::string fileName = interface->PromptBasic("Enter filename: ",
+                                                             "Error writing to file",
+                                                             [](const std::string & fileName){
+                                                                 std::ofstream file {fileName} ;
+                                                                 if(!file.is_open()){
+                                                                     file.close();
+                                                                     return false;
+                                                                 }
+                                                                 file.close();
+                                                                 return true;
+                                                             });
+
+                auto svgSave = [&fileName, &tspaint]() {
+                    ExportSVG(fileName, tspaint).Export();
+                };
+                auto tspaintSave = [&fileName, &tspaint]() {
+                    ExportTspaint(fileName, tspaint).Export();
+                };
+
+
+                std::map<std::string, std::function<void(void)>> exportOptions {
+                       {"svg", svgSave},
+                       {"tspaint", tspaintSave}
+                };
+
+                std::vector<std::string> exportOptionKeys;
+                for (const auto &[key, _]: exportOptions) {
+                    exportOptionKeys.push_back(key);
+                }
+
+                std::string commandName = interface->PromptOption(
+                        exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
+                            return std::find(exportOptionKeys.begin(), exportOptionKeys.end(), commandName) !=
+                                    exportOptionKeys.end();
+                        }
+                );
+
+                std::any_cast<std::function<void(void)>>(exportOptions[commandName])();
+
+                return true;
+            }
+    };
+}
+
+
+
 
 Command SetCommand() {
     return Command{
@@ -104,7 +202,7 @@ Command SetCommand() {
     };
 }
 
-Command HelpCommand(const std::shared_ptr<std::vector<Command>> commands) {
+Command HelpCommand(const std::shared_ptr<std::vector<Command>>& commands) {
     return Command{
             COMMAND_HELP,
             HELP_HELP,

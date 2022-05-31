@@ -13,6 +13,8 @@
 class Formatter {
 public:
     explicit Formatter(std::map<std::string, std::string> dict);
+    explicit Formatter();
+
     std::string FillPlaceholder(const FormatterParams &formaterParams);
     std::string FillPlaceholder(const std::string &text, const FormatterParams &formaterParams);
 
