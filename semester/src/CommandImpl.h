@@ -12,5 +12,5 @@
 #include "Command.h"
 
 Command SetCommand();
-Command HelpCommand(const std::vector<Command> commands);
+Command HelpCommand(const std::shared_ptr<std::vector<Command>> commands);
 Command QuitCommand();

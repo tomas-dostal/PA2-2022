@@ -7,7 +7,6 @@
 #include "Application.h"
 #include "Interface.h"
 #include "Command.h"
-#include "CommandParameters.h"
 
 int main(void) {
 

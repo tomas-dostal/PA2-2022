@@ -6,7 +6,8 @@ TARGET = tspaint
 CXX = g++
 MKDIR = mkdir -p
 
-CXXFLAGS = -Wall -pedantic -Wextra -std=c++17
+#  -g is debug flag
+CXXFLAGS = -Wall -pedantic -Wextra -std=c++17 -g
 
 SOURCE_DIR = src
 BUILD_DIR = build

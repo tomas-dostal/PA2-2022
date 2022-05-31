@@ -10,10 +10,9 @@
 class Tspaint {
 public:
     Tspaint();
+    ColorPalette colorPalette;
+    std::shared_ptr<Color> color;
+    std::shared_ptr<Color> fill;
+    size_t thickness;
 
-    bool IsRunning();
-
-private:
-    std::unique_ptr<ColorPalette> colorPalette;
-    bool isRunning;
 };

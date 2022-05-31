@@ -29,7 +29,7 @@ public:
     void Run();
 
 protected:
-    Application &RegisterCommand(const Command &c);
+    Application & RegisterCommand(const Command &c);
     std::shared_ptr<Command> getCommandByName(const std::string name);
 
 private:

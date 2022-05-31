@@ -13,10 +13,17 @@ FormatterParams::FormatterParams() {
     this->params = std::vector<std::string>();
 }
 
+FormatterParams::FormatterParams(const std::initializer_list<int> &initializerList) {
+    this->params = std::vector<std::string>();
+    for (auto it = initializerList.begin(); it != initializerList.end(); ++it) {
+        this->params.emplace_back(std::to_string(*it));
+    }
+}
+
 FormatterParams::FormatterParams(const std::initializer_list<std::string> &initializerList) {
     this->params = std::vector<std::string>();
     for (auto it = initializerList.begin(); it != initializerList.end(); ++it) {
-        this->params.emplace_back(static_cast<std::string>(*it));
+        this->params.emplace_back(*it);
     }
 }
 

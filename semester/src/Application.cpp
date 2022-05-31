@@ -5,6 +5,8 @@
   */
 
 #include "Application.h"
+#include "ProgtestErrors.h"
+#include "constants.h"
 
 
 Application &Application::RegisterCommand(const Command &command) {
@@ -22,12 +24,15 @@ Application &Application::RegisterOption(const std::string name, const CommandPa
 
 Application::Application(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint): interface(interface), tspaint(tspaint), isRunning(true) {
 
-    // commands.emplace_back(SetCommand());
+    commands.emplace_back(SetCommand());
     commands.emplace_back(QuitCommand());
-    commands.emplace_back(HelpCommand(commands));
+    commands.emplace_back(HelpCommand(std::make_shared<std::vector<Command>>(commands)));
 }
 
 void Application::Run() {
+
+    //ProgtestErrors progtestErrors = ProgtestErrors (interface, CHANCES_FOR_PASSING_PA2, PROGTEST_ERROR_FILENAME);
+
     while (isRunning) {
         std::string commandName = interface->PromptCommand([this](const std::string &name) {
             for (size_t i = 0; i < commands.size(); ++i)
@@ -38,6 +43,9 @@ void Application::Run() {
         auto command = this->getCommandByName(commandName);
         if(command)
             command->Execute(this->tspaint, interface);
+
+        //progtestErrors.PrintRandomErrorMessageBecauseWhyNot();
+
     }
 }
 

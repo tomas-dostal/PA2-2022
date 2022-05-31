@@ -18,6 +18,8 @@ public:
     //template<typename T>
     FormatterParams(const std::initializer_list<std::string> &initializerList);
 
+    FormatterParams(const std::initializer_list<int> &initializerList);
+
     FormatterParams &Add(const std::string &param);
 
     [[nodiscard]] size_t Size() const { return params.size(); }

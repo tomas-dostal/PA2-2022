@@ -29,11 +29,23 @@ const char *const SHAPE_ELIPSYS = "elipsys";
 
 
 const char *const PROMPT_COMMAND = "Enter a command: ";
+const char *const PROMPT_INTEGER = "Enter a positive number: ";
+const char *const PROMPT_OPTION = "Enter an option: ";
+const char *const SET_ENTER_THICKNESS = "Enter value for thickness [$-$]";
+const char *const SET_ENTER_COLOR_RGB = "Entering color by rgb: <$> ";
+const char *const SET_ENTER_COLOR_RGB_INVALID = "Entered color part is invalid ";
+const char *const SET_ENTER_COLOR_RGB_NAME = "Enter name: ";
+const char *const SET_ENTER_COLOR_ID = "Enter color <id> \noptions: \n$";
+const char *const SET_ENTER_COLOR_ID_INVALID = "Entered color id is invalid";
+
 const char *const INVALID_INPUT = "Invalid input";
-const char *const UNKNOWN_COMMAND = "Unknown command '$'";
+const char *const UNKNOWN_COMMAND = "Unknown command '$'. For help type '$'";
+const char *const UNKNOWN_OPTION = "Unknown option '$'. For help type '$'";
+
+const char *const AVAILABLE_OPTION = "Options available: $";
 
 const char *const HELP_HELP = "Prints this help";
-const char *const HELP_QUIT = "Ends this pain(t)";
+const char *const HELP_QUIT = "Ends this pain";
 
 const char *const HELP_SET = "HELP_SET";
 const char *const HELP_DRAW = "HELP_DRAW";
@@ -43,5 +55,10 @@ const char *const HELP_HIDE = "HELP_HIDE";
 const char *const HELP_SHOW = "HELP_SHOW";
 const char *const HELP_NEW = "HELP_NEW";
 const char *const HELP_DELETE = "HELP_DELETE";
+const char *const TSPAINT_INFO = "ThisIsPain.T\n-----------------------------------------------\nSimple drawing tool for experienced FIT students.\n";
+
+const char *const PROGTEST_ERROR_LOADING = "Error in basic compilation - source file not accessible [Access help (934 B)] (2 hits available, 4 with penalisation -10%";
+
+
 
 

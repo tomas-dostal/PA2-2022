@@ -11,13 +11,15 @@
 
 class ColorPalette {
 public:
-    ColorPalette();
+    ColorPalette() = default;
 
-    static void addIfNotExists(const std::string &name, const std::shared_ptr<Color> c);
+    void addIfNotExists(const std::string &name, const std::shared_ptr<Color> c);
 
     std::shared_ptr<Color> getColorByName(const std::string &name) const;
 
-    static std::map<std::string, std::shared_ptr<Color>> colors;
+    std::shared_ptr<Color> getColorIndex(const size_t index) const;
+
+    std::map<std::string, std::shared_ptr<Color>> colors;
 
 };
 
