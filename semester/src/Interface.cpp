@@ -13,22 +13,33 @@
 #include "FormatterParams.h"
 #include "Formatter.h"
 #include "constants.h"
+#include "cctype"
 
-Pos Interface::PromptPos(const std::string &msg) {
+
+Pos Interface::PromptPos(const std::string &msg, const std::string &msgInvalid, const std::function<bool(const int &)> &valid) const {
     this->os << msg << std::endl;
-
-    std::string input;
-    std::getline(is, input);
-
-    std::stringstream ss(input);
-
-    int a, b;
-
-    if (Helper::_getIntFromStringStream(ss, a) && Helper::_getIntFromStringStream(ss, b)) {
-        return {a, b};
-    }
-    os << "Unahle to fetch input. Try again.";
-    return PromptPos(msg);
+    std::vector<int> pos = PromptMultipleIntegers(2,
+                           {
+                                {formatter->FillPlaceholder({PROMPT_POSITION})}
+                           },
+                           {
+                                {Helper::PrintOrDefault(msgInvalid, formatter->FillPlaceholder(ENTER_VALUE_IN_RANGE, {POS_X_MIN, POS_X_MAX}))},
+                                {Helper::PrintOrDefault(msgInvalid, formatter->FillPlaceholder(ENTER_VALUE_IN_RANGE, {POS_Y_MIN, POS_Y_MAX}))},
+                           },
+                           std::vector<std::function<bool(const int & a)>>{
+                                   {
+                                       [](const int & a){
+                                            return Helper::_isInRange(a, POS_X_MIN, POS_X_MAX);
+                                       }
+                                   },
+                                   {
+                                           [](const int & a){
+                                               return Helper::_isInRange(a, POS_Y_MIN, POS_Y_MAX);
+                                           }
+                                   }
+                           }
+            );
+    return Pos(pos[0], pos[1]);
 }
 
 
@@ -63,7 +74,7 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
         i++;
     }
 
-    this->os << "Select input od color: {id,rgb}";
+    this->os << "Select input of color: {id,rgb} ";
     std::string option = this->PromptOption({"id", "rgb"});
     if (option == "id") {
         size_t index = this->PromptInteger(
@@ -87,14 +98,15 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
                     formatter->FillPlaceholder(SET_ENTER_COLOR_RGB_INVALID, {}),
             },
             std::vector<std::function<bool(const int &)>>{[](const int &result) {
-                return Helper::_isInRange(result, RGB_MIN, RGB_MAX);
-            }
+                    return Helper::_isInRange(result, RGB_MIN, RGB_MAX);
+                }
             }
     );
     std::string name = this->PromptName([](const std::string &name) {
-        return std::count_if(name.begin(), name.end(), [](unsigned char c) { return !std::isalnum(c); }
-        ) > 0;
+        return any_of(name.begin(), name.end(), [](const char& c) -> bool { return !isalpha(c);
+        });
     });
+
     auto color = std::make_shared<Color>(Color(res[0], res[1], res[2]));
     colorPalette.addIfNotExists(name, color);
     return color;
@@ -186,14 +198,22 @@ void Interface::ProgtestGreetings(const std::string &beautifulError) {
 }
 
 std::string Interface::PromptName(const std::function<bool(const std::string &)> &valid) const {
-    std::string name;
-    while (true) {
-        os << formatter->FillPlaceholder({SET_ENTER_COLOR_RGB_NAME}) << std::endl;
+    return PromptBasic("Enter name: ",
+                       INVALID_INPUT,
+                       [](const std::string & name){ return true; }
+                       );
+}
 
-        if (!(is >> name) || !valid(name)) {
-            os << formatter->FillPlaceholder({INVALID_INPUT}) << std::endl;
+std::string Interface::PromptBasic(const std::string &msg, const std::string &msgInvalid,
+                                   const std::function<bool(const std::string &)> &valid) const {
+    std::string word;
+    while (true) {
+        os << formatter->FillPlaceholder({msg}) << std::endl;
+
+        if (!(is >> word) || !valid(word)) {
+            os << formatter->FillPlaceholder({msgInvalid}) << std::endl;
         } else {
-            return name;
+            return word;
         }
     }
 }
