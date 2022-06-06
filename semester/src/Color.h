@@ -15,9 +15,10 @@ public:
                 b(255),
                 name("WHITE") {};
 
-    Color([[maybe_unused]] unsigned char r, [[maybe_unused]] unsigned char g, [[maybe_unused]] unsigned char b, std::string name) : r(255),
-                                                                                 g(255),
-                                                                                 b(255),
+    // todo: alpha channel
+    Color(unsigned char r, unsigned char g, unsigned char b, std::string name) : r(r),
+                                                                                 g(g),
+                                                                                 b(b),
                                                                                  name(std::move(name)) {};
 
     bool operator==(const Color &other) const;
