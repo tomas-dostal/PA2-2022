@@ -12,8 +12,10 @@
 
 class ProgtestErrors {
 public:
-    ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string & fileName);
+    ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string &fileName);
+
     void PrintRandomErrorMessageBecauseWhyNot();
+
 private:
     float probability;
     std::shared_ptr<Interface> interface;

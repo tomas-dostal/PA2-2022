@@ -11,28 +11,26 @@
 #include "string"
 #include "fstream"
 
-ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string & fileName):
-                                                                                        probability(probability),
-                                                                                        interface(interface) {
+ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string &fileName) :
+        probability(probability),
+        interface(interface) {
 
     std::cerr << std::filesystem::current_path();
 
     std::ifstream f;
     f.open(fileName, std::ios::in);
-    if (f.is_open()){
+    if (f.is_open()) {
         std::string line;
-        while (getline(f, line)){
+        while (getline(f, line)) {
             messages.emplace_back(line);
         }
-    }
-    else {
+    } else {
         messages.emplace_back(PROGTEST_ERROR_LOADING);
     }
 }
 
 void ProgtestErrors::PrintRandomErrorMessageBecauseWhyNot() {
-    if (std::rand() % 42 > this->probability * 24)
-    {
+    if (std::rand() % 42 > this->probability * 24) {
         int index = std::rand() % messages.size();
         interface->ProgtestGreetings(messages[index]);
 

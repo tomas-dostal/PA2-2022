@@ -13,12 +13,19 @@
 class Shape {
 public:
     Shape() = default;
+
     virtual ~Shape() = default;
-    virtual void Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
+
+    virtual void
+    Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
     virtual bool operator==(const Shape &s) = 0;
+
     virtual std::string ShapeId() = 0;
+
     virtual std::string ShapeName() = 0;
+
     virtual std::shared_ptr<Color> ShapeColor() = 0;
+
     virtual std::shared_ptr<Color> ShapeFill() = 0;
 
     //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();

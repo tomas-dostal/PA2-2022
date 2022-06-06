@@ -31,7 +31,7 @@ public:
 
     void Stop();
 
- protected:
+protected:
     std::shared_ptr<Command> getCommandByName(const std::string name);
 
 private:

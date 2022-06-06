@@ -22,32 +22,42 @@ Pos Interface::PromptPos() const {
     return PromptPos("", "", nullptr);
 }
 
-Pos Interface::PromptPos(const std::string & msg) const {
+Pos Interface::PromptPos(const std::string &msg) const {
     return PromptPos(msg, "", nullptr);
 }
 
-Pos Interface::PromptPos(const std::string &msg = "", const std::string &msgInvalid = "", const std::function<bool(const int &)> &valid = nullptr) const {
+Pos Interface::PromptPos(const std::string &msg = "", const std::string &msgInvalid = "",
+                         const std::function<bool(const int &)> &valid = nullptr) const {
     std::vector<int> pos = PromptMultipleIntegers(2,
-                           {
-                                   {Helper::PrintOrDefault(msg, formatter->FillPlaceholder({PROMPT_POSITION}))}
-                           },
-                           {
-                                {Helper::PrintOrDefault(msgInvalid, formatter->FillPlaceholder(ENTER_VALUE_IN_RANGE, {POS_X_MIN, POS_X_MAX}))},
-                                {Helper::PrintOrDefault(msgInvalid, formatter->FillPlaceholder(ENTER_VALUE_IN_RANGE, {POS_Y_MIN, POS_Y_MAX}))},
-                           },
-                           std::vector<std::function<bool(const int & a)>>{
-                                   {
-                                       [](const int & a){
-                                            return Helper::_isInRange(a, POS_X_MIN, POS_X_MAX);
-                                       }
-                                   },
-                                   {
-                                           [](const int & a){
-                                               return Helper::_isInRange(a, POS_Y_MIN, POS_Y_MAX);
-                                           }
-                                   }
-                           }
-            );
+                                                  {
+                                                          {Helper::PrintOrDefault(msg, formatter->FillPlaceholder(
+                                                                  {PROMPT_POSITION}))}
+                                                  },
+                                                  {
+                                                          {Helper::PrintOrDefault(msgInvalid,
+                                                                                  formatter->FillPlaceholder(
+                                                                                          ENTER_VALUE_IN_RANGE,
+                                                                                          {POS_X_MIN, POS_X_MAX}))},
+                                                          {Helper::PrintOrDefault(msgInvalid,
+                                                                                  formatter->FillPlaceholder(
+                                                                                          ENTER_VALUE_IN_RANGE,
+                                                                                          {POS_Y_MIN, POS_Y_MAX}))},
+                                                  },
+                                                  std::vector<std::function<bool(const int &a)>>{
+                                                          {
+                                                                  [](const int &a) {
+                                                                      return Helper::_isInRange(a, POS_X_MIN,
+                                                                                                POS_X_MAX);
+                                                                  }
+                                                          },
+                                                          {
+                                                                  [](const int &a) {
+                                                                      return Helper::_isInRange(a, POS_Y_MIN,
+                                                                                                POS_Y_MAX);
+                                                                  }
+                                                          }
+                                                  }
+    );
     return Pos(pos[0], pos[1]);
 }
 
@@ -77,7 +87,7 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
     std::stringstream colorOptionsStringStream;
     int i = 0;
     std::vector<std::shared_ptr<Color>> colors;
-    for (auto & color : colorPalette.colors) {
+    for (auto &color: colorPalette.colors) {
         colorOptionsStringStream << i << ") " << color.first << std::endl;
         colors.push_back(color.second);
         i++;
@@ -107,12 +117,13 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
                     formatter->FillPlaceholder(SET_ENTER_COLOR_RGB_INVALID, {}),
             },
             std::vector<std::function<bool(const int &)>>{[](const int &result) {
-                    return Helper::_isInRange(result, RGB_MIN, RGB_MAX);
-                }
+                return Helper::_isInRange(result, RGB_MIN, RGB_MAX);
+            }
             }
     );
     std::string name = this->PromptName([](const std::string &name) {
-        return any_of(name.begin(), name.end(), [](const char& c) -> bool { return !isalpha(c);
+        return any_of(name.begin(), name.end(), [](const char &c) -> bool {
+            return !isalpha(c);
         });
     });
 
@@ -214,7 +225,9 @@ int Interface::PromptInteger(const std::string &msg,
         }
     }
 
-}int Interface::PromptInteger(const std::function<bool(const size_t &)> &valid) const {
+}
+
+int Interface::PromptInteger(const std::function<bool(const size_t &)> &valid) const {
 
     int integer;
     while (true) {
@@ -237,8 +250,8 @@ void Interface::ProgtestGreetings(const std::string &beautifulError) {
 std::string Interface::PromptName(const std::function<bool(const std::string &)> &valid) const {
     return PromptBasic("Enter name: ",
                        INVALID_INPUT,
-                       [](const std::string & name){ return true; }
-                       );
+                       [](const std::string &name) { return true; }
+    );
 }
 
 std::string Interface::PromptBasic(const std::string &msg, const std::string &msgInvalid,

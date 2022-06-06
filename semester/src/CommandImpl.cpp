@@ -62,16 +62,15 @@ std::vector<std::string> saveFormats = {"svg", "tspaint"};
 
 // source: https://stackoverflow.com/questions/41980888/how-to-convert-from-stdvector-to-args
 template<std::size_t... S, typename T>
-void unpack_vector(const std::vector<T>& vec, std::index_sequence<S...>) {
+void unpack_vector(const std::vector<T> &vec, std::index_sequence<S...>) {
     test2(vec[S]...);
 }
 
 template<std::size_t size, typename T>
-void unpack_vector(const std::vector<T>& vec) {
+void unpack_vector(const std::vector<T> &vec) {
     if (vec.size() != size) throw /* choose your error */;
     unpack_vector(vec, std::make_index_sequence<size>());
 }
-
 
 
 Command DrawCommand() {
@@ -90,17 +89,20 @@ Command DrawCommand() {
 
                 auto newCircle = [&interface, &tspaint]() {
 
-                    Pos center = std::invoke([&interface](){ return interface->PromptPos(
+                    Pos center = std::invoke([&interface]() {
+                        return interface->PromptPos(
                                 interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR, FormatterParams({"center"}))
-                            );
+                        );
                     });
-                    size_t diameter = std::invoke([&interface](){
+                    size_t diameter = std::invoke([&interface]() {
                         return interface->PromptInteger(
-                                interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR, FormatterParams({"diameter"})),
+                                interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                      FormatterParams({"diameter"})),
                                 "",
-                                [](int x){ return x > 0; }); });
-                    std::shared_ptr<Color> color =  std::invoke([&tspaint](){ return tspaint->color;});
-                    std::shared_ptr<Color> fill =  std::invoke([&tspaint](){ return tspaint->fill; });
+                                [](int x) { return x > 0; });
+                    });
+                    std::shared_ptr<Color> color = std::invoke([&tspaint]() { return tspaint->color; });
+                    std::shared_ptr<Color> fill = std::invoke([&tspaint]() { return tspaint->fill; });
 
                     auto circle = Circle(center, diameter, color, fill);
 
@@ -108,7 +110,7 @@ Command DrawCommand() {
                     tspaint->shapes.emplace_back(std::make_shared<Circle>(circle));
                 };
 
-                std::map<std::string, std::function<void(void)>> shapes {
+                std::map<std::string, std::function<void(void)>> shapes{
                         {"circle", newCircle},
                 };
 
@@ -162,16 +164,16 @@ Command SaveCommand() {
 
                 std::string format = interface->PromptOption(saveFormats);
                 std::string fileName = interface->PromptBasic("Enter filename: ",
-                                                             "Error writing to file",
-                                                             [](const std::string & fileName){
-                                                                 std::ofstream file {fileName} ;
-                                                                 if(!file.is_open()){
-                                                                     file.close();
-                                                                     return false;
-                                                                 }
-                                                                 file.close();
-                                                                 return true;
-                                                             });
+                                                              "Error writing to file",
+                                                              [](const std::string &fileName) {
+                                                                  std::ofstream file{fileName};
+                                                                  if (!file.is_open()) {
+                                                                      file.close();
+                                                                      return false;
+                                                                  }
+                                                                  file.close();
+                                                                  return true;
+                                                              });
 
                 auto svgSave = [&fileName, &tspaint]() {
                     ExportSVG(fileName, tspaint).Export();
@@ -181,9 +183,9 @@ Command SaveCommand() {
                 };
 
 
-                std::map<std::string, std::function<void(void)>> exportOptions {
-                       {"svg", svgSave},
-                       {"tspaint", tspaintSave}
+                std::map<std::string, std::function<void(void)>> exportOptions{
+                        {"svg",     svgSave},
+                        {"tspaint", tspaintSave}
                 };
 
                 std::vector<std::string> exportOptionKeys;
@@ -194,7 +196,7 @@ Command SaveCommand() {
                 std::string commandName = interface->PromptOption(
                         exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
                             return std::find(exportOptionKeys.begin(), exportOptionKeys.end(), commandName) !=
-                                    exportOptionKeys.end();
+                                   exportOptionKeys.end();
                         }
                 );
 
@@ -202,8 +204,6 @@ Command SaveCommand() {
             }
     };
 }
-
-
 
 
 Command SetCommand() {
@@ -222,16 +222,17 @@ Command SetCommand() {
                 };
                 auto setThickness = [&interface, &tspaint]() {
                     tspaint->thickness = (size_t) interface->PromptInteger(
-                            interface->formatter->FillPlaceholder(SET_ENTER_THICKNESS, FormatterParams{THICKENSS_MIN, THICKENSS_MAX}),
+                            interface->formatter->FillPlaceholder(SET_ENTER_THICKNESS,
+                                                                  FormatterParams{THICKENSS_MIN, THICKENSS_MAX}),
                             INVALID_INPUT,
-                            [](const size_t value){
+                            [](const size_t value) {
                                 return Helper::_isInRange(value, THICKENSS_MIN, THICKENSS_MAX);
                             });
                 };
 
                 std::map<std::string, std::function<void(void)>> setOptions{
-                        {"color", setColor},
-                        {"fill", setFill},
+                        {"color",     setColor},
+                        {"fill",      setFill},
                         {"thickness", setThickness}
                 };
 
@@ -254,7 +255,7 @@ Command SetCommand() {
     };
 }
 
-Command HelpCommand(const std::shared_ptr<std::vector<Command>>& commands) {
+Command HelpCommand(const std::shared_ptr<std::vector<Command>> &commands) {
     return Command{
             COMMAND_HELP,
             HELP_HELP,

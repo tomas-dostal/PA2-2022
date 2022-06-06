@@ -8,7 +8,7 @@
 
 #include "ExportHelper.h"
 
-class ExportSVG: public ExportHelper {
+class ExportSVG : public ExportHelper {
 public:
 
     ExportSVG(const std::string &fileName, std::shared_ptr<Tspaint> tspaint);

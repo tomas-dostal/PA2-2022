@@ -40,13 +40,13 @@ std::string Formatter::FormatNamedCoords(std::vector<std::pair<std::string, Pos>
     for (auto c: namedCoords) {
         ss << this->FillPlaceholder(NAMED_COORDS,
                                     FormatterParams({
-                                        c.first,
-                                        FillPlaceholder(
-                                                COORDS,
-                                                FormatterParams{
-                                                    c.second.x, c.second.y
-                                                })
-                                    }));
+                                                            c.first,
+                                                            FillPlaceholder(
+                                                                    COORDS,
+                                                                    FormatterParams{
+                                                                            c.second.x, c.second.y
+                                                                    })
+                                                    }));
     }
     return ss.str();
 }

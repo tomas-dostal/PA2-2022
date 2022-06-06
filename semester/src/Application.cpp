@@ -34,7 +34,8 @@ void Application::Run() {
 
     while (isRunning) {
         auto command = this->getCommandByName(interface->PromptCommand([this](const std::string &name) {
-            return std::any_of(commands.begin(), commands.end(), [&name](Command & command){return name == command.Name();});
+            return std::any_of(commands.begin(), commands.end(),
+                               [&name](Command &command) { return name == command.Name(); });
         }));
         if (command)
             command->Execute(this->tspaint, interface);
@@ -45,8 +46,8 @@ void Application::Run() {
 }
 
 std::shared_ptr<Command> Application::getCommandByName(const std::string name) {
-    for(auto c: commands)
-        if(c.Name() == name)
+    for (auto c: commands)
+        if (c.Name() == name)
             return std::make_shared<Command>(c);
     return nullptr;
 }

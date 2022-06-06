@@ -8,7 +8,7 @@
 
 #include "ExportHelper.h"
 
-class ExportTspaint: public ExportHelper {
+class ExportTspaint : public ExportHelper {
 public:
 
     ExportTspaint(const std::string &fileName, std::shared_ptr<Tspaint> tspaint);

@@ -5,7 +5,7 @@
 
 #include "Tspaint.h"
 
-Tspaint::Tspaint(): colorPalette(ColorPalette()) {
+Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(170, 170, 170, "GRAY__PROGTEST")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 87, 51, "GRAY__OUT_OF_SIGHT")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 0, 0, "BLACK__INSIDE_OF_MY_SOUL")));
