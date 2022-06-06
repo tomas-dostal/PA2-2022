@@ -107,8 +107,9 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
         });
     });
 
-    auto color = std::make_shared<Color>(Color(res[0], res[1], res[2]));
-    colorPalette.addIfNotExists(name, color);
+    auto color = std::make_shared<Color>(Color(res[0], res[1], res[2], name));
+    colorPalette.addIfNotExists(color);
+
     return color;
 }
 
@@ -168,7 +169,15 @@ Interface::Interface(std::istream &is, std::ostream &os) : is(is), os(os) {
 }
 
 void Interface::PrintHelp(const std::string &help) {
-    os << "HELP: " << help << std::endl;
+    os << help << std::endl;
+}
+
+void Interface::PrintCommandName(const std::string &name) {
+    os << name << std::endl << "------------" << std::endl;
+}
+
+void Interface::PrintCommandExample(const std::string &example) {
+    os << "Example: " << std::endl << example << std::endl;
 }
 
 void Interface::ClearScreen() {
@@ -217,4 +226,8 @@ std::string Interface::PromptBasic(const std::string &msg, const std::string &ms
         }
     }
 }
+
+//std::ostream & operator<<(std::ostream &os, const std::string & text) {
+//    return os << text << std::endl;
+//}
 

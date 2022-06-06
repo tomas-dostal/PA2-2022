@@ -5,11 +5,13 @@
   */
 
 #include "Formatter.h"
-
+#include "messages.h"
+#include "sstream"
 
 std::string Formatter::FillPlaceholder(const FormatterParams &formaterParams) {
     return FillPlaceholder(Formatter::PLACEHOLDER, formaterParams);
 }
+
 std::string Formatter::FillPlaceholder(const std::string &text, const FormatterParams &formaterParams) {
     std::string result = text;
     size_t start_pos;
@@ -25,4 +27,26 @@ std::string Formatter::FillPlaceholder(const std::string &text, const FormatterP
 }
 
 Formatter::Formatter(std::map<std::string, std::string> dict) : dict(std::move(dict)) {
+}
+
+std::string Formatter::FormatColor(Color &color) {
+    return this->FillPlaceholder(COLOR, FormatterParams(
+            {color.name, std::to_string(color.r), std::to_string(color.g), std::to_string(color.b)}));
+}
+
+
+std::string Formatter::FormatNamedCoords(std::vector<std::pair<std::string, Pos>> namedCoords) {
+    std::stringstream ss;
+    for (auto c: namedCoords) {
+        ss << this->FillPlaceholder(NAMED_COORDS,
+                                    FormatterParams({
+                                        c.first,
+                                        FillPlaceholder(
+                                                COORDS,
+                                                FormatterParams{
+                                                    c.second.x, c.second.y
+                                                })
+                                    }));
+    }
+    return ss.str();
 }

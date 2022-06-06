@@ -8,9 +8,9 @@ Bylo detekováno celkem 14996 neuvolněných bloků paměti - penalizace 30%
 Nesprávný výstup [Zpřístupnit nápovědu (220 KB)]
 Chyba při základní kompilaci [Zpřístupnit nápovědu (934 B)]
 testbed.cpp:(.text+0x3809): undefined reference to `student_83bc94b9a54008d6e1d1b7b5159239dc::CTypeBasic::~CTypeBasic()'
-Odevzdaná řešení:\t50 / 30 Volné pokusy + 20 Penalizované pokusy (-2 % penalizace za každé odevzdání)
+Odevzdaná řešení: 50 / 30 Volné pokusy + 20 Penalizované pokusy (-2 % penalizace za každé odevzdání)
 Závazný test: Test osetreni I/O chyb (ASCII, decompress)️ 1.748s / 3.874s Nesprávný výstup 
 Chyba při kompilaci v režimu 'pedantic' - 10% penalizace
-Matrika 4: Termín odevzdání:\t15.05.2021 23:58:42 Hodnotitel: automat\nChyba při základní kompilaci\nPoužité nápovědy: 4
+Matrika 4: Termín odevzdání: 15.05.2021 23:58:42 Hodnotitel: automat\nChyba při základní kompilaci\nPoužité nápovědy: 4
 Závazný test: Test 'Test aritmetickych operaci': Program provedl neplatnou operaci a byl ukončen (Segmentation fault/Bus error/Memory limit exceeded/Stack limit exceeded)
 Undefined symbols for architecture arm64: you.

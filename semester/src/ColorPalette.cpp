@@ -16,9 +16,9 @@ std::shared_ptr<Color> ColorPalette::getColorByName(const std::string &name) con
 }
 
 
-void ColorPalette::addIfNotExists(const std::string &name, const std::shared_ptr<Color> c) {
-    std::map<std::string, std::shared_ptr<Color>>::iterator i = colors.find(name);
+void ColorPalette::addIfNotExists(const std::shared_ptr<Color> c) {
+    std::map<std::string, std::shared_ptr<Color>>::iterator i = colors.find(c->Name());
     if (i == this->colors.end()) {
-        colors.insert({name, c});
+        colors.insert({c->Name(), c});
     }
 }

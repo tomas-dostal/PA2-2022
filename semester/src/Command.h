@@ -19,7 +19,8 @@ private:
     std::string help;
     std::string example;
 
-    std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> execute;
+    std::function<void(std::shared_ptr<Tspaint>,
+                       std::shared_ptr<Interface>)>  execute;
 
 public:
     Command(std::string name, std::string help, const std::function<void(std::shared_ptr<Tspaint>,

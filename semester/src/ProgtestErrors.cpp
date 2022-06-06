@@ -9,11 +9,14 @@
 #include "messages.h"
 #include "iostream"
 #include "string"
+#include "fstream"
 
-/*
 ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string & fileName):
                                                                                         probability(probability),
-                                                                                        interface(std::move(interface)) {
+                                                                                        interface(interface) {
+
+    std::cerr << std::filesystem::current_path();
+
     std::ifstream f;
     f.open(fileName, std::ios::in);
     if (f.is_open()){
@@ -28,8 +31,10 @@ ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float proba
 }
 
 void ProgtestErrors::PrintRandomErrorMessageBecauseWhyNot() {
-    if ((std::rand() % 42) > this->probability * 10)
-        interface->ProgtestGreetings(messages[(int) (std::rand() % (messages.size() - 1))]);
-    return;
+    if (std::rand() % 42 > this->probability * 24)
+    {
+        int index = std::rand() % messages.size();
+        interface->ProgtestGreetings(messages[index]);
+
+    }
 }
-*/

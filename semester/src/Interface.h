@@ -15,6 +15,7 @@
 class Interface {
 public:
     Interface(std::istream &is, std::ostream &os);
+
     std::string PromptBasic(const std::string & msg, const std::string & msgInvalid, const std::function<bool(const std::string &)> &valid) const;
 
     std::string PromptCommand(const std::function<bool(const std::string &)> &valid) const;
@@ -34,17 +35,21 @@ public:
 
     void PrintHelp(const std::string & help);
 
+    void PrintCommandExample(const std::string &example);
+
+    void PrintCommandName(const std::string &name);
+
     void ProgtestGreetings(const std::string & beautifulError);
 
     void ClearScreen();
 
     Pos PromptPos(const std::string &msg, const std::string &msgInvalid, const std::function<bool(const int &)> &valid) const;
 
+    friend std::ostream & operator<<(std::ostream &os, const std::string & text);
 
     std::unique_ptr<Formatter> formatter;
 private:
     std::istream &is;
     std::ostream &os;
-
 
 };

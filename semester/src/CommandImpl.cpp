@@ -39,7 +39,6 @@
 //    show <id>
 
 #include "CommandImpl.h"
-#include "messages.h"
 #include "map"
 #include "functional"
 #include "any"
@@ -48,6 +47,7 @@
 #include "iostream"
 #include "ExportSVG.h"
 #include "ExportTspaint.h"
+#include "Command.h"
 
 //    set color <id>;
 //    set color <r> <g> <b>;
@@ -57,8 +57,8 @@
 //
 //    set thickness <int>;
 
-std::vector<std::string> setOptions = {"color", "background"};
 std::vector<std::string> saveFormats = {"svg", "tspaint"};
+
 Command DrawCommand() {
     return Command{
             COMMAND_DRAW,
@@ -94,6 +94,35 @@ Command DrawCommand() {
                 );
 
                 std::any_cast<std::function<void(void)>>(setOptions[commandName])();
+
+                return true;
+            }
+    };
+}
+
+Command ListCommand() {
+    return Command{
+            COMMAND_LIST,
+            HELP_LIST,
+            [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                auto printAllObjects = [&interface, &tspaint]() {
+                    Formatter formatter = Formatter{};
+                    for (const auto &shape: tspaint->GetShapes()) {
+                        interface->PrintHelp(
+                                interface->formatter->FillPlaceholder(
+                                        PRINT_SHAPE,
+                                        FormatterParams({
+                                                                shape->ShapeId(),
+                                                                shape->ShapeName(),
+                                                                formatter.FormatColor(shape->ShapeColor()),
+                                                                formatter.FormatColor(shape->ShapeFill()),
+                                                                formatter.FormatNamedCoords(shape->ShapeNamedCoords())
+                                                        })
+                                )
+                        );
+                    }
+                };
+                std::any_cast<std::function<void(void)>>(printAllObjects)();
 
                 return true;
             }
@@ -210,24 +239,24 @@ Command HelpCommand(const std::shared_ptr<std::vector<Command>>& commands) {
 
                 interface->ClearScreen();
                 interface->PrintHelp(TSPAINT_INFO);
-                std::cerr << "Commands are " << commands.get()->size();
+
                 for (const auto &c: *commands) {
-                    //if ( c.second.IsActive( game ) )
-                    std::cerr << c.Name() << " " << c.Help() << std::endl;
+                    interface->PrintCommandName(c.Name());
                     interface->PrintHelp(c.Help());
+                    interface->PrintCommandExample(c.Example());
                 }
                 return true;
             }
     };
 }
 
-Command QuitCommand() {
+Command QuitCommand(const std::function<void(void)> stopApplication) {
     return Command{
             COMMAND_QUIT,
             HELP_QUIT,
-            [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
-                std::cout << "hello" << std::endl;
-                return false;
+            [stopApplication](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                interface->PrintHelp(QUIT_MESSAGE);
+                stopApplication();
             }
     };
 }

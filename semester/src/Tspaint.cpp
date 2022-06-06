@@ -6,19 +6,23 @@
 #include "Tspaint.h"
 
 Tspaint::Tspaint(): colorPalette(ColorPalette()) {
-    colorPalette.addIfNotExists("GRAY__PROGTEST", std::make_shared<Color>(Color(170, 170, 170)));
-    colorPalette.addIfNotExists("GRAY__OUT_OF_SIGHT", std::make_shared<Color>(Color(255, 87, 51)));
-    colorPalette.addIfNotExists("BLACK__INSIDE_OF_MY_SOUL", std::make_shared<Color>(Color(0, 0, 0)));
-    colorPalette.addIfNotExists("MAGENTA__BRAIN_OVERFLOW", std::make_shared<Color>(Color(255, 0, 255)));
-    colorPalette.addIfNotExists("GREEN__PROGTEST_HOME", std::make_shared<Color>(Color(0, 255, 0)));
-    colorPalette.addIfNotExists("RED__COMPILED_WITH_ERRORS", std::make_shared<Color>(Color(192, 64, 0)));
-    colorPalette.addIfNotExists("BLUE__FUN_FOR_A_WEEKEND", std::make_shared<Color>(Color(0, 153, 203)));
-    colorPalette.addIfNotExists("GREEN__ALMOST_THERE", std::make_shared<Color>(Color(128, 192, 0)));
-    colorPalette.addIfNotExists("GREEN__IM_DONE", std::make_shared<Color>(Color(0, 192, 0)));
-    colorPalette.addIfNotExists("WHITE__LOADING", std::make_shared<Color>(Color(255, 255, 255)));
-    colorPalette.addIfNotExists("YELLOW__FIT", std::make_shared<Color>(Color(240, 171, 0)));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(170, 170, 170, "GRAY__PROGTEST")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 87, 51, "GRAY__OUT_OF_SIGHT")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 0, 0, "BLACK__INSIDE_OF_MY_SOUL")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 0, 255, "MAGENTA__BRAIN_OVERFLOW")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 255, 0, "GREEN__PROGTEST_HOME")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(192, 64, 0, "RED__COMPILED_WITH_ERRORS")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 153, 203, "BLUE__FUN_FOR_A_WEEKEND")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(128, 192, 0, "GREEN__ALMOST_THERE")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 192, 0, "GREEN__IM_DONE")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 255, 255, "WHITE__LOADING")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(240, 171, 0, "YELLOW__FIT")));
 }
 
 void Tspaint::AddShape(std::shared_ptr<Shape> shape) {
     this->shapes.push_back(shape);
+}
+
+std::vector<std::shared_ptr<Shape>> Tspaint::GetShapes() {
+    return this->shapes;
 }

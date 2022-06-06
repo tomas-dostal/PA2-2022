@@ -5,6 +5,7 @@
 
 #include "Color.h"
 
-Color::Color(unsigned char r, unsigned char g, unsigned char b) : r(r), g(g), b(b) {
 
+bool Color::operator==(const Color &other) const {
+    return this->r == other.r && this->g == other.g && this->b == other.b && this->name == other.name;
 };

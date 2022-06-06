@@ -14,7 +14,7 @@ public:
     void AddShape(std::shared_ptr<Shape> shape);
     Tspaint();
     //virtual void Build(ShapeBuilder & shapeBuilder) = 0;
-
+    std::vector<std::shared_ptr<Shape>> GetShapes();
     ColorPalette colorPalette;
     std::shared_ptr<Color> color;
     std::shared_ptr<Color> fill;

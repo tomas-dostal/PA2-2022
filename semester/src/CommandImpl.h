@@ -13,6 +13,7 @@
 
 Command SetCommand();
 Command DrawCommand();
+Command ListCommand();
 Command SaveCommand();
 Command HelpCommand(const std::shared_ptr<std::vector<Command>>& commands);
-Command QuitCommand();
+Command QuitCommand(const std::function<void(void)> stopApplication);

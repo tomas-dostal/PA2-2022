@@ -19,5 +19,5 @@ ExportTspaint::ExportTspaint(const std::string &fileName, std::shared_ptr<Tspain
 
 bool ExportTspaint::Export() {
     std::cout << " ExporTspaint::Export I'm alive" << std::endl;
-
+    return false;
 }

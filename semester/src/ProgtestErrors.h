@@ -9,10 +9,9 @@
 #include "Interface.h"
 #include "string"
 
-/*
+
 class ProgtestErrors {
 public:
-    ProgtestErrors() = delete;
     ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string & fileName);
     void PrintRandomErrorMessageBecauseWhyNot();
 private:
@@ -21,4 +20,3 @@ private:
     std::vector<std::string> messages;
 };
 
-*/

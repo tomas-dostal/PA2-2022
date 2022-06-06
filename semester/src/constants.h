@@ -6,7 +6,7 @@
 #pragma once
 
 const float CHANCES_FOR_PASSING_PA2 = 0.5;
-const char *const PROGTEST_ERROR_FILENAME = "progtesterrors.txt";
+const char *const PROGTEST_ERROR_FILENAME = "src/progtesterrors.txt";
 const int RGB_MIN = 0;
 const int RGB_MAX = 255;
 const int THICKENSS_MIN = 1;

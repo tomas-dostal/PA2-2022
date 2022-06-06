@@ -11,6 +11,7 @@
 #include "CommandParameters.h"
 #include "messages.h"
 #include "CommandImpl.h"
+#include "ProgtestErrors.h"
 
 class Application {
 
@@ -28,8 +29,9 @@ public:
 
     void Run();
 
-protected:
-    Application & RegisterCommand(const Command &c);
+    void Stop();
+
+ protected:
     std::shared_ptr<Command> getCommandByName(const std::string name);
 
 private:
@@ -37,6 +39,5 @@ private:
     std::vector<Command> commands;
     std::shared_ptr<Interface> interface;
     std::shared_ptr<Tspaint> tspaint;
-
-   // Application &RegisterOption(const std::string name, const CommandParameters &commandParameters);
+    std::shared_ptr<ProgtestErrors> progtestErrors;
 };
