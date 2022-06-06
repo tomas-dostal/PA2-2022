@@ -16,11 +16,20 @@
 #include "cctype"
 
 
-Pos Interface::PromptPos(const std::string &msg, const std::string &msgInvalid, const std::function<bool(const int &)> &valid) const {
-    this->os << msg << std::endl;
+// todo!!!! Fix unexpected input by clearing the rest of buffer
+
+Pos Interface::PromptPos() const {
+    return PromptPos("", "", nullptr);
+}
+
+Pos Interface::PromptPos(const std::string & msg) const {
+    return PromptPos(msg, "", nullptr);
+}
+
+Pos Interface::PromptPos(const std::string &msg = "", const std::string &msgInvalid = "", const std::function<bool(const int &)> &valid = nullptr) const {
     std::vector<int> pos = PromptMultipleIntegers(2,
                            {
-                                {formatter->FillPlaceholder({PROMPT_POSITION})}
+                                   {Helper::PrintOrDefault(msg, formatter->FillPlaceholder({PROMPT_POSITION}))}
                            },
                            {
                                 {Helper::PrintOrDefault(msgInvalid, formatter->FillPlaceholder(ENTER_VALUE_IN_RANGE, {POS_X_MIN, POS_X_MAX}))},
@@ -172,6 +181,10 @@ void Interface::PrintHelp(const std::string &help) {
     os << help << std::endl;
 }
 
+void Interface::PrintInfo(const std::string &info) {
+    os << info << std::endl;
+}
+
 void Interface::PrintCommandName(const std::string &name) {
     os << name << std::endl << "------------" << std::endl;
 }
@@ -184,16 +197,31 @@ void Interface::ClearScreen() {
     os.clear();
 }
 
+
 int Interface::PromptInteger(const std::string &msg,
                              const std::string &msgInvalid,
                              const std::function<bool(const size_t &)> &valid) const {
 
-    size_t integer;
+    int integer;
     while (true) {
         os << formatter->FillPlaceholder({Helper::PrintOrDefault(msg, PROMPT_INTEGER)}) << std::endl;
 
         if (!(is >> integer) || !valid(integer)) {
             os << formatter->FillPlaceholder({Helper::PrintOrDefault(msgInvalid, INVALID_INPUT)}) << std::endl;
+            is.clear();
+        } else {
+            return integer;
+        }
+    }
+
+}int Interface::PromptInteger(const std::function<bool(const size_t &)> &valid) const {
+
+    int integer;
+    while (true) {
+        os << formatter->FillPlaceholder({PROMPT_INTEGER}) << std::endl;
+
+        if (!(is >> integer) || !valid(integer)) {
+            os << formatter->FillPlaceholder({INVALID_INPUT}) << std::endl;
             is.clear();
         } else {
             return integer;

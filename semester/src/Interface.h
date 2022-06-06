@@ -27,6 +27,8 @@ public:
 
     int PromptInteger(const std::string & msg, const std::string & msgInvalid, const std::function<bool(const size_t &)> &valid) const;
 
+    int PromptInteger(const std::function<bool(const size_t &)> &valid) const;
+
     std::vector<int> PromptMultipleIntegers(size_t howMany, const std::vector<std::string>& messages, const std::vector<std::string>& messagesInvalid, const std::vector<std::function<bool(const int &)>> &validators) const;
 
     std::shared_ptr<Color> PromptColor(ColorPalette & colorPalette) const;
@@ -34,6 +36,8 @@ public:
     std::string PromptName(const std::function<bool(const std::string &)> &valid) const;
 
     void PrintHelp(const std::string & help);
+
+    void PrintInfo(const std::string & help);
 
     void PrintCommandExample(const std::string &example);
 
@@ -44,6 +48,10 @@ public:
     void ClearScreen();
 
     Pos PromptPos(const std::string &msg, const std::string &msgInvalid, const std::function<bool(const int &)> &valid) const;
+
+    Pos PromptPos(const std::string &msg) const;
+
+    Pos PromptPos() const;
 
     friend std::ostream & operator<<(std::ostream &os, const std::string & text);
 
