@@ -31,11 +31,15 @@ const char *const SHAPE_ELIPSYS = "elipsys";
 
 const char *const PROMPT_COMMAND = "Enter a command: ";
 const char *const PROMPT_INTEGER = "Enter a positive number: ";
+const char *const PROMPT_INTEGER_FOR = "$: Enter a positive number: ";
 const char *const PROMPT_POSITION = "Enter a position x y: ";
+const char *const PROMPT_POSITION_FOR = "$: Enter a position x y: ";
 const char *const NAMED_COORDS = "$: $";
 const char *const COORDS = "$, $ ";
 const char *const COLOR = "$ (r: $, g: $, b: $)";
 const char *const UNKNOWN_COLOR_NAME = "Unknown color";
+
+const char *const BUILDING_SHAPE = "Building $: ";
 
 const char *const PROMPT_OPTION = "Enter an option: ";
 const char *const ENTER_VALUE_IN_RANGE = "Enter value in range [$-$]";
@@ -46,7 +50,7 @@ const char *const SET_ENTER_COLOR_RGB_NAME = "Enter name: ";
 const char *const SET_ENTER_COLOR_ID = "Enter color <id> \noptions: \n$";
 const char *const SET_ENTER_COLOR_ID_INVALID = "Entered color id is invalid";
 
-const char *const PRINT_SHAPE = "id: $, name: $, detail: $ ";
+const char *const PRINT_SHAPE = "id: $, name: $, color: $, fill: $, pos: $, detail: $ ";
 const char *const INVALID_INPUT = "Invalid input";
 const char *const UNKNOWN_COMMAND = "Unknown command '$'. For help type '$'";
 const char *const UNKNOWN_OPTION = "Unknown option '$'. For help type '$'";
