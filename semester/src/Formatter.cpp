@@ -29,9 +29,9 @@ std::string Formatter::FillPlaceholder(const std::string &text, const FormatterP
 Formatter::Formatter(std::map<std::string, std::string> dict) : dict(std::move(dict)) {
 }
 
-std::string Formatter::FormatColor(Color &color) {
+std::string Formatter::FormatColor(std::shared_ptr<Color> color) {
     return this->FillPlaceholder(COLOR, FormatterParams(
-            {color.name, std::to_string(color.r), std::to_string(color.g), std::to_string(color.b)}));
+            {color->name, std::to_string(color->r), std::to_string(color->g), std::to_string(color->b)}));
 }
 
 

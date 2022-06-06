@@ -18,7 +18,7 @@ public:
     explicit Formatter(std::map<std::string, std::string> dict);
     explicit Formatter();
 
-    std::string FormatColor(Color & color);
+    std::string FormatColor(std::shared_ptr<Color> color);
     std::string FormatNamedCoords(std::vector<std::pair<std::string, Pos>> namedCoords);
     std::string FillPlaceholder(const FormatterParams & formaterParams);
     std::string FillPlaceholder(const std::string &text, const FormatterParams &formaterParams);
