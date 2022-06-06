@@ -17,6 +17,10 @@ Tspaint::Tspaint(): colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 192, 0, "GREEN__IM_DONE")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 255, 255, "WHITE__LOADING")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(240, 171, 0, "YELLOW__FIT")));
+
+    // todo load from file
+    color = colorPalette.getColorByName("YELLOW__FIT");
+    fill = colorPalette.getColorByName("GRAY__PROGTEST");
 }
 
 void Tspaint::AddShape(std::shared_ptr<Shape> shape) {
