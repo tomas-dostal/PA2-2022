@@ -7,7 +7,7 @@
 
 #include "Polyline.h"
 
-class Rectangle : Polyline {
-
-
-};
+//class Rectangle : Polyline {
+//
+//
+//};

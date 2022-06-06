@@ -9,12 +9,12 @@
 #include "Shape.h"
 #include "Line.h"
 
-class Polyline : Shape {
-public:
-    Polyline() = delete;
-
-    Polyline(std::vector<std::shared_ptr<Line>> lines) : lines(lines) {};
-
-private:
-    std::vector<std::shared_ptr<Line>> lines;
-};
+//class Polyline : Shape {
+//public:
+//    Polyline() = delete;
+//
+//    Polyline(std::vector<std::shared_ptr<Line>> lines) : lines(lines) {};
+//
+//private:
+//    std::vector<std::shared_ptr<Line>> lines;
+//};

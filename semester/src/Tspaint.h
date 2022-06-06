@@ -7,7 +7,6 @@
 
 #include "ColorPalette.h"
 #include "Shape.h"
-#include "ShapeBuilder.h"
 
 class Tspaint {
 public:
@@ -20,7 +19,6 @@ public:
     std::shared_ptr<Color> fill;
     size_t thickness;
 
-private:
     std::vector<std::shared_ptr<Shape>> shapes;
 
 };
