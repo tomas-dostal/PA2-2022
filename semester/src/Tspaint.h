@@ -10,7 +10,9 @@
 
 class Tspaint {
 public:
-    void AddShape(std::shared_ptr<Shape> shape);
+    void AddShape(std::shared_ptr<Shape> && shape);
+
+    unsigned long GenerateId();
 
     Tspaint();
 
@@ -23,5 +25,7 @@ public:
     size_t thickness;
 
     std::vector<std::shared_ptr<Shape>> shapes;
+
+    unsigned long idGenerator = 0;
 
 };

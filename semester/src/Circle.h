@@ -13,7 +13,8 @@ class Circle : public Shape {
 public:
     Circle() = delete;
 
-    Circle(Pos &center, size_t diameter, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
+    Circle(unsigned int id, std::string name, Pos &center, size_t diameter, std::shared_ptr<Color> color,
+           std::shared_ptr<Color> fill);
 
     void Draw(Interface &interface);
 

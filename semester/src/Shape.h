@@ -12,12 +12,19 @@
 
 class Shape {
 public:
-    Shape() = default;
 
-    virtual ~Shape() = default;
+    Shape( unsigned int id, std::string name, Pos center, size_t height, size_t width, std::shared_ptr<Color> color, std::shared_ptr<Color> fill):
+    id(id), name(std::move(name)), center(center), height(height), width(width), color(color), fill(fill)
+    {
 
-    virtual void
-    Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
+    };
+
+  Shape() = default;
+
+    virtual ~Shape() noexcept = default; // choose destructors to match class to be sure all the memory is freed
+
+    virtual void Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
+
     virtual bool operator==(const Shape &s) = 0;
 
     virtual std::string ShapeId() = 0;
@@ -31,15 +38,17 @@ public:
     //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();
 
 protected:
+    unsigned int id{};
+    std::string name;
+
     Pos center;
+
+    size_t height{};
+    size_t width{};
 
     std::shared_ptr<Color> color;
     std::shared_ptr<Color> fill;
-    size_t height{};
-    size_t width{};
-    std::string name;
 
-    unsigned int id{};
 };
 
 //std::vector<std::pair<std::string, std::any>> Shape::ShapeNamedCoords() {

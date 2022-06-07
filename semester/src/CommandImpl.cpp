@@ -104,7 +104,10 @@ Command DrawCommand() {
                     std::shared_ptr<Color> color = std::invoke([&tspaint]() { return tspaint->color; });
                     std::shared_ptr<Color> fill = std::invoke([&tspaint]() { return tspaint->fill; });
 
-                    auto circle = Circle(center, diameter, color, fill);
+                    tspaint->AddShape(
+                            std::make_shared<Circle>(tspaint->GenerateId(), "Circle", center, diameter, color, fill)
+                                    );
+                };
 
                     // todo redo storing
                     tspaint->shapes.emplace_back(std::make_shared<Circle>(circle));

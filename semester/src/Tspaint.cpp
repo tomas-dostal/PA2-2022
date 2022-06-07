@@ -23,10 +23,14 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
 }
 
-void Tspaint::AddShape(std::shared_ptr<Shape> shape) {
-    this->shapes.push_back(shape);
+void Tspaint::AddShape(std::shared_ptr<Shape> && shape) {
+    this->shapes.push_back(std::move(shape));
 }
 
 std::vector<std::shared_ptr<Shape>> Tspaint::GetShapes() {
     return this->shapes;
+}
+
+unsigned long Tspaint::GenerateId() {
+    return ++idGenerator;
 }

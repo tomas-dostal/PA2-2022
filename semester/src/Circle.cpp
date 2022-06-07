@@ -5,15 +5,11 @@
 
 #include "Circle.h"
 
-Circle::Circle(Pos &center, size_t diameter, std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
-        : Shape(), diameter(diameter) {
-    this->center = center;
-    this->color = color;
-    this->fill = fill;
-    this->height = 2 * diameter;
-    this->width = 2 * diameter;
-    this->name = "Amazing circle";
-    this->id = 2;
+Circle::Circle(unsigned int id, std::string name, Pos &center, size_t diameter, std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
+        : Shape(id, name, center, 2 * diameter, 2 * diameter, color, fill), diameter(diameter) {
+    {
+
+    }
 }
 
 void Circle::Draw(Interface &interface) {
