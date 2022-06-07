@@ -229,17 +229,7 @@ int Interface::PromptInteger(const std::string &msg,
 
 int Interface::PromptInteger(const std::function<bool(const size_t &)> &valid) const {
 
-    int integer;
-    while (true) {
-        os << formatter->FillPlaceholder({PROMPT_INTEGER}) << std::endl;
-
-        if (!(is >> integer) || !valid(integer)) {
-            os << formatter->FillPlaceholder({INVALID_INPUT}) << std::endl;
-            is.clear();
-        } else {
-            return integer;
-        }
-    }
+    return PromptInteger("", "", valid);
 }
 
 
@@ -267,8 +257,4 @@ std::string Interface::PromptBasic(const std::string &msg, const std::string &ms
         }
     }
 }
-
-//std::ostream & operator<<(std::ostream &os, const std::string & text) {
-//    return os << text << std::endl;
-//}
 

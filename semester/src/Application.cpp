@@ -12,14 +12,14 @@
 
 Application::Application(std::shared_ptr<Interface> interface,
                          std::shared_ptr<Tspaint> tspaint) :
-                            isRunning(true),
-                            interface(std::move(
-                                   interface)),
-                            tspaint(std::move(
-                                   tspaint)),
-                            progtestErrors(
-                                   std::make_shared<ProgtestErrors>(
-                                           ProgtestErrors(this->interface, CHANCES_FOR_PASSING_PA2, PROGTEST_ERROR_FILENAME))) {
+        isRunning(true),
+        interface(std::move(
+                interface)),
+        tspaint(std::move(
+                tspaint)),
+        progtestErrors(
+                std::make_shared<ProgtestErrors>(
+                        ProgtestErrors(this->interface, CHANCES_FOR_PASSING_PA2, PROGTEST_ERROR_FILENAME))) {
     auto quit = [this]() { this->Stop(); };
     commands.emplace_back(SetCommand());
     commands.emplace_back(DrawCommand());

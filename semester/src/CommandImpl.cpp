@@ -3,9 +3,6 @@
   * @date 19.05.2022
   */
 
-
-#include <utility>
-#include "messages.h"
 //*    set color <id>;
 //    set color <r> <g> <b>;
 //
@@ -38,48 +35,39 @@
 //    show all // get all ids of objects including their type
 //    show <id>
 
-#include "CommandImpl.h"
 #include "map"
-#include "functional"
 #include "any"
+#include "memory"
+#include "utility"
+#include "functional"
+
 #include "Helper.h"
+#include "CommandImpl.h"
+#include "messages.h"
 #include "constants.h"
 #include "ExportSVG.h"
 #include "ExportTspaint.h"
 #include "Command.h"
-
 #include "Circle.h"
 
-//    set color <id>;
-//    set color <r> <g> <b>;
-//
-//    set fill <id>;
-//    set fill <r> <g> <b>;
-//
-//    set thickness <int>;
-
-std::vector<std::string> saveFormats = {"svg", "tspaint"};
-
-// source: https://stackoverflow.com/questions/41980888/how-to-convert-from-stdvector-to-args
-template<std::size_t... S, typename T>
-void unpack_vector(const std::vector<T> &vec, std::index_sequence<S...>) {
-    test2(vec[S]...);
-}
-
-template<std::size_t size, typename T>
-void unpack_vector(const std::vector<T> &vec) {
-    if (vec.size() != size) throw /* choose your error */;
-    unpack_vector(vec, std::make_index_sequence<size>());
-}
 
 
+/**
+ * draw command generates shapes/groups based on the user's input and stores them in the tspaint.
+ * It uses predefined color/fill/thickness/etc which can be modified by "set"command.
+ *
+ * @example draw {circle, ellipse, line, polyline} <coordinates...>
+ * @example draw circle <center_x> <center_y> <diameter>
+ *
+ * @return implementation of 'draw' command
+ */
 Command DrawCommand() {
     return Command{
             COMMAND_DRAW,
             HELP_DRAW,
             [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
-// this would be pretty cool, but requires cpp20 templates in lambda and a lot of template stuff, so maybe later
+//                this would be pretty cool, but requires cpp20 templates in lambda and a lot of template stuff, so maybe later
 //                std::vector<std::pair<std::string, std::function<std::any(void)>>> circleBuilder  = {
 //                    {"center", [&interface](){ return interface->PromptPos(); }},
 //                    {"diameter", [&interface](){ return interface->PromptInteger([](int x){ return x > 0; }); }},
@@ -109,9 +97,7 @@ Command DrawCommand() {
                                     );
                 };
 
-                    // todo redo storing
-                    tspaint->shapes.emplace_back(std::make_shared<Circle>(circle));
-                };
+
 
                 std::map<std::string, std::function<void(void)>> shapes{
                         {"circle", newCircle},
@@ -159,13 +145,18 @@ Command ListCommand() {
     };
 }
 
+/**
+ * save is used to save/export tspaint to a file.
+ * @example save {svg, tspaint} <filename>
+ * @return save command implementation
+ */
 Command SaveCommand() {
     return Command{
             COMMAND_SAVE,
             HELP_SAVE,
             [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
-                std::string format = interface->PromptOption(saveFormats);
+                std::string format = interface->PromptOption({"svg", "tspaint"});
                 std::string fileName = interface->PromptBasic("Enter filename: ",
                                                               "Error writing to file",
                                                               [](const std::string &fileName) {
@@ -208,8 +199,18 @@ Command SaveCommand() {
     };
 }
 
-
-Command SetCommand() {
+/**
+ * set is a modifier of tspaint options. It is similar to mspaint when you are selecting color and then
+ * applying it to the shape you want to draw.
+ *
+ * @example set color id <id>
+ * @example set color rgb <r> <g> <b>
+ * @example set fill id <id>
+ * @example set fill rgb <r> <g> <b>
+ * @example set thickness <int>
+ * @return set command implementation
+ */
+Command SetCommand(){
     return Command{
             COMMAND_SET,
             HELP_SET,
