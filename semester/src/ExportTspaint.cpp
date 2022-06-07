@@ -10,7 +10,8 @@
 #include "messages.h"
 #include "ostream"
 
-ExportTspaint::ExportTspaint(const std::string &fileName, std::shared_ptr<Tspaint> tspaint) {
+ExportTspaint::ExportTspaint(const std::string &fileName, std::shared_ptr<Tspaint> tspaint):
+        ExportHelper(fileName, tspaint){
     this->fileOut.open(fileName, std::ofstream::out);
     if (!fileOut) {
         throw std::runtime_error(ERROR_FILE_IO);

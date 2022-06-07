@@ -11,10 +11,14 @@
 
 class ExportHelper {
 public:
-    //ExportHelper(const std::string & fileName, std::shared_ptr<Tspaint> tspaint);
+
+    ExportHelper(const std::string & fileName, std::shared_ptr<Tspaint> tspaint);
+
     virtual bool Export() = 0;
 
 protected:
-    std::ofstream fileOut;
+
+    std::string fileName;
     std::shared_ptr<Tspaint> tspaint;
+    std::ofstream fileOut;
 };

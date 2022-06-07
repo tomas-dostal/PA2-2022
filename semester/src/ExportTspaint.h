@@ -14,6 +14,4 @@ public:
     ExportTspaint(const std::string &fileName, std::shared_ptr<Tspaint> tspaint);
 
     bool Export() override;
-
-    const std::shared_ptr<Tspaint> tspaint;
 };
