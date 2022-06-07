@@ -37,3 +37,13 @@ std::string Helper::PrintOrDefault(const std::string &text, const std::string &d
     return def;
 }
 
+int Helper::Extreme(const std::initializer_list<int> &values, std::function<bool(int, int)> comp) {
+    int max = 0;
+    for (int value : values) {
+        if(comp(value,max))
+            max = value;
+    }
+    return max;
+}
+
+

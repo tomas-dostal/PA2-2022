@@ -13,16 +13,27 @@
 class Shape {
 public:
 
-    Shape( unsigned int id, std::string name, Pos center, size_t height, size_t width, std::shared_ptr<Color> color, std::shared_ptr<Color> fill):
-    id(id), name(std::move(name)), center(center), height(height), width(width), color(color), fill(fill)
-    {
-
-    };
+    /**
+     * Shape - basic structure for generic shapes like circle, line etc.
+     * @param id
+     * @param name
+     * @param center
+     * @param height
+     * @param width
+     * @param thickness
+     * @param color
+     * @param fill
+     */
+    Shape( unsigned int id, std::string name, Pos center, size_t height, size_t width, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
   Shape() = default;
 
     virtual ~Shape() noexcept = default; // choose destructors to match class to be sure all the memory is freed
 
+    /**
+     * Draw shape into the interface / just print it
+     * @param interface
+     */
     virtual void Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
 
     virtual bool operator==(const Shape &s) = 0;
@@ -45,6 +56,7 @@ protected:
 
     size_t height{};
     size_t width{};
+    size_t thickness{};
 
     std::shared_ptr<Color> color;
     std::shared_ptr<Color> fill;

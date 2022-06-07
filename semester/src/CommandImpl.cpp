@@ -49,7 +49,7 @@
 #include "ExportTspaint.h"
 #include "Command.h"
 #include "Circle.h"
-
+#include "Line.h"
 
 
 /**
@@ -89,11 +89,45 @@ Command DrawCommand() {
                                 "",
                                 [](int x) { return x > 0; });
                     });
-                    std::shared_ptr<Color> color = std::invoke([&tspaint]() { return tspaint->color; });
-                    std::shared_ptr<Color> fill = std::invoke([&tspaint]() { return tspaint->fill; });
 
                     tspaint->AddShape(
-                            std::make_shared<Circle>(tspaint->GenerateId(), "Circle", center, diameter, color, fill)
+                            std::make_shared<Circle>(tspaint->GenerateId(),
+                                                     "Circle",
+                                                     center,
+                                                     diameter,
+                                                     tspaint->thickness,
+                                                     tspaint->color,
+                                                     tspaint->fill)
+                                    );
+                };
+                auto newLine = [&interface, &tspaint]() {
+
+                    Pos start = std::invoke([&interface]() {
+                        return interface->PromptPos(
+                                interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR, FormatterParams({"Start point"}))
+                        );
+                    });
+                    Pos end = std::invoke([&interface]() {
+                        return interface->PromptPos(
+                                interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR, FormatterParams({"End point"}))
+                        );
+                    });
+                    size_t diameter = std::invoke([&interface]() {
+                        return interface->PromptInteger(
+                                interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                      FormatterParams({"diameter"})),
+                                "",
+                                [](int x) { return x > 0; });
+                    });
+
+                    tspaint->AddShape(
+                            std::make_shared<Line>(tspaint->GenerateId(),
+                                                   "line",
+                                                   start,
+                                                   end,
+                                                   tspaint->thickness,
+                                                   tspaint->color,
+                                                   tspaint->fill)
                                     );
                 };
 
@@ -101,6 +135,7 @@ Command DrawCommand() {
 
                 std::map<std::string, std::function<void(void)>> shapes{
                         {"circle", newCircle},
+                        {"line", newLine},
                 };
 
                 std::vector<std::string> setOptionKeys;

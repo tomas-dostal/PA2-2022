@@ -5,8 +5,8 @@
 
 #include "Circle.h"
 
-Circle::Circle(unsigned int id, std::string name, Pos &center, size_t diameter, std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
-        : Shape(id, name, center, 2 * diameter, 2 * diameter, color, fill), diameter(diameter) {
+Circle::Circle(unsigned int id, std::string name, Pos &center, size_t diameter, size_t thickness,  std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
+        : Shape(id, name, center, 2 * diameter, 2 * diameter, thickness, color, fill), diameter(diameter) {
     {
 
     }

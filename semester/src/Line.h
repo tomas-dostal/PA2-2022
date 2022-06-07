@@ -7,18 +7,37 @@
 
 #include "Shape.h"
 
+class Line : public Shape {
+public:
 
-//class Line : public Shape {
-//public:
-//    Line(Pos &a, Pos &b) : a(a), b(b) {
-//        this->center = Pos(abs(a.x - b.x) / 2, abs(a.y - b.y) / 2);
-//    };
-//
-//    bool is_paralel(Line &other);
-//
-//    bool is_perpendicular(Line &other);
-//
-//private:
-//    Pos a, b;
-//
-//};
+    /**
+     * Simple line between two points
+     * @param id
+     * @param name
+     * @param Pos a
+     * @param Pos b
+     * @param thickness
+     * @param color
+     * @param fill
+     */
+    Line(unsigned long id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
+
+    void Draw(Interface &interface);
+
+    bool operator==(const Shape &s);
+
+    std::string ShapeId() { return std::to_string(this->id); }
+
+    std::string ShapeName() { return this->name; }
+
+    std::shared_ptr<Color> ShapeColor() { return this->color; };
+
+    std::shared_ptr<Color> ShapeFill() { return this->fill; };
+
+    bool isParalel(Line &other);
+
+    bool isPerpendicular(Line &other);
+
+private:
+    Pos a, b;
+};
