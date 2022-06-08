@@ -55,6 +55,8 @@ const char *const INVALID_INPUT = "Invalid input";
 const char *const UNKNOWN_COMMAND = "Unknown command '$'. For help type '$'";
 const char *const UNKNOWN_OPTION = "Unknown option '$'. For help type '$'";
 const char *const ERROR_FILE_IO = "Unable to read/write file '$'";
+const char *const FILE_LOADING_ERROR = "Loading error. Correct the input data and try again.";
+const char *const COMMAND_NOT_ALLOWED_IN_HEADLESS = "Command $ is unavailable in headless mode. ";
 
 const char *const AVAILABLE_OPTION = "Options available: $";
 

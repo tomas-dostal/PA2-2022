@@ -10,6 +10,7 @@
 
 #include "FormatterParams.h"
 #include "Command.h"
+#include "SysCommand.h"
 
 Command SetCommand();
 
@@ -17,8 +18,11 @@ Command DrawCommand();
 
 Command ListCommand();
 
-Command SaveCommand();
+SysCommand SaveCommand();
 
-Command HelpCommand(const std::shared_ptr<std::vector<Command>> &commands);
+SysCommand
+LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr<Tspaint> targetTspaint)> loadFunction);
 
-Command QuitCommand(const std::function<void(void)> stopApplication);
+SysCommand HelpCommand(const std::shared_ptr<std::vector<Command>> &commands);
+
+SysCommand QuitCommand(const std::function<void(void)> stopApplication);

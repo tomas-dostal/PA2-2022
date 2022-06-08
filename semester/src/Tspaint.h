@@ -10,11 +10,13 @@
 
 class Tspaint {
 public:
-    void AddShape(std::shared_ptr<Shape> && shape);
+    void AddShape(std::shared_ptr<Shape> &&shape);
 
     unsigned long GenerateId();
 
     Tspaint();
+
+    explicit Tspaint(std::shared_ptr<Tspaint> src);
 
     //virtual void Build(ShapeBuilder & shapeBuilder) = 0;
     std::vector<std::shared_ptr<Shape>> GetShapes();

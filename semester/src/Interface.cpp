@@ -146,11 +146,14 @@ std::string Interface::PromptCommand(const std::function<bool(const std::string 
     while (true) {
         os << formatter->FillPlaceholder({PROMPT_COMMAND}) << std::endl;
 
-        if (!(is >> command)) {
-            os << formatter->FillPlaceholder({INVALID_INPUT}) << std::endl;
-        } else if (!valid(command)) {
-            //std::string tmp = COMMAND_HELP;
+        if (!(is >> command) || !valid(command)) {
             os << formatter->FillPlaceholder(UNKNOWN_COMMAND, FormatterParams({command, COMMAND_HELP})) << std::endl;
+            is.clear();
+            is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (isHeadless())
+                throw std::runtime_error(FILE_LOADING_ERROR);
+            if (is.eof())
+                throw std::runtime_error("EOF");
         } else {
             return command;
         }
@@ -172,12 +175,14 @@ std::string Interface::PromptOption(const std::vector<std::string> &options,
     while (true) {
         os << formatter->FillPlaceholder({PROMPT_OPTION}) << std::endl;
 
-        if (!(is >> option)) {
-            os << formatter->FillPlaceholder({INVALID_INPUT}) << std::endl;
-        } else if (!valid(option)) {
+        if (!(is >> option) || (!valid(option))) {
             os << formatter->FillPlaceholder(UNKNOWN_OPTION, FormatterParams({option, COMMAND_HELP})) << std::endl;
             os << formatter->FillPlaceholder(AVAILABLE_OPTION,
                                              FormatterParams{Helper::Concat(options, ", ", "\n")});
+            if (isHeadless())
+                throw std::runtime_error(FILE_LOADING_ERROR);
+            if (is.eof())
+                throw std::runtime_error("EOF");
         } else {
             return option;
         }
@@ -186,6 +191,8 @@ std::string Interface::PromptOption(const std::vector<std::string> &options,
 
 Interface::Interface(std::istream &is, std::ostream &os) : is(is), os(os) {
     this->formatter = std::make_unique<Formatter>(Formatter(std::map<std::string, std::string>()));
+    attempts = 5;
+    headless = false;
 }
 
 void Interface::PrintHelp(const std::string &help) {
@@ -220,6 +227,11 @@ int Interface::PromptInteger(const std::string &msg,
         if (!(is >> integer) || !valid(integer)) {
             os << formatter->FillPlaceholder({Helper::PrintOrDefault(msgInvalid, INVALID_INPUT)}) << std::endl;
             is.clear();
+            is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (isHeadless())
+                throw std::runtime_error(FILE_LOADING_ERROR);
+            if (is.eof())
+                throw std::runtime_error("EOF");
         } else {
             return integer;
         }
@@ -252,9 +264,27 @@ std::string Interface::PromptBasic(const std::string &msg, const std::string &ms
 
         if (!(is >> word) || !valid(word)) {
             os << formatter->FillPlaceholder({msgInvalid}) << std::endl;
+            is.clear();
+            is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (isHeadless())
+                throw std::runtime_error(FILE_LOADING_ERROR);
+            if (is.eof())
+                throw std::runtime_error("EOF");
         } else {
             return word;
         }
     }
 }
 
+
+bool Interface::isHeadless() const {
+    return this->headless;
+}
+
+void Interface::setHeadless(bool val) {
+    this->headless = val;
+}
+
+bool Interface::End() const {
+    return this->is.eof();
+}

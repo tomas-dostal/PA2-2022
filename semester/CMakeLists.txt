@@ -18,5 +18,5 @@ add_executable(tspaint
         src/ColorPalette.h              src/Formatter.h                 src/Line.h                      src/Shape.h
         src/ExportHelper.cpp            src/ExportHelper.h
         src/ExportSVG.cpp               src/ExportSVG.h                 src/ExportTspaint.cpp           src/ExportTspaint.h
-        src/ProgtestErrors.cpp          src/ProgtestErrors.h            src/constants.h)
+        src/ProgtestErrors.cpp          src/ProgtestErrors.h            src/constants.h src/SysCommand.cpp src/SysCommand.h)
 

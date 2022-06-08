@@ -9,12 +9,11 @@
 #include "Tspaint.h"
 
 
-Command::Command(std::string name,
-                 std::string help,
-                 const std::function<void(
-                         std::shared_ptr<Tspaint>,
-                         std::shared_ptr<Interface>)> &execute)
-        : name(move(name)), help(move(help)), execute(execute) {
+Command::Command(std::string name, std::string help, bool availableInHeadless,
+                 const std::function<void(std::shared_ptr<Tspaint>,
+                                          std::shared_ptr<Interface>)> &execute
+)
+        : name(move(name)), help(move(help)), availableInHeadless(availableInHeadless), execute(execute) {
 
 }
 

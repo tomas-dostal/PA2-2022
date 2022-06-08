@@ -17,9 +17,9 @@ class Application {
 
 
 public:
-    Application() = delete;
+    Application() noexcept;
 
-    Application(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint);
+    //Application(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint);
 
     ~Application() = default;
 
@@ -27,17 +27,23 @@ public:
 
     Application &operator=(const Application &c) = delete;
 
-    void Run();
+    void Run(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint,
+             std::function<bool(void)> continueReading,
+             std::function<bool(Command *)> isCommandAllowed);
+
+    void Load(std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> &targetTspaint);
 
     void Stop();
 
+    bool IsRunning();
+
 protected:
+
     std::shared_ptr<Command> getCommandByName(const std::string name);
 
 private:
     bool isRunning;
     std::vector<Command> commands;
-    std::shared_ptr<Interface> interface;
-    std::shared_ptr<Tspaint> tspaint;
     std::shared_ptr<ProgtestErrors> progtestErrors;
+
 };

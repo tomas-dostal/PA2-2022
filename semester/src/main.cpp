@@ -10,10 +10,14 @@
 
 int main(void) {
 
-
     std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(std::cin, std::cout));
-    Application app(interface, std::make_unique<Tspaint>(Tspaint()));
-    app.Run();
+    auto app = Application();
+
+    app.Run(interface,
+            std::make_unique<Tspaint>(Tspaint()),
+            [&app]() { return app.IsRunning(); },
+            [](Command *) { return true; }
+    );
 
     /*app.RegisterCommand(Command::New(app))
             .RegisterCommand()
