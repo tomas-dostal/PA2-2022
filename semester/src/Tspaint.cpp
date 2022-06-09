@@ -26,7 +26,7 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
 }
 
 void Tspaint::AddShape(std::shared_ptr<Shape> &&shape) {
-    this->shapes.push_back(std::move(shape));
+    this->shapes.push_back(shape);
 }
 
 std::vector<std::shared_ptr<Shape>> Tspaint::GetShapes() {
@@ -39,8 +39,8 @@ unsigned long Tspaint::GenerateId() {
 
 Tspaint::Tspaint(std::shared_ptr<Tspaint> src) {
     if (this != src.get()) {
-        this->colorPalette = src->colorPalette;
-        this->shapes = src->shapes; // todo maybe merge?
+        this->colorPalette = src->colorPalette;// todo
+        std::copy(src->shapes.begin(), src->shapes.end(), back_inserter(shapes));
         this->fill = src->fill;
         this->color = src->color;
         this->thickness = src->thickness;

@@ -27,11 +27,11 @@ public:
 
     Application &operator=(const Application &c) = delete;
 
-    bool Run(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint,
+    bool Run(const std::shared_ptr<Interface>& interface, std::shared_ptr<Tspaint> &tspaint,
              std::function<bool(void)> Continue,
              std::function<bool(Command *)> IsCommandAllowed);
 
-    void Load(std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> &targetTspaint);
+    void Load(const std::shared_ptr<Interface>& interface, const std::shared_ptr<Interface>&  fileInterface, std::shared_ptr<Tspaint> &targetTspaint);
 
     void Stop();
 

@@ -41,7 +41,7 @@ const char *const UNKNOWN_COLOR_NAME = "Unknown color";
 
 const char *const BUILDING_SHAPE = "Building $: ";
 const char *const END_OF_INPUT_REACHED = "Reached end of input";
-const char *const IMPORT_SUCCESSFUL = "Input successful";
+const char *const IMPORT_SUCCESSFUL = "Import successful";
 
 const char *const PROMPT_OPTION = "Enter an option: ";
 const char *const ENTER_VALUE_IN_RANGE = "Enter value in range [$-$]";
@@ -58,7 +58,10 @@ const char *const UNKNOWN_COMMAND = "Unknown command '$'. For help type '$'";
 const char *const UNKNOWN_OPTION = "Unknown option '$'. For help type '$'";
 const char *const ERROR_FILE_IO = "Unable to read/write file '$'";
 const char *const FILE_LOADING_ERROR = "Loading error. Correct the input data and try again.";
+const char *const IMPORT_ABORTED = "Import aborted. ";
 const char *const COMMAND_NOT_ALLOWED_IN_HEADLESS = "Command $ is unavailable in headless mode. ";
+const char *const LOAD_WILL_OVERWRITE = "Loading from file will overwrite current instance of tspaint, which might cause you a lot of pain. \nAre you sure you want to do that? \nYour progress will be lost unless saved. \n Do you want to proceed? ";
+const char *const YES_OR_NO_WITH_MESSAGE = "$ [y/n]";
 
 const char *const AVAILABLE_OPTION = "Options available: $";
 

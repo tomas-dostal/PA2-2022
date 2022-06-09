@@ -20,8 +20,18 @@ Application::Application() noexcept:
                                        PROGTEST_ERROR_FILENAME))) {
 
     auto quit = [this]() { this->Stop(); };
-    auto load = [this](std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> targetTspaint) {
-        this->Load(interface, fileInterface, targetTspaint);
+    auto load = [this](std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> & targetTspaint) {
+        interface->PrintInfo(
+                interface->formatter->FillPlaceholder(
+                        YES_OR_NO_WITH_MESSAGE,
+                        FormatterParams({LOAD_WILL_OVERWRITE})
+                        )
+                );
+        if(std::count(YES.begin(), YES.end(), interface->PromptOption(YES_NO)))
+            this->Load(interface, fileInterface, targetTspaint);
+        else
+            interface->PrintInfo(IMPORT_ABORTED);
+
     };
     commands.emplace_back(SetCommand());
     commands.emplace_back(DrawCommand());
@@ -33,9 +43,11 @@ Application::Application() noexcept:
 
 }
 
-void Application::Load(std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> &targetTspaint) {
+void Application::Load(const std::shared_ptr<Interface> & interface, const std::shared_ptr<Interface>&  fileInterface, std::shared_ptr<Tspaint> & targetTspaint) {
 
     std::shared_ptr<Tspaint> tspaintCopy = std::make_shared<Tspaint>(*targetTspaint);
+//    *tspaintCopy = *targetTspaint; //
+
     if (!this->Run(fileInterface,
                   tspaintCopy,
                   [&fileInterface]() { return !fileInterface->End(); },
@@ -46,11 +58,13 @@ void Application::Load(std::shared_ptr<Interface> interface, std::shared_ptr<Int
     }
 
     interface->PrintInfo(IMPORT_SUCCESSFUL);
-    targetTspaint = tspaintCopy;
+    *targetTspaint = *tspaintCopy;
 }
 
-bool Application::Run(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint,
-                      std::function<bool(void)> Continue, std::function<bool(Command *)> IsCommandAllowed) {
+bool Application::Run(const std::shared_ptr<Interface> & interface,
+                      std::shared_ptr<Tspaint> & tspaint,
+                      std::function<bool(void)> Continue,
+                      std::function<bool(Command *)> IsCommandAllowed) {
 
     while (Continue() && !interface->End()) {
 
@@ -68,7 +82,7 @@ bool Application::Run(std::shared_ptr<Interface> interface, std::shared_ptr<Tspa
         try {
             if (command) {
                 if (IsCommandAllowed(command.get())) {
-                    command->Execute(std::make_shared<Tspaint>(tspaint), interface);
+                    command->Execute(tspaint, interface);
                 } else {
                     interface->PrintInfo(
                             interface->formatter->FillPlaceholder(COMMAND_NOT_ALLOWED_IN_HEADLESS,

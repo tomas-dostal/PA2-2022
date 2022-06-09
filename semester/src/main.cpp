@@ -12,9 +12,10 @@ int main(void) {
 
     std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(std::cin, std::cout));
     auto app = Application();
+    std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
 
     app.Run(interface,
-            std::make_unique<Tspaint>(Tspaint()),
+            tspaint,
             [&app]() { return app.IsRunning(); },
             [](Command *) { return true; }
     );
