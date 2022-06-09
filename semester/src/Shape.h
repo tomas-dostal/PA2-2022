@@ -36,15 +36,17 @@ public:
      */
     virtual void Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
 
+    virtual std::string Print();
+
     virtual bool operator==(const Shape &s) = 0;
 
-    virtual std::string ShapeId() = 0;
+    virtual std::string ShapeId();
 
-    virtual std::string ShapeName() = 0;
+    virtual std::string ShapeName();
 
-    virtual std::shared_ptr<Color> ShapeColor() = 0;
+    virtual std::shared_ptr<Color> ShapeColor();
 
-    virtual std::shared_ptr<Color> ShapeFill() = 0;
+    virtual std::shared_ptr<Color> ShapeFill();
 
     //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();
 

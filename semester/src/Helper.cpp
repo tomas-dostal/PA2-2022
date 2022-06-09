@@ -4,6 +4,7 @@
   */
 
 #include "Helper.h"
+#include "ShapeGroup.h"
 #include "vector"
 #include "string"
 
@@ -44,6 +45,17 @@ int Helper::Extreme(const std::initializer_list<int> &values, std::function<bool
             max = value;
     }
     return max;
+}
+
+std::vector<std::string> Helper::Indent(const std::string & sep, const std::vector<std::string> & in){
+
+    std::vector<std::string> out(in.size());
+    auto it = out.begin();
+
+    for(auto & line: in){
+        out.insert(it++, sep + line);
+    }
+    return out;
 }
 
 

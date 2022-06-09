@@ -19,5 +19,7 @@ public:
     static bool _getIntFromStringStream(std::stringstream &ss, int &res);
 
     static std::string PrintOrDefault(const std::string &text, const std::string &def);
+
+    static std::vector<std::string> Indent(const std::string & sep, const std::vector<std::string> & in) ;
 };
 

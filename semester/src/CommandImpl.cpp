@@ -291,10 +291,10 @@ Command SetCommand() {
                        auto setThickness = [&interface, &tspaint]() {
                            tspaint->thickness = (size_t) interface->PromptInteger(
                                    interface->formatter->FillPlaceholder(SET_ENTER_THICKNESS,
-                                                                         FormatterParams{THICKENSS_MIN, THICKENSS_MAX}),
+                                                                         FormatterParams{THICKNESS_MIN, THICKNESS_MAX}),
                                    INVALID_INPUT,
                                    [](const size_t value) {
-                                       return Helper::_isInRange(value, THICKENSS_MIN, THICKENSS_MAX);
+                                       return Helper::_isInRange(value, THICKNESS_MIN, THICKNESS_MAX);
                                    });
                        };
 
