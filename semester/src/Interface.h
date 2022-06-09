@@ -73,4 +73,6 @@ private:
 
     int attempts;
     bool headless;
+
+    void ClearOrThrow() const;
 };

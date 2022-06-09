@@ -4,6 +4,7 @@
   */
 
 #include "Tspaint.h"
+#include "constants.h"
 
 Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(170, 170, 170, "GRAY__PROGTEST")));
@@ -21,6 +22,7 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     // todo load from file
     color = colorPalette.getColorByName("YELLOW__FIT");
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
+    thickness = THICKNESS_DEFAULT;
 }
 
 void Tspaint::AddShape(std::shared_ptr<Shape> &&shape) {

@@ -16,3 +16,4 @@ const int POS_X_MIN = 0;
 const int POS_X_MAX = 1920;
 const int POS_Y_MIN = 0;
 const int POS_Y_MAX = 1080;
+const int THICKNESS_DEFAULT = 5; 

@@ -10,6 +10,7 @@
 #include "ProgtestErrors.h"
 #include "constants.h"
 #include "sstream"
+#include "fstream"
 
 Application::Application() noexcept:
         isRunning(true),
@@ -19,8 +20,8 @@ Application::Application() noexcept:
                                        PROGTEST_ERROR_FILENAME))) {
 
     auto quit = [this]() { this->Stop(); };
-    auto load = [this](std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> targetTspaint) {
-        this->Load(interface, targetTspaint);
+    auto load = [this](std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> targetTspaint) {
+        this->Load(interface, fileInterface, targetTspaint);
     };
     commands.emplace_back(SetCommand());
     commands.emplace_back(DrawCommand());
@@ -32,50 +33,58 @@ Application::Application() noexcept:
 
 }
 
-void Application::Load(std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> &targetTspaint) {
+void Application::Load(std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> &targetTspaint) {
 
-    Tspaint tspaintCopy(targetTspaint);
-    try {
-        this->Run(fileInterface,
-                  std::make_shared<Tspaint>(tspaintCopy),
+    std::shared_ptr<Tspaint> tspaintCopy = std::make_shared<Tspaint>(*targetTspaint);
+    if (!this->Run(fileInterface,
+                  tspaintCopy,
                   [&fileInterface]() { return !fileInterface->End(); },
                   [](Command *command) { return command->IsAllowedHeadless(); }
-        );
-        *targetTspaint = tspaintCopy;
+        )){
+        interface->PrintInfo(FILE_LOADING_ERROR);
+        return;
     }
-    catch (std::runtime_error &e) {
-        std::cerr << e.what() << std::endl;
-        fileInterface->PrintInfo(FILE_LOADING_ERROR);
-    }
+
+    interface->PrintInfo(IMPORT_SUCCESSFUL);
+    targetTspaint = tspaintCopy;
 }
 
-void Application::Run(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint,
+bool Application::Run(std::shared_ptr<Interface> interface, std::shared_ptr<Tspaint> tspaint,
                       std::function<bool(void)> Continue, std::function<bool(Command *)> IsCommandAllowed) {
 
     while (Continue() && !interface->End()) {
+
+        std::shared_ptr<Command> command = nullptr;
         try {
-            auto command = this->getCommandByName(interface->PromptCommand([this](const std::string &name) {
+            command = this->getCommandByName(interface->PromptCommand([this](const std::string &name) {
                 return std::any_of(commands.begin(), commands.end(),
                                    [&name](Command &command) { return name == command.Name(); });
             }));
+        }
+        catch (std::ifstream::failure e) {
+            interface->PrintInfo(interface->formatter->FillPlaceholder(FormatterParams({END_OF_INPUT_REACHED})));
+            break;
+        }
+        try {
             if (command) {
                 if (IsCommandAllowed(command.get())) {
                     command->Execute(std::make_shared<Tspaint>(tspaint), interface);
                 } else {
-                    throw std::runtime_error(
+                    interface->PrintInfo(
                             interface->formatter->FillPlaceholder(COMMAND_NOT_ALLOWED_IN_HEADLESS,
                                                                   FormatterParams({command->Name()})
                             )
                     );
+                    return false;
                 }
             }
         }
-        catch (std::runtime_error e) {
-            std::cerr << e.what() << std::endl;
+        catch( std::runtime_error e){
+            interface->PrintInfo(e.what());
+            return false;
         }
-
-
     }
+    return true;
 }
 
 std::shared_ptr<Command> Application::getCommandByName(const std::string name) {

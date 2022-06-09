@@ -21,7 +21,7 @@ Command ListCommand();
 SysCommand SaveCommand();
 
 SysCommand
-LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr<Tspaint> targetTspaint)> loadFunction);
+LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr<Interface>, std::shared_ptr<Tspaint> targetTspaint)> loadFunction);
 
 SysCommand HelpCommand(const std::shared_ptr<std::vector<Command>> &commands);
 

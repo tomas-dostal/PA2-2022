@@ -40,6 +40,8 @@ const char *const COLOR = "$ (r: $, g: $, b: $)";
 const char *const UNKNOWN_COLOR_NAME = "Unknown color";
 
 const char *const BUILDING_SHAPE = "Building $: ";
+const char *const END_OF_INPUT_REACHED = "Reached end of input";
+const char *const IMPORT_SUCCESSFUL = "Input successful";
 
 const char *const PROMPT_OPTION = "Enter an option: ";
 const char *const ENTER_VALUE_IN_RANGE = "Enter value in range [$-$]";

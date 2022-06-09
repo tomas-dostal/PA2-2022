@@ -240,7 +240,7 @@ SysCommand SaveCommand() {
  * @return LoadCommand implementation
  */
 SysCommand
-LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr<Tspaint> targetTspaint)> loadFn) {
+LoadCommand(const std::function<void(std::shared_ptr<Interface>,std::shared_ptr<Interface>, std::shared_ptr<Tspaint> targetTspaint)> loadFn) {
     return SysCommand{COMMAND_LOAD, HELP_LOAD,
                       [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
@@ -260,7 +260,7 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr
                           auto fileInterface = std::make_shared<Interface>(fileIn, ss);
                           fileInterface->setHeadless(true);
 
-                          loadFn(fileInterface, tspaint);
+                          loadFn(interface, fileInterface, tspaint);
                       }
     };
 }
