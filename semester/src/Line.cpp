@@ -10,7 +10,7 @@ Line::Line(unsigned long id, std::string name, Pos &a, Pos &b, size_t thickness,
            std::shared_ptr<Color> fill)
         : Shape(id,
                 name,
-                Pos(abs(a.x - b.x) / 2, abs(a.y - b.y) / 2),
+                std::make_shared<Pos>(Pos(abs(a.x - b.x) / 2, abs(a.y - b.y) / 2)),
                 abs(a.x - b.x),
                 abs(a.y - b.y),
                 thickness,
@@ -20,7 +20,7 @@ Line::Line(unsigned long id, std::string name, Pos &a, Pos &b, size_t thickness,
 
 }
 
-bool Line::operator==(const Shape &s) {
+bool Line::operator==(const SuperShape &s) {
     const Line *ptr = dynamic_cast<const Line *>( &s );
     return ptr != nullptr
            && this->a == ptr->a
@@ -30,7 +30,12 @@ bool Line::operator==(const Shape &s) {
            && this->color == ptr->color;
 }
 
-void Line::Draw(Interface &interface) {
-    interface.PrintInfo("Line.");
+void Line::Draw(std::shared_ptr<Interface> interface, std::string format) {
+    interface->PrintInfo("Line.");
 
+}
+
+std::string Line::Print() const {
+    // todo finish formatting
+    return name;
 }

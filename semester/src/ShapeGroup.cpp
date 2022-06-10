@@ -7,57 +7,85 @@
 #include "Helper.h"
 #include "constants.h"
 
-template<class T>
-std::vector<T> ShapeGroup<T>::List() const {
+
+std::vector<std::shared_ptr<SuperShape>> ShapeGroup::List() const {
     return children;
 }
 
-template<class T>
-std::ostream & operator<<(std::ostream & os, const ShapeGroup<T> & shapeGroup) {
-    for(T shapeOrGroup: shapeGroup){
-        const Shape *ptr = dynamic_cast<const Shape *>( &shapeOrGroup );
-        // group
-        if(!ptr){
-            std::vector<std::string> vs;
-            for(auto item: shapeOrGroup ){
-                vs.push_back(item.Print());
-            }
-            // std::accumulate could be used for that, but it is cpp20
-            auto shapeOrGroupVector = Helper::Indent(SEP_SPACE, vs);
-            for(std::string str: shapeOrGroupVector)
-                os << str << std::endl;
-        }
-        else{
-            os << shapeOrGroup.Print() << std::endl;
-        }
-
+std::ostream & operator<<(std::ostream & os, const ShapeGroup & shapeGroup) {
+    for(const auto & shapeOrGroup: shapeGroup.children){
+        os << shapeOrGroup->Print() << std::endl;
     }
     return os;
 }
 
-template<class T>
-std::string ShapeGroup<T>::Print() const {
-    std::string out = "";
-    for(auto child : children){
-        out += child.Print() + "\n";
+std::string ShapeGroup::Print() const {
+    std::string out = "Group: ";
+    for(const auto & child : children){
+        out += "  "+ child->Print() + "\n";
     }
     return out;
 }
 
-template<class T>
-ShapeGroup<T>::ShapeGroup(unsigned int id, std::vector<T> children): children(children), id(id){
+ShapeGroup::ShapeGroup(unsigned int id,
+                       std::string name,
+                       std::vector<std::shared_ptr<SuperShape>> children):
+    SuperShape(id,
+               name,
+               std::make_shared<Pos>(0,0),
+               [&children]() {
+                   size_t max = 0;
+                   for (auto child: children) {
+                       if (child->Height() > max)
+                           max = child->Height();
+                   }
+                   return max;
+               }(),
+               [&children]() {
+                   size_t max = 0;
+                   for (auto child: children) {
+                       if (child->Width() > max)
+                           max = child->Width();
+                   }
+                   return max;
+               }()
+               ), children(children){
+
 }
 
-template<class T>
-void ShapeGroup<T>::Add(std::shared_ptr<T> shapeOrGroup){
-    this->children.push_back(shapeOrGroup);
+void ShapeGroup::Add(std::shared_ptr<SuperShape> && superShape){
+    this->children.push_back(superShape);
 }
 
-template<class T>
-std::shared_ptr<ShapeGroup<T>> ShapeGroup<T>::Clone(unsigned int newId) const {
-    auto res = std::shared_ptr<ShapeGroup>(*this);
-    res->id = newId;
-    return res;
+//std::shared_ptr<ShapeGroup> ShapeGroup::Clone(unsigned int newId) const {
+//    auto res = std::make_shared<ShapeGroup>(*this);
+//    res->id = newId;
+//    return res;
+//}
+
+bool ShapeGroup::operator==(const SuperShape &s) {
+    // todo
+    const ShapeGroup *ptr = dynamic_cast<const ShapeGroup *>( &s );
+    if(ptr)
+        return id == ptr->id && children.size() == ptr->children.size();
+    return false;
 }
 
+ShapeGroup::ShapeGroup(const ShapeGroup &shapeGroup) : SuperShape(shapeGroup.id, shapeGroup.name, shapeGroup.center, shapeGroup.width, shapeGroup.height) {
+    // todo
+    if(!(*this == shapeGroup)){
+        children = std::vector<std::shared_ptr<SuperShape>>(shapeGroup.children);
+        id = shapeGroup.id;
+        height = shapeGroup.height;
+        width = shapeGroup.width;
+        name = shapeGroup.name;
+        center = shapeGroup.center;
+    }
+}
 
+void ShapeGroup::Draw(std::shared_ptr<Interface> interface, std::string format) {
+    // todo
+    for(auto superShape: children){
+        superShape->Draw(interface, format);
+    }
+}

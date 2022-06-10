@@ -7,27 +7,34 @@
 
 #include "ColorPalette.h"
 #include "Shape.h"
+#include "ShapeGroup.h"
+
 
 class Tspaint {
 public:
-    void AddShape(std::shared_ptr<Shape> &&shape);
+    void AddShape(const std::shared_ptr<SuperShape> superShape) const;
+
+    void AddGroup();
 
     unsigned long GenerateId();
 
+    unsigned long GenerateGroupId();
+
     Tspaint();
 
-    explicit Tspaint(std::shared_ptr<Tspaint> src);
-
-    //virtual void Build(ShapeBuilder & shapeBuilder) = 0;
-    std::vector<std::shared_ptr<Shape>> GetShapes();
+    explicit Tspaint(const std::shared_ptr<Tspaint>& src);
 
     ColorPalette colorPalette;
     std::shared_ptr<Color> color;
     std::shared_ptr<Color> fill;
     size_t thickness;
 
-    std::vector<std::shared_ptr<Shape>> shapes;
+    std::shared_ptr<ShapeGroup> root;
+
+    std::shared_ptr<ShapeGroup> currentGroup;
 
     unsigned long idGenerator = 0;
+    unsigned long groupIdGenerator = 0;
 
+    void AddShape(SuperShape superShape) const;
 };

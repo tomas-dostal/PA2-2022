@@ -93,7 +93,7 @@ Command DrawCommand() {
                            tspaint->AddShape(
                                    std::make_shared<Circle>(tspaint->GenerateId(),
                                                             "Circle",
-                                                            center,
+                                                            std::make_shared<Pos>(center),
                                                             diameter,
                                                             tspaint->thickness,
                                                             tspaint->color,
@@ -159,22 +159,23 @@ Command ListCommand() {
     return Command{COMMAND_LIST, HELP_LIST, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
                        return std::invoke([&interface, &tspaint]() {
-                           for (const auto &shape: tspaint->GetShapes()) {
-                               interface->PrintHelp(
-                                       interface->formatter->FillPlaceholder(
-                                               PRINT_SHAPE,
-                                               FormatterParams({
-                                                                       shape->ShapeId(),
-                                                                       shape->ShapeName(),
-                                                                       interface->formatter->FormatColor(
-                                                                               shape->ShapeColor()),
-                                                                       interface->formatter->FormatColor(
-                                                                               shape->ShapeFill()),
-                                                                       //formatter.FormatNamedCoords(shape->ShapeNamedCoords())
-                                                               })
-                                       )
-                               );
-                           }
+//                           for (const auto &shape: tspaint->GetShapes()) {
+//                               interface->PrintHelp(
+//                                       interface->formatter->FillPlaceholder(
+//                                               PRINT_SHAPE,
+//                                               FormatterParams({
+//                                                                       shape->Id(),
+//                                                                       shape->Name(),
+//                                                                       interface->formatter->FormatColor(
+//                                                                               shape->ShapeColor()),
+//                                                                       interface->formatter->FormatColor(
+//                                                                               shape->ShapeFill()),
+//                                                                       //formatter.FormatNamedCoords(shape->ShapeNamedCoords())
+//                                                               })
+//                                       )
+//                               );
+//                           }
+                        return "Shapes not asdfgasdfdsaf";
                        });
                    }
     };

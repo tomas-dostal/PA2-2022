@@ -17,6 +17,7 @@ Command::Command(std::string name, std::string help, bool availableInHeadless,
 
 }
 
+
 void Command::Execute(std::shared_ptr<Tspaint> tspaint,
                       std::shared_ptr<Interface> interface) {
     execute(tspaint, interface);

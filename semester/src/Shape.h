@@ -5,12 +5,14 @@
 
 #pragma once
 
+#include "any"
+
 #include "Pos.h"
 #include "Color.h"
 #include "Interface.h"
-#include "any"
+#include "SuperShape.h"
 
-class Shape {
+class Shape : public SuperShape {
 public:
 
     /**
@@ -24,9 +26,10 @@ public:
      * @param color
      * @param fill
      */
-    Shape( unsigned int id, std::string name, Pos center, size_t height, size_t width, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
+    Shape(unsigned int id, std::string name, std::shared_ptr<Pos> center, size_t height, size_t width, size_t thickness,
+          std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
-  Shape() = default;
+    Shape() = delete;
 
     virtual ~Shape() noexcept = default; // choose destructors to match class to be sure all the memory is freed
 
@@ -34,35 +37,32 @@ public:
      * Draw shape into the interface / just print it
      * @param interface
      */
-    virtual void Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
+    // virtual void Draw(Interface &interface) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
 
-    virtual std::string Print();
+//    virtual std::string Print();
+//
+//    virtual bool operator==(const Shape &s) = 0;
+//
+//    virtual std::string Id();
+//
+//    virtual std::string Name();
 
-    virtual bool operator==(const Shape &s) = 0;
+    std::shared_ptr<Color> ShapeColor();
 
-    virtual std::string ShapeId();
+    std::shared_ptr<Color> ShapeFill();
 
-    virtual std::string ShapeName();
 
-    virtual std::shared_ptr<Color> ShapeColor();
-
-    virtual std::shared_ptr<Color> ShapeFill();
+    size_t Thickness() const;
 
     //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();
-
 protected:
-    unsigned int id{};
-    std::string name;
-
-    Pos center;
-
     size_t height{};
     size_t width{};
+
     size_t thickness{};
-
     std::shared_ptr<Color> color;
-    std::shared_ptr<Color> fill;
 
+    std::shared_ptr<Color> fill;
 };
 
 //std::vector<std::pair<std::string, std::any>> Shape::ShapeNamedCoords() {
@@ -72,3 +72,5 @@ protected:
 //           "width", this->width}
 //    });
 //}
+
+

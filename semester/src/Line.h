@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Shape.h"
+#include "SuperShape.h"
 
 class Line : public Shape {
 public:
@@ -22,21 +23,16 @@ public:
      */
     Line(unsigned long id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
-    void Draw(Interface &interface);
+    void Draw(std::shared_ptr<Interface> interface, std::string format) override;
 
-    bool operator==(const Shape &s);
+    std::string Print() const override;
 
-    std::string ShapeId() { return std::to_string(this->id); }
-
-    std::string ShapeName() { return this->name; }
-
-    std::shared_ptr<Color> ShapeColor() { return this->color; };
-
-    std::shared_ptr<Color> ShapeFill() { return this->fill; };
+    bool operator==(const SuperShape &s) override;
 
     bool isParalel(Line &other);
 
     bool isPerpendicular(Line &other);
+
 
 private:
     Pos a, b;

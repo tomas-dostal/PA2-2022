@@ -13,6 +13,7 @@
 #include "Interface.h"
 #include "Tspaint.h"
 
+
 class Command {
 private:
     std::string name;

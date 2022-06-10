@@ -13,20 +13,14 @@ class Circle : public Shape {
 public:
     Circle() = delete;
 
-    Circle(unsigned int id, std::string name, Pos &center, size_t diameter, size_t thickenss,  std::shared_ptr<Color> color,
+    Circle(unsigned int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickenss,  std::shared_ptr<Color> color,
            std::shared_ptr<Color> fill);
 
-    void Draw(Interface &interface);
+    void Draw(std::shared_ptr<Interface> interface, std::string format) override;
 
-    bool operator==(const Shape &s);
+    std::string Print() const override;
 
-    std::string ShapeId() { return std::to_string(this->id); }
-
-    std::string ShapeName() { return this->name; }
-
-    std::shared_ptr<Color> ShapeColor() { return this->color; };
-
-    std::shared_ptr<Color> ShapeFill() { return this->fill; };
+    bool operator==(const SuperShape &s) override;
 
 private:
     size_t diameter;

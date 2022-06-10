@@ -46,8 +46,6 @@ Application::Application() noexcept:
 void Application::Load(const std::shared_ptr<Interface> & interface, const std::shared_ptr<Interface>&  fileInterface, std::shared_ptr<Tspaint> & targetTspaint) {
 
     std::shared_ptr<Tspaint> tspaintCopy = std::make_shared<Tspaint>(*targetTspaint);
-//    *tspaintCopy = *targetTspaint; //
-
     if (!this->Run(fileInterface,
                   tspaintCopy,
                   [&fileInterface]() { return !fileInterface->End(); },
@@ -77,6 +75,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
         }
         catch (std::ifstream::failure e) {
             interface->PrintInfo(interface->formatter->FillPlaceholder(FormatterParams({END_OF_INPUT_REACHED})));
+            std::cout << interface->is.tellg() << std::endl;
             break;
         }
         try {
@@ -89,6 +88,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
                                                                   FormatterParams({command->Name()})
                             )
                     );
+                    std::cout << interface->is.tellg() << std::endl;
                     return false;
                 }
             }
@@ -101,6 +101,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
     return true;
 }
 
+
 std::shared_ptr<Command> Application::getCommandByName(const std::string name) {
     for (auto c: commands)
         if (c.Name() == name)
@@ -108,9 +109,11 @@ std::shared_ptr<Command> Application::getCommandByName(const std::string name) {
     return nullptr;
 }
 
+
 void Application::Stop() {
     isRunning = false;
 }
+
 
 bool Application::IsRunning() {
     return isRunning;

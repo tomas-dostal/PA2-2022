@@ -67,8 +67,8 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const std::string &text);
 
     std::unique_ptr<Formatter> formatter;
-private:
     std::istream &is;
+private:
     std::ostream &os;
 
     int attempts;

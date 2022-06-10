@@ -4,6 +4,7 @@
   */
 
 #include "Tspaint.h"
+#include "ShapeGroup.h"
 #include "constants.h"
 
 Tspaint::Tspaint() : colorPalette(ColorPalette()) {
@@ -23,24 +24,38 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     color = colorPalette.getColorByName("YELLOW__FIT");
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
     thickness = THICKNESS_DEFAULT;
+    root = std::make_shared<ShapeGroup>(GenerateId(), "root", std::vector<std::shared_ptr<SuperShape>>());
+    currentGroup = root;
 }
 
-void Tspaint::AddShape(std::shared_ptr<Shape> &&shape) {
-    this->shapes.push_back(shape);
+void Tspaint::AddGroup() {
+    auto group = std::make_shared<ShapeGroup>(GenerateGroupId(),
+            "group",
+            std::vector<std::shared_ptr<SuperShape>>()
+            );
+
+    this->currentGroup->Add(group);
 }
 
-std::vector<std::shared_ptr<Shape>> Tspaint::GetShapes() {
-    return this->shapes;
-}
+
+
+
 
 unsigned long Tspaint::GenerateId() {
     return ++idGenerator;
 }
 
-Tspaint::Tspaint(std::shared_ptr<Tspaint> src) {
+
+unsigned long Tspaint::GenerateGroupId() {
+    return ++groupIdGenerator;
+}
+
+
+Tspaint::Tspaint(const std::shared_ptr<Tspaint>& src) {
     if (this != src.get()) {
         this->colorPalette = src->colorPalette;// todo
-        std::copy(src->shapes.begin(), src->shapes.end(), back_inserter(shapes));
+        root = src->root;
+        currentGroup = src->currentGroup;
         this->fill = src->fill;
         this->color = src->color;
         this->thickness = src->thickness;
