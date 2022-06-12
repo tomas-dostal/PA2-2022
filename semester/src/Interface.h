@@ -7,6 +7,9 @@
 
 #include <iostream>
 #include <string>
+#include <functional>
+#include <vector>
+#include <memory>
 
 #include "Color.h"
 #include "Pos.h"

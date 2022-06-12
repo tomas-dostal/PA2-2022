@@ -6,6 +6,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 #include "Pos.h"
 #include "Interface.h"
@@ -52,8 +53,6 @@ public:
     virtual std::string Print() const = 0;
 
     virtual void NewId( const std::function<int(void)> IdGenerator);
-
-    // virtual std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
 
     virtual std::pair<size_t, size_t> CalcMaxDimensions();
 

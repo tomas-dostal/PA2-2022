@@ -6,6 +6,7 @@
 #pragma once
 
 #include <sstream>
+#include <functional>
 
 class Helper {
 

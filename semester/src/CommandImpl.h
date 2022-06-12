@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include "FormatterParams.h"
 #include "Command.h"
 #include "SysCommand.h"

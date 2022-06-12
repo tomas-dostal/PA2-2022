@@ -7,6 +7,7 @@
 
 #include <any>
 #include <memory>
+#include <string>
 
 #include "SuperShape.h"
 #include "Pos.h"
@@ -48,5 +49,4 @@ protected:
 
     std::shared_ptr<Color> fill;
 
-//    std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
 };

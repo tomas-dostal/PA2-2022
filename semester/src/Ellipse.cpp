@@ -8,9 +8,9 @@
 #include "Export.h"
 
 Ellipse::Ellipse(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter_x, size_t diameter_y,
-                 size_t thickenss, std::shared_ptr<Color> color,
+                 size_t thick, std::shared_ptr<Color> color,
                  std::shared_ptr<Color> fill)
-        : Shape(id, name, center, 2 * diameter_x, 2 * diameter_y, thickness, color, fill), diameter_x(diameter_x),
+        : Shape(id, name, center, 2 * diameter_x, 2 * diameter_y, thick, color, fill), diameter_x(diameter_x),
           diameter_y(diameter_y) {
 }
 

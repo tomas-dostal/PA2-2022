@@ -19,14 +19,16 @@ ExportTspaint::ExportTspaint(const std::string &fileName):
 }
 
 bool ExportTspaint::Start(int width, int height) {
-    std::cout << " ExporTspaint::Export" << std::endl;
+    std::cout << " ExporTspaint::Export" << width << ", " << height << std::endl;
     return false;
 }
 
-bool ExportTspaint::Process(std::string SuperShapeName, std::map<std::string, std::string> dict){
+bool ExportTspaint::Process(std::string superShapeName, std::map<std::string, std::string> dict){
+    std::cout << " ExporTspaint::Process" << superShapeName <<  dict.size();
     return false;
 }
 bool ExportTspaint::End(){
     std::cout << "tspaint end " << std::endl;
     fileOut.close();
+    return false;
 }

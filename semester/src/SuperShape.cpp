@@ -9,11 +9,11 @@ SuperShape::SuperShape( int id,
             std::string name,
             std::shared_ptr<Pos> center,
             size_t width,
-            size_t height): id(id),
-                           name(name),
+            size_t height): name(name),
                            center(center),
                            width(width),
-                           height(height)
+                           height(height),
+                           id(id)
 
 {
 
