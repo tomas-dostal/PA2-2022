@@ -17,7 +17,9 @@ Line::Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shar
                 abs(a.y - b.y),
                 thickness,
                 color,
-                fill) {
+                fill),
+                a(a),
+                b(b){
 
 
 }
@@ -57,4 +59,8 @@ std::string Line::Print() const {
     // todo finish formatting
     return "" + name + " (" + std::to_string(id) + ")";
 
+}
+
+std::pair<size_t, size_t> Line::CalcMaxDimensions(){
+    return std::make_pair(width + std::max(a.x, b.x), height + std::max(a.y, b.y));
 }

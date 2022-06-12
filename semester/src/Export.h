@@ -16,7 +16,8 @@ public:
 
     explicit Export(const std::string &fileName);
 
-    virtual bool Start() = 0;
+    virtual bool Start(int width, int height) = 0;
+    virtual bool End() = 0;
 
     virtual bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) = 0;
 

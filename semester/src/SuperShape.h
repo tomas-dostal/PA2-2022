@@ -55,6 +55,8 @@ public:
 
     // virtual std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
 
+    virtual std::pair<size_t, size_t> CalcMaxDimensions();
+
 protected:
     std::string name;
 

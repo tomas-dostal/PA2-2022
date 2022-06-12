@@ -93,13 +93,30 @@ void ShapeGroup::NewId( const std::function<int(void)> IdGenerator){
 }
 
 void ShapeGroup::Draw(Export & exporter) {
-    exporter.Process(GROUP_BEGIN, {
+    exporter.Process(SHAPE_GROUP_BEGIN, {
             {GROUP_ID, std::to_string(id)}
     });
     for(const auto & child: children){
         child->Draw(exporter);
     }
-    exporter.Process(GROUP_END, {});
+    exporter.Process(SHAPE_GROUP_END, {});
+}
+
+std::pair<size_t, size_t> ShapeGroup::CalcMaxDimensions() {
+    size_t max_width = 0;
+    size_t max_height = 0;
+    for(const auto & child: this->children){
+        std::pair<size_t, size_t> tmp = child->CalcMaxDimensions();
+        if(tmp.first > max_width)
+            max_width = tmp.first;
+        if(tmp.second > max_height)
+            max_height = tmp.second;
+    }
+    // update it for current ShapeGroup
+    width = max_width;
+    height = max_height;
+
+    return std::pair<size_t, size_t>{max_width, max_height};
 }
 
 

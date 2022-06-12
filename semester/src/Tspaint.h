@@ -29,6 +29,8 @@ public:
 
     bool IsValidIndex(int) const;
 
+    std::pair<size_t, size_t> MaxDimensions() const;
+
     std::shared_ptr<SuperShape> GetSuperShape(int index);
 
     ColorPalette colorPalette;

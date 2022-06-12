@@ -40,6 +40,7 @@ public:
 
     [[nodiscard]] size_t Thickness() const;
 
+
 protected:
 
     size_t thickness;

@@ -22,6 +22,9 @@ public:
 
     bool operator==(const SuperShape &s) override;
 
+    std::pair<size_t, size_t> CalcMaxDimensions() override;
+
 private:
     size_t diameter;
+
 };

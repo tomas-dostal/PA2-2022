@@ -91,8 +91,8 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
         i++;
     }
 
-    this->os << "Select input of color: {id,rgb} ";
-    std::string option = this->PromptOption({"id", "rgb"});
+    this->os << "Select input of color: {id,rgb,byname} ";
+    std::string option = this->PromptOption({"id", "rgb", "byname"});
     if (option == "id") {
         size_t index = this->PromptInteger(
                 formatter->FillPlaceholder(SET_ENTER_COLOR_ID, FormatterParams{colorOptionsStringStream.str()}),
@@ -102,33 +102,39 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
                 });
         return colors[index];
     }
-
-    // else
-    std::vector<int> res = this->PromptMultipleIntegers(
-            3,
-            {
-                    formatter->FillPlaceholder(SET_ENTER_COLOR_RGB, {"r"}),
-                    formatter->FillPlaceholder(SET_ENTER_COLOR_RGB, {"g"}),
-                    formatter->FillPlaceholder(SET_ENTER_COLOR_RGB, {"b"})
-            },
-            {
-                    formatter->FillPlaceholder(SET_ENTER_COLOR_RGB_INVALID, {}),
-            },
-            std::vector<std::function<bool(const int &)>>{[](const int &result) {
-                return Helper::_isInRange(result, RGB_MIN, RGB_MAX);
-            }
-            }
-    );
-    std::string name = this->PromptName([](const std::string &name) {
-        return any_of(name.begin(), name.end(), [](const char &c) -> bool {
-            return !isalpha(c);
+    else if (option == "byname"){
+        std::vector<std::string> colorNames;
+        for (auto const& element : colorPalette.colors) {
+            colorNames.push_back(element.first);
+        }
+        return colorPalette.getColorByName(PromptOption(colorNames));
+    }
+    else {
+        std::vector<int> res = this->PromptMultipleIntegers(
+                3,
+                {
+                        formatter->FillPlaceholder(SET_ENTER_COLOR_RGB, {"r"}),
+                        formatter->FillPlaceholder(SET_ENTER_COLOR_RGB, {"g"}),
+                        formatter->FillPlaceholder(SET_ENTER_COLOR_RGB, {"b"})
+                },
+                {
+                        formatter->FillPlaceholder(SET_ENTER_COLOR_RGB_INVALID, {}),
+                },
+                std::vector<std::function<bool(const int &)>>{[](const int &result) {
+                    return Helper::_isInRange(result, RGB_MIN, RGB_MAX);
+                }
+                }
+        );
+        std::string name = this->PromptName([](const std::string &name) {
+            return any_of(name.begin(), name.end(), [](const char &c) -> bool {
+                return !isalpha(c);
+            });
         });
-    });
+        auto color = std::make_shared<Color>(Color(res[0], res[1], res[2], name));
+        colorPalette.addIfNotExists(color);
 
-    auto color = std::make_shared<Color>(Color(res[0], res[1], res[2], name));
-    colorPalette.addIfNotExists(color);
-
-    return color;
+        return color;
+    }
 }
 
 /**

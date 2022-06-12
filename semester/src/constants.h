@@ -10,7 +10,7 @@ const char *const PROGTEST_ERROR_FILENAME = "src/progtesterrors.txt";
 const int RGB_MIN = 0;
 const int RGB_MAX = 255;
 const int THICKNESS_MIN = 1;
-const int THICKNESS_MAX = 3;
+const int THICKNESS_MAX = 20;
 
 const int POS_X_MIN = 0;
 const int POS_X_MAX = 1920;

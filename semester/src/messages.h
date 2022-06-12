@@ -29,6 +29,9 @@ const char *const SHAPE_SQUARE = "square";
 const char *const SHAPE_CIRCLE = "circle";
 const char *const SHAPE_ELLIPSE = "elipsys";
 
+const char *const SHAPE_GROUP_BEGIN = "groupBegin";
+const char *const SHAPE_GROUP_END = "groupEnd";
+
 
 const char *const PROMPT_COMMAND = "Enter a command: ";
 const char *const PROMPT_INTEGER = "Enter a positive number: ";
@@ -103,16 +106,21 @@ const char *const FILL_R = "FILL_R";
 const char *const FILL_G = "FILL_G";
 const char *const FILL_B = "FILL_B";
 const char *const THICKNESS = "THICKNESS";
+const char *const COLOR_RGBA = "COLOR_RGBA";
+const char *const FILL_RGBA = "FILL_RGBA";
+const char *const WIDTH = "WIDTH";
+const char *const HEIGHT = "HEIGHT";
 
 
-const char *const SVG_INIT = "<svg width=\"MAX_WIDTH\" height=\"MAX_HEIGHT\">";
+
+const char *const SVG_INIT = "<svg width='MAX_WIDTH' height='MAX_HEIGHT'>";
 const char *const SVG_END = "</svg>";
-const char *const SVG_GROUP_BEGIN = "<g id=\"GROUP_ID\">";
+const char *const SVG_GROUP_BEGIN = "<g id='GROUP_ID'>";
 const char *const SVG_GROUP_END= "</g>";
-const char *const SVG_CIRCLE = "<circle cx=\"CENTER_X\" cy=\"CENTER_Y\" r=\"DIAMETER_X\" style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"$\";fill=\"SVG_FILL_RGBA\"\"/>";
-const char *const SVG_ELLIPSE = "<ellipse cx=\"CENTER_X\" cy=\"CENTER_Y\" rx=\"DIAMETER_X\" ry=\"DIAMETER_Y\"style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"THICKNESS\";fill=\"SVG_FILL_RGBA\"\"/>";
-const char *const SVG_RECTANGLE = "<ellipse cx=\"CENTER_X\" cy=\"CENTER_Y\" rx=\"DIAMETER_X\" ry=\"DIAMETER_Y\"style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"THICKNESS\";fill=\"SVG_FILL_RGBA\"\"/>";
-const char *const SVG_LINE = "<line x1=\"START_X\" y1=\"START_Y\" x2=\"END_X\" y2=\"END_Y\"style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"THICKNESS\";\"/>";
+const char *const SVG_CIRCLE = "<circle cx='CENTER_X' cy='CENTER_Y' r='DIAMETER_X' style=\"stroke='COLOR_RGBA';stroke-width='$';fill='FILL_RGBA';\"/>";
+const char *const SVG_ELLIPSE = "<ellipse cx='CENTER_X' cy='CENTER_Y' rx='DIAMETER_X' ry='DIAMETER_Y' style=\"stroke='COLOR_RGBA';stroke-width='THICKNESS';fill='FILL_RGBA';\"/>";
+const char *const SVG_RECTANGLE = "<rectangle x='START_X' y='START_Y' width='WIDTH' height='HEIGHT' style=\"stroke='COLOR_RGBA';stroke-width='THICKNESS';fill='FILL_RGBA';\"/>";
+const char *const SVG_LINE = "<line x1='START_X' y1='START_Y' x2='END_X' y2='END_Y' style=\"stroke='COLOR_RGBA';stroke-width='THICKNESS';\"/>";
 const char *const SVG_COLOR_RGBA = "rgba(COLOR_R,COLOR_G,COLOR_B,1)";
 const char *const SVG_FILL_RGBA = "rgba(FILL_R,FILL_G,FILL_B,1)";
 

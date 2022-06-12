@@ -26,6 +26,7 @@ public:
 
     ~ShapeGroup() noexcept = default;
 
+    std::pair<size_t, size_t> CalcMaxDimensions() override;
     /**
      * Add Shape or Group into group.
      * @param shapeOrGroup

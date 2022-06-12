@@ -12,7 +12,9 @@ public:
 
     ExportTspaint(const std::string &fileName);
 
-    bool Start() override;
+    bool Start(int width, int height)  override;
+
+    bool End() override;
 
     bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) override;
 

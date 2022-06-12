@@ -19,7 +19,6 @@
 //
 //    draw rectangle <pos_left_bottom>  <pos_right_top>
 //
-//    draw square <pos_left_bottom> <pos_right_top>
 //
 //    draw pa2 <pos_left_bottom> <pos_right_top>
 //
@@ -51,6 +50,7 @@
 #include "SysCommand.h"
 #include "Circle.h"
 #include "Line.h"
+#include "Rectangle.h"
 
 
 /**
@@ -125,11 +125,46 @@ Command DrawCommand() {
                                                           tspaint->fill)
                            );
                        };
+                       auto newRectangle = [&interface, &tspaint]() {
+
+                           Pos start = std::invoke([&interface]() {
+                               return interface->PromptPos(
+                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
+                                                                             FormatterParams({"Start point"}))
+                               );
+                           });
+                           size_t width = std::invoke([&interface]() {
+                               return interface->PromptInteger(
+                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                             FormatterParams({"Width"})),
+                                       "",
+                                       [](int x) { return x > 0; });
+                           });
+                           size_t height = std::invoke([&interface]() {
+                               return interface->PromptInteger(
+                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                             FormatterParams({"Height"})),
+                                       "",
+                                       [](int x) { return x > 0; });
+                           });
+
+                           tspaint->AddShape(
+                                   std::make_shared<Rectangle>(tspaint->GenerateId(),
+                                                          SHAPE_RECTANGLE,
+                                                          start,
+                                                          width,
+                                                          height,
+                                                          tspaint->thickness,
+                                                          tspaint->color,
+                                                          tspaint->fill)
+                           );
+                       };
 
 
                        std::map<std::string, std::function<void(void)>> shapes{
                                {"circle", newCircle},
                                {"line",   newLine},
+                               {"rectangle",   newRectangle},
                        };
 
                        std::vector<std::string> setOptionKeys;
@@ -226,10 +261,14 @@ SysCommand SaveCommand() {
                                                                         });
 
                           auto svgSave = [&fileName, &tspaint]() {
-                              ExportSVG(fileName).Start();
+                              auto exporter = ExportSVG(fileName);
+                              auto maxDim = tspaint->MaxDimensions();
+                              exporter.Start(maxDim.first, maxDim.second);
+                              tspaint->root->Draw(exporter);
+                              exporter.End();
                           };
                           auto tspaintSave = [&fileName, &tspaint]() {
-                              ExportTspaint(fileName).Start();
+                              ExportTspaint(fileName).Start(tspaint->root->Width(), tspaint->root->Height());
                           };
 
 
@@ -295,7 +334,8 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>,std::shared_ptr<
  * applying it to the shape you want to draw.
  *
  * @example set color id <id>
- * @example set color rgb <r> <g> <b>
+ * @example set color rgb <r> <g> <b> <name>
+ * @example set color byname <name>
  * @example set fill id <id>
  * @example set fill rgb <r> <g> <b>
  * @example set thickness <int>

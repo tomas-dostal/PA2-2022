@@ -9,34 +9,30 @@
 #include "SuperShape.h"
 #include "Export.h"
 
-class Line : public Shape {
+class Rectangle : public Shape {
 public:
 
     /**
      * Simple line between two points
      * @param id
      * @param name
-     * @param Pos a
-     * @param Pos b
+     * @param Pos start
+     * @param size_t width
+     * @param size_t height
      * @param thickness
      * @param color
      * @param fill
      */
-    Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
+    Rectangle(int id, std::string name, Pos &start, size_t width, size_t height, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
     void Draw(Export & exporter) override;
 
     [[nodiscard]] std::string Print() const override;
 
-    bool operator==(const SuperShape &s) override;
-
     std::pair<size_t, size_t> CalcMaxDimensions() override;
 
-    bool isParalel(Line &other);
-
-
-    bool isPerpendicular(Line &other);
+    bool operator==(const SuperShape &s) override;
 private:
 
-    Pos a, b;
+    Pos start;
 };

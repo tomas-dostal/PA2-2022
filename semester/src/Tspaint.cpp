@@ -105,3 +105,7 @@ std::shared_ptr<SuperShape> Tspaint::GetSuperShape(int index){
         return shape->second;
     return nullptr;
 }
+
+std::pair<size_t, size_t> Tspaint::MaxDimensions() const {
+    return root->CalcMaxDimensions();
+}

@@ -38,3 +38,7 @@ size_t SuperShape::Height() {
 void SuperShape::NewId( const std::function<int(void)> IdGenerator){
     this->id = IdGenerator();
 }
+
+std::pair<size_t, size_t> SuperShape::CalcMaxDimensions(){
+    return std::make_pair(width, height);
+}
