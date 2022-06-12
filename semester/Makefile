@@ -1,5 +1,6 @@
 # This is @copy of example semester work available on https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
 # @author David Bernhauer <bernhdav@fit.cvut.cz>
+# @basedon https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
 
 TARGET = tspaint
 
@@ -77,7 +78,11 @@ build/CommandImpl.o: src/CommandImpl.cpp src/Helper.h src/CommandImpl.h \
   src/Pos.h src/Interface.h src/Color.h src/Formatter.h \
   src/ColorPalette.h src/Export.h src/ShapeGroup.h src/SysCommand.h \
   src/messages.h src/constants.h src/ExportSVG.h src/ExportTspaint.h \
-  src/Circle.h src/Shape.h src/Line.h src/Rectangle.h
+  src/Circle.h src/Shape.h src/Line.h src/Rectangle.h src/PolyLine.h \
+  src/Ellipse.h
+build/Ellipse.o: src/Ellipse.cpp src/Ellipse.h src/Shape.h src/SuperShape.h \
+  src/Pos.h src/Interface.h src/Color.h src/Formatter.h \
+  src/FormatterParams.h src/ColorPalette.h src/Export.h src/messages.h
 build/Export.o: src/Export.cpp src/Export.h src/SuperShape.h src/Pos.h \
   src/Interface.h src/Color.h src/Formatter.h src/FormatterParams.h \
   src/ColorPalette.h src/messages.h
@@ -97,6 +102,10 @@ build/Interface.o: src/Interface.cpp src/Interface.h src/Color.h src/Pos.h \
 build/Line.o: src/Line.cpp src/Line.h src/Shape.h src/SuperShape.h src/Pos.h \
   src/Interface.h src/Color.h src/Formatter.h src/FormatterParams.h \
   src/ColorPalette.h src/Export.h src/messages.h
+build/PolyLine.o: src/PolyLine.cpp src/PolyLine.h src/Shape.h src/SuperShape.h \
+  src/Pos.h src/Interface.h src/Color.h src/Formatter.h \
+  src/FormatterParams.h src/ColorPalette.h src/Export.h src/Line.h \
+  src/Helper.h src/messages.h
 build/Pos.o: src/Pos.cpp src/Pos.h
 build/ProgtestErrors.o: src/ProgtestErrors.cpp src/ProgtestErrors.h \
   src/Interface.h src/Color.h src/Pos.h src/Formatter.h \
