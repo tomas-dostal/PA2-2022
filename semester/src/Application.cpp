@@ -4,13 +4,13 @@
   * @basedon example semester work available on https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
   */
 
-#include "Application.h"
-
+#include <sstream>
 #include <utility>
-#include "ProgtestErrors.h"
+#include <fstream>
+
+#include "Application.h"
 #include "constants.h"
-#include "sstream"
-#include "fstream"
+#include "ProgtestErrors.h"
 
 Application::Application() noexcept:
         isRunning(true),

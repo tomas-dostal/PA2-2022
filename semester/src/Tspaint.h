@@ -5,10 +5,9 @@
 
 #pragma once
 
+#include "SuperShape.h"
 #include "ColorPalette.h"
-#include "Shape.h"
 #include "ShapeGroup.h"
-
 
 class Tspaint {
 public:
@@ -38,12 +37,10 @@ public:
     size_t thickness;
 
     std::shared_ptr<ShapeGroup> root;
-
     std::shared_ptr<ShapeGroup> currentGroup;
-
-
+    std::map<int, std::shared_ptr<SuperShape>> superShapesById;
+private:
     int idGenerator = 0;
 
-    std::map<int, std::shared_ptr<SuperShape>> superShapesById;
 
 };

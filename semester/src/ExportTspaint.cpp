@@ -3,22 +3,26 @@
  * @date 31.05.2022
  */
 
-#include "ExportTspaint.h"
-
+#include <ostream>
 #include <utility>
-#include "iostream"
-#include "messages.h"
-#include "ostream"
+#include <iostream>
 
-ExportTspaint::ExportTspaint(const std::string &fileName, std::shared_ptr<Tspaint> tspaint):
-        ExportHelper(fileName, tspaint){
+#include "ExportTspaint.h"
+#include "messages.h"
+
+ExportTspaint::ExportTspaint(const std::string &fileName):
+        Export(fileName){
     this->fileOut.open(fileName, std::ofstream::out);
     if (!fileOut) {
         throw std::runtime_error(ERROR_FILE_IO);
     }
 }
 
-bool ExportTspaint::Export() {
+bool ExportTspaint::Start(){
     std::cout << " ExporTspaint::Export I'm alive" << std::endl;
+    return false;
+}
+
+bool ExportTspaint::Process(std::string SuperShapeName, std::map<std::string, std::string> dict){
     return false;
 }

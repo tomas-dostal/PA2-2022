@@ -7,7 +7,7 @@
 
 #include "Shape.h"
 #include "Pos.h"
-#include "Interface.h"
+#include "Export.h"
 
 class Circle : public Shape {
 public:
@@ -16,9 +16,9 @@ public:
     Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickenss,  std::shared_ptr<Color> color,
            std::shared_ptr<Color> fill);
 
-    void Draw(std::shared_ptr<Interface> interface, std::string format) override;
+    void Draw(Export & exporter) override;
 
-    std::string Print() const override;
+    [[nodiscard]] std::string Print() const override;
 
     bool operator==(const SuperShape &s) override;
 

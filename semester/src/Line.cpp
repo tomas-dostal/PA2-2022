@@ -4,8 +4,9 @@
   */
 
 #include "Line.h"
-#include "Helper.h"
 #include "Formatter.h"
+#include "Export.h"
+#include "messages.h"
 
 Line::Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color,
            std::shared_ptr<Color> fill)
@@ -31,8 +32,24 @@ bool Line::operator==(const SuperShape &s) {
            && this->color == ptr->color;
 }
 
-void Line::Draw(std::shared_ptr<Interface> interface, std::string format) {
-    interface->PrintInfo("Line.");
+
+void Line::Draw(Export & exporter) {
+    exporter.Process(SHAPE_LINE, {
+            {START_X,   std::to_string(a.x)},
+            {START_Y,   std::to_string(a.y)},
+            {END_X,   std::to_string(b.x)},
+            {END_Y,   std::to_string(b.y)},
+            {CENTER_Y,   std::to_string(this->center->x)},
+            {CENTER_X,   std::to_string(this->center->x)},
+            {CENTER_Y,   std::to_string(this->center->x)},
+            {COLOR_R,    std::to_string(this->color->R())},
+            {COLOR_G,    std::to_string(this->color->G())},
+            {COLOR_B,    std::to_string(this->color->B())},
+            {FILL_R,     std::to_string(this->fill->R())},
+            {FILL_G,     std::to_string(this->fill->G())},
+            {FILL_B,     std::to_string(this->fill->B())},
+            {THICKNESS,  std::to_string(this->thickness)}
+    });
 
 }
 

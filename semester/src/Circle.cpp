@@ -4,16 +4,30 @@
   */
 
 #include "Circle.h"
+#include "messages.h"
+#include "Export.h"
 
-Circle::Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickness,  std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
+Circle::Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickness,
+               std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
         : Shape(id, name, center, 2 * diameter, 2 * diameter, thickness, color, fill), diameter(diameter) {
     {
 
     }
 }
 
-void Circle::Draw(std::shared_ptr<Interface> interface, std::string format) {
-    interface->PrintInfo("I'm a circle");
+void Circle::Draw(Export & exporter) {
+    exporter.Process(SHAPE_CIRCLE, {
+            {CENTER_X,   std::to_string(this->center->x)},
+            {CENTER_Y,   std::to_string(this->center->x)},
+            {DIAMETER_X, std::to_string(this->diameter)},
+            {COLOR_R,    std::to_string(this->color->R())},
+            {COLOR_G,    std::to_string(this->color->G())},
+            {COLOR_B,    std::to_string(this->color->B())},
+            {FILL_R,     std::to_string(this->fill->R())},
+            {FILL_G,     std::to_string(this->fill->G())},
+            {FILL_B,     std::to_string(this->fill->B())},
+            {THICKNESS,  std::to_string(this->thickness)}
+    });
 }
 
 bool Circle::operator==(const SuperShape &s) {
@@ -26,6 +40,6 @@ bool Circle::operator==(const SuperShape &s) {
     // that's enough
 }
 
-std::string Circle::Print() const{
+std::string Circle::Print() const {
     return "" + name + " (" + std::to_string(id) + ")";
 }

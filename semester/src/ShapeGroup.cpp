@@ -4,9 +4,10 @@
  */
 
 #include "ShapeGroup.h"
+#include "SuperShape.h"
 #include "Helper.h"
-#include "constants.h"
-
+#include "messages.h"
+#include "Export.h"
 
 std::vector<std::shared_ptr<SuperShape>> ShapeGroup::List() const {
     return children;
@@ -84,18 +85,21 @@ ShapeGroup::ShapeGroup(const ShapeGroup &shapeGroup) : SuperShape(shapeGroup.id,
     }
 }
 
-void ShapeGroup::Draw(std::shared_ptr<Interface> interface, std::string format) {
-    // todo
-    for(auto superShape: children){
-        superShape->Draw(interface, format);
-    }
-}
-
 void ShapeGroup::NewId( const std::function<int(void)> IdGenerator){
     id = IdGenerator();
     for(auto item: children){
         item->NewId(IdGenerator);
     }
+}
+
+void ShapeGroup::Draw(Export & exporter) {
+    exporter.Process(GROUP_BEGIN, {
+            {GROUP_ID, std::to_string(id)}
+    });
+    for(const auto & child: children){
+        child->Draw(exporter);
+    }
+    exporter.Process(GROUP_END, {});
 }
 
 

@@ -4,10 +4,10 @@
   */
 
 #include <iostream>
+
 #include "Application.h"
 #include "Interface.h"
 #include "Command.h"
-
 
 
 int main(void) {
@@ -22,16 +22,6 @@ int main(void) {
             [](Command *) { return true; }
     );
 
-    /*app.RegisterCommand(Command::New(app))
-            .RegisterCommand()
-            .RegisterCommand();
-
-    app.RegisterCommand("set", nullptr).RegisterOption("color", CommandParameters({"id", int}))
-            .RegisterOption("color", CommandParameters({"r", int}, {"g", int}, {"b", int})
-                    .RegisterOption("fill", CommandParameters({"id", int}))
-                    .RegisterOption("fill", CommandParameters({"r", int}, {"g", int}, {"b", int})
-                            .RegisterOption("thickness", CommandParameters({"thickness", int});
-*/
     // from these I will always try to parse.
     // First the main command, then the option,
     // then the arguments

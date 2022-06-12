@@ -9,9 +9,9 @@
 #include <string>
 #include <memory>
 #include <functional>
+
 #include "Tspaint.h"
 #include "Interface.h"
-#include "Tspaint.h"
 
 
 class Command {

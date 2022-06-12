@@ -5,13 +5,17 @@
 
 #pragma once
 
+#include "Export.h"
 
-#include "ExportHelper.h"
-
-class ExportTspaint : public ExportHelper {
+class ExportTspaint : public Export {
 public:
 
-    ExportTspaint(const std::string &fileName, std::shared_ptr<Tspaint> tspaint);
+    ExportTspaint(const std::string &fileName);
 
-    bool Export() override;
+    bool Start() override;
+
+    bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) override;
+
+    std::map<std::string, std::string> tspaintDict;
+
 };

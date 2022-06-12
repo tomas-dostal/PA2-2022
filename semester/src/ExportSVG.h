@@ -6,14 +6,16 @@
 #pragma once
 
 
-#include "ExportHelper.h"
+#include "Export.h"
 
-class ExportSVG : public ExportHelper {
+class ExportSVG : public Export {
 public:
 
-    ExportSVG(const std::string &fileName, std::shared_ptr<Tspaint> tspaint);
+    ExportSVG(const std::string &fileName);
 
-    bool Export() override;
+    bool Start() override;
 
-    const std::shared_ptr<Tspaint> tspaint;
+    bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict);
+
+    std::map<std::string, std::string> svgDict;
 };

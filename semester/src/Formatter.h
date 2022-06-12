@@ -6,8 +6,10 @@
 
 #pragma once
 
-#include "string"
-#include "map"
+#include <string>
+#include <map>
+#include <memory>
+
 #include "FormatterParams.h"
 #include "Color.h"
 #include "ColorPalette.h"
@@ -24,6 +26,10 @@ public:
     std::string FormatNamedCoords(std::vector<std::pair<std::string, Pos>> namedCoords);
 
     std::string FillPlaceholder(const FormatterParams &formaterParams);
+
+    std::string FillNamedPlaceholders(const std::string & text, const std::map<std::string, std::string> & dict);
+
+    bool Replace(std::string & text, const std::string & from, const std::string &to);
 
     std::string FillPlaceholder(const std::string &text, const FormatterParams &formaterParams);
 

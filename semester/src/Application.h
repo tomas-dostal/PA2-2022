@@ -8,7 +8,6 @@
 #include "Interface.h"
 #include "Command.h"
 #include "Tspaint.h"
-#include "CommandParameters.h"
 #include "messages.h"
 #include "CommandImpl.h"
 #include "ProgtestErrors.h"

@@ -4,19 +4,18 @@
   */
 
 #include <sstream>
+#include <cctype>
+#include <fstream>
+
 #include "Interface.h"
 #include "Color.h"
 #include "Helper.h"
 #include "ColorPalette.h"
 #include "Pos.h"
-#include "messages.h"
 #include "FormatterParams.h"
 #include "Formatter.h"
 #include "constants.h"
-#include "cctype"
-#include "fstream"
-
-// todo!!!! Fix unexpected input by clearing the rest of buffer
+#include "messages.h"
 
 Pos Interface::PromptPos() const {
     return PromptPos("", "", nullptr);

@@ -213,7 +213,6 @@ SysCommand SaveCommand() {
     return SysCommand{COMMAND_SAVE, HELP_SAVE,
                       [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
-                          std::string format = interface->PromptOption({"svg", "tspaint"});
                           std::string fileName = interface->PromptBasic("Enter filename: ",
                                                                         "Error writing to file",
                                                                         [](const std::string &fileName) {
@@ -227,10 +226,10 @@ SysCommand SaveCommand() {
                                                                         });
 
                           auto svgSave = [&fileName, &tspaint]() {
-                              ExportSVG(fileName, tspaint).Export();
+                              ExportSVG(fileName).Start();
                           };
                           auto tspaintSave = [&fileName, &tspaint]() {
-                              ExportTspaint(fileName, tspaint).Export();
+                              ExportTspaint(fileName).Start();
                           };
 
 

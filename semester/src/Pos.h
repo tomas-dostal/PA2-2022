@@ -4,7 +4,8 @@
   */
 
 #pragma once
-#include "memory"
+
+#include <memory>
 
 class Pos {
 public:

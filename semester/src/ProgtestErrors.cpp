@@ -3,13 +3,14 @@
  * @date 28.05.2022
  */
 
-#include "ProgtestErrors.h"
 
 #include <utility>
+#include <iostream>
+#include <string>
+#include <fstream>
+
+#include "ProgtestErrors.h"
 #include "messages.h"
-#include "iostream"
-#include "string"
-#include "fstream"
 
 ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float probability, const std::string &fileName) :
         probability(probability),

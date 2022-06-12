@@ -4,9 +4,10 @@
   * @basedon example semester work available on https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
   */
 
+#include <sstream>
+
 #include "Formatter.h"
 #include "messages.h"
-#include "sstream"
 
 std::string Formatter::FillPlaceholder(const FormatterParams &formaterParams) {
     return FillPlaceholder(Formatter::PLACEHOLDER, formaterParams);
@@ -49,4 +50,23 @@ std::string Formatter::FormatNamedCoords(std::vector<std::pair<std::string, Pos>
                                                     }));
     }
     return ss.str();
+}
+
+std::string Formatter::FillNamedPlaceholders(const std::string & text, const std::map<std::string, std::string>& dict){
+    std::string result(text);
+    for (const auto & i : dict) {
+        Replace(result, i.first, i.second);
+    }
+    return result;
+}
+bool Formatter::Replace(std::string & text, const std::string & from, const std::string &to){
+    size_t start_pos = text.find(from);
+    if (start_pos == std::string::npos)
+        return false;
+    text.replace(start_pos, from.length(), to);
+    return true;
+}
+
+Formatter::Formatter():  dict(std::map<std::string, std::string>()) {
+
 }

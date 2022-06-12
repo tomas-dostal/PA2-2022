@@ -3,11 +3,10 @@
   * @date 19.05.2022
   */
 
+#include <string>
+#include <vector>
 
 #include "FormatterParams.h"
-#include "vector"
-#include "string"
-#include "set"
 
 FormatterParams::FormatterParams() {
     this->params = std::vector<std::string>();

@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include <string>
 
 #include "Interface.h"
-#include "string"
 
 
 class ProgtestErrors {

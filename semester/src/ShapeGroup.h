@@ -5,9 +5,10 @@
 
 #pragma once
 
-#include "vector"
-#include "Shape.h"
+#include <vector>
+
 #include "SuperShape.h"
+#include "Export.h"
 
 class ShapeGroup : public SuperShape{
 public:
@@ -40,20 +41,20 @@ public:
      * List all groups/subgroups
      * @return vector of groups/subgroups which are children to *this
      */
-    std::vector<std::shared_ptr<SuperShape>> List() const;
+    [[nodiscard]] std::vector<std::shared_ptr<SuperShape>> List() const;
 
     /**
      * Print basic info about shape/group
      * @return string
      */
-    std::string Print() const override;
+    [[nodiscard]] std::string Print() const override;
 
     /**
      * Method Draw is used for export in specified format
      * @param interface
      * @param format
      */
-    void Draw(std::shared_ptr<Interface> interface, std::string format) override;
+     void Draw(Export & exporter) override;
 
     /**
      * Overloaded print operator
@@ -67,7 +68,7 @@ public:
 
     void NewId( const std::function<int(void)> IdGenerator) override;
 
-    std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
+    // std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
 
 protected:
     std::vector<std::shared_ptr<SuperShape>> children;

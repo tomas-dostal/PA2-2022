@@ -5,9 +5,11 @@
 
 #pragma once
 
-#include "string"
+#include <string>
+
 #include "Pos.h"
 #include "Interface.h"
+#include "Export.h"
 
 class SuperShape {
 public:
@@ -33,7 +35,7 @@ public:
      * Draw shape into the interface
      * @param interface
      */
-    virtual void Draw(std::shared_ptr<Interface> interface, std::string format) = 0; // layers are solved by order of drawings, from rear (first drawn) to front (last drawn)
+    virtual void Draw(Export & exporter) = 0;
 
     virtual bool operator==(const SuperShape &s) = 0;
 

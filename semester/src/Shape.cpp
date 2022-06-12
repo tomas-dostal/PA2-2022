@@ -4,7 +4,6 @@
   */
 
 #include "Shape.h"
-#include "SuperShape.h"
 
 Shape::Shape(int id, std::string name, std::shared_ptr<Pos> center, size_t height, size_t width, size_t thickness,
       std::shared_ptr<Color> color, std::shared_ptr<Color> fill):

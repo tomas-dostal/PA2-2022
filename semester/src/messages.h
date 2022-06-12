@@ -27,7 +27,7 @@ const char *const SHAPE_POLYLINE = "polyline";
 const char *const SHAPE_RECTANGLE = "rectangle";
 const char *const SHAPE_SQUARE = "square";
 const char *const SHAPE_CIRCLE = "circle";
-const char *const SHAPE_ELIPSYS = "elipsys";
+const char *const SHAPE_ELLIPSE = "elipsys";
 
 
 const char *const PROMPT_COMMAND = "Enter a command: ";
@@ -90,3 +90,39 @@ const char *const PROGTEST_ERROR_LOADING = "Error in basic compilation - source 
 const char *const QUIT_MESSAGE = "Error in basic logic. On behalf of This Is Pain(t), LTD, we would like to thank you for using our services and wish you a nice day. ";
 
 
+
+
+const char *const CENTER_X = "CENTER_X";
+const char *const CENTER_Y = "CENTER_Y";
+const char *const DIAMETER_X = "DIAMETER_X";
+const char *const DIAMETER_Y = "DIAMETER_Y";
+const char *const COLOR_R = "COLOR_R";
+const char *const COLOR_G = "COLOR_G";
+const char *const COLOR_B = "COLOR_B";
+const char *const FILL_R = "FILL_R";
+const char *const FILL_G = "FILL_G";
+const char *const FILL_B = "FILL_B";
+const char *const THICKNESS = "THICKNESS";
+
+
+const char *const SVG_INIT = "<svg width=\"MAX_WIDTH\" height=\"MAX_HEIGHT\">";
+const char *const SVG_END = "</svg>";
+const char *const SVG_GROUP_BEGIN = "<g id=\"GROUP_ID\">";
+const char *const SVG_GROUP_END= "</g>";
+const char *const SVG_CIRCLE = "<circle cx=\"CENTER_X\" cy=\"CENTER_Y\" r=\"DIAMETER_X\" style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"$\";fill=\"SVG_FILL_RGBA\"\"/>";
+const char *const SVG_ELLIPSE = "<ellipse cx=\"CENTER_X\" cy=\"CENTER_Y\" rx=\"DIAMETER_X\" ry=\"DIAMETER_Y\"style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"THICKNESS\";fill=\"SVG_FILL_RGBA\"\"/>";
+const char *const SVG_RECTANGLE = "<ellipse cx=\"CENTER_X\" cy=\"CENTER_Y\" rx=\"DIAMETER_X\" ry=\"DIAMETER_Y\"style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"THICKNESS\";fill=\"SVG_FILL_RGBA\"\"/>";
+const char *const SVG_LINE = "<line x1=\"START_X\" y1=\"START_Y\" x2=\"END_X\" y2=\"END_Y\"style=\"stroke=\"SVG_COLOR_RGBA\";stroke-width=\"THICKNESS\";\"/>";
+const char *const SVG_COLOR_RGBA = "rgba(COLOR_R,COLOR_G,COLOR_B,1)";
+const char *const SVG_FILL_RGBA = "rgba(FILL_R,FILL_G,FILL_B,1)";
+
+const char *const MAX_WIDTH = "MAX_WIDTH";
+const char *const MAX_HEIGHT = "MAX_HEIGHT";
+const char *const CONTENT = "CONTENT";
+const char *const GROUP_ID = "GROUP_ID";
+const char *const GROUP_BEGIN = "GROUP_BEGIN";
+const char *const GROUP_END = "GROUP_END";
+const char *const START_X = "START_X";
+const char *const START_Y = "START_Y";
+const char *const END_X = "END_X";
+const char *const END_Y = "END_Y";

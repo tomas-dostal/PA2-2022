@@ -21,9 +21,16 @@ public:
                                                                                  b(b),
                                                                                  name(std::move(name)) {};
 
+    [[nodiscard]] int R() const { return r; }
+
+    [[nodiscard]]  int G() const { return g; }
+
+    [[nodiscard]]  int B() const { return b; }
+
     bool operator==(const Color &other) const;
 
     friend class Formatter;
+
 
     const std::string &Name() { return name; };
 protected:

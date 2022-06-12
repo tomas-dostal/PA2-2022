@@ -3,10 +3,10 @@
   * @date 08.05.2022
   */
 
+#include <vector>
+#include <string>
+
 #include "Helper.h"
-#include "ShapeGroup.h"
-#include "vector"
-#include "string"
 
 bool Helper::_isInRange(int val, int min, int max) {
     return (val >= min && val <= max);
@@ -38,7 +38,7 @@ std::string Helper::PrintOrDefault(const std::string &text, const std::string &d
     return def;
 }
 
-int Helper::Extreme(const std::initializer_list<int> &values, std::function<bool(int, int)> comp) {
+int Helper::Extreme(const std::initializer_list<int> &values, std::function<bool(int, int)> & comp) {
     int max = 0;
     for (int value : values) {
         if(comp(value,max))

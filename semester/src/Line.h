@@ -7,6 +7,7 @@
 
 #include "Shape.h"
 #include "SuperShape.h"
+#include "Export.h"
 
 class Line : public Shape {
 public:
@@ -23,9 +24,9 @@ public:
      */
     Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
-    void Draw(std::shared_ptr<Interface> interface, std::string format) override;
+    void Draw(Export & exporter) override;
 
-    std::string Print() const override;
+    [[nodiscard]] std::string Print() const override;
 
     bool operator==(const SuperShape &s) override;
 
