@@ -1,8 +1,11 @@
 /**
  * @author David Bernhauer <bernhdav@fit.cvut.cz>
+ * @modified_by Tomas Dostal <dostato6@fit.cvut.cz>
  * @date 28.04.2021
- * // this is an original file I will deeply inspire and modify to fulfill my project's needs.
+ * @date 12.06.2022
+ * Inspiration level was quite high so I decided to keep the original author.
  * @basedon example semester work available on https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
+ *
  */
 
 #include "Command.h"

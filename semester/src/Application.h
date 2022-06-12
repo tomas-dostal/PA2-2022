@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include <functional>
+#include <memory>
+
 #include "Interface.h"
 #include "Command.h"
 #include "Tspaint.h"
