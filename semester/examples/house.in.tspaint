@@ -1,0 +1,9 @@
+set thickness 6
+set color byname GRAY__PROGTEST
+set fill byname YELLOW__FIT
+draw rectangle 100 100 50 55
+set color byname RED__COMPILED_WITH_ERRORS
+set fill byname BLACK__INSIDE_OF_MY_SOUL
+set thickness 10
+draw line 20 80 102 12
+draw line 180 80 98 12
