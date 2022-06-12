@@ -17,9 +17,11 @@ public:
      * @param name Name
      * @param children - vector of Shapes and/or ShapeGroups
      */
-    ShapeGroup(unsigned int id, std::string name, std::vector<std::shared_ptr<SuperShape>>);
+    ShapeGroup(int id, std::string name, std::vector<std::shared_ptr<SuperShape>>);
 
     ShapeGroup(const ShapeGroup &shapeGroup);
+
+    void Add(std::shared_ptr<SuperShape> ss);
 
     ~ShapeGroup() noexcept = default;
 
@@ -27,14 +29,12 @@ public:
      * Add Shape or Group into group.
      * @param shapeOrGroup
      */
-    void Add(std::shared_ptr<SuperShape> && superShape);
-
     /**
      * Clone
      * @param newId Id from GroupID manager, it should be unique (nice to have)
      * @return Clone of current ShapeGroup with all subgroups
      */
-    //std::shared_ptr<ShapeGroup> Clone(unsigned int newId) const;
+    //std::shared_ptr<ShapeGroup> Clone(int newId) const;
 
     /**
      * List all groups/subgroups
@@ -65,11 +65,12 @@ public:
 
     bool operator==(const SuperShape &s) override;
 
+    void NewId( const std::function<int(void)> IdGenerator) override;
+
+    std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
+
 protected:
-
     std::vector<std::shared_ptr<SuperShape>> children;
-
-    unsigned int id;
 
 };
 

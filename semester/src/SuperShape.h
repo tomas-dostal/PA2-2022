@@ -20,7 +20,7 @@ public:
      * @param height
      */
 
-    SuperShape( unsigned int id,
+    SuperShape( int id,
                std::string name,
                 std::shared_ptr<Pos> center,
                 size_t width,
@@ -37,7 +37,7 @@ public:
 
     virtual bool operator==(const SuperShape &s) = 0;
 
-    virtual unsigned int Id();
+    virtual int Id();
 
     virtual std::string Name();
 
@@ -49,6 +49,10 @@ public:
 
     virtual std::string Print() const = 0;
 
+    virtual void NewId( const std::function<int(void)> IdGenerator);
+
+    // virtual std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
+
 protected:
     std::string name;
 
@@ -56,5 +60,5 @@ protected:
 
     size_t width;
     size_t height;
-    unsigned int id;
+    int id;
 };

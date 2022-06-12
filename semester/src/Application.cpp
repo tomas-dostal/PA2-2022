@@ -35,6 +35,7 @@ Application::Application() noexcept:
     };
     commands.emplace_back(SetCommand());
     commands.emplace_back(DrawCommand());
+    commands.emplace_back(GroupCommand());
     commands.emplace_back(ListCommand());
     commands.emplace_back(SaveCommand());
     commands.emplace_back(LoadCommand(load));
@@ -66,6 +67,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
 
     while (Continue() && !interface->End()) {
 
+        auto tellgLast = interface->is.tellg();
         std::shared_ptr<Command> command = nullptr;
         try {
             command = this->getCommandByName(interface->PromptCommand([this](const std::string &name) {
@@ -75,7 +77,6 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
         }
         catch (std::ifstream::failure e) {
             interface->PrintInfo(interface->formatter->FillPlaceholder(FormatterParams({END_OF_INPUT_REACHED})));
-            std::cout << interface->is.tellg() << std::endl;
             break;
         }
         try {
@@ -95,6 +96,14 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
         }
         catch( std::runtime_error e){
             interface->PrintInfo(e.what());
+            interface->is.clear();
+            interface->is.seekg(tellgLast);
+            for(int x = 0; x < 3; x++) {
+                std::string errorLine;
+                std::getline(interface->is, errorLine);
+                std::cerr << "error occured around line: " << errorLine << std::endl;
+            }
+            std::cerr << "near to char " << tellgLast << std::endl;
             return false;
         }
     }

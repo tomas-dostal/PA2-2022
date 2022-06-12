@@ -5,8 +5,9 @@
 
 #include "Line.h"
 #include "Helper.h"
+#include "Formatter.h"
 
-Line::Line(unsigned long id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color,
+Line::Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color,
            std::shared_ptr<Color> fill)
         : Shape(id,
                 name,
@@ -37,5 +38,6 @@ void Line::Draw(std::shared_ptr<Interface> interface, std::string format) {
 
 std::string Line::Print() const {
     // todo finish formatting
-    return name;
+    return "" + name + " (" + std::to_string(id) + ")";
+
 }

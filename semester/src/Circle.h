@@ -13,7 +13,7 @@ class Circle : public Shape {
 public:
     Circle() = delete;
 
-    Circle(unsigned int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickenss,  std::shared_ptr<Color> color,
+    Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickenss,  std::shared_ptr<Color> color,
            std::shared_ptr<Color> fill);
 
     void Draw(std::shared_ptr<Interface> interface, std::string format) override;

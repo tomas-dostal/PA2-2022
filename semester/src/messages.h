@@ -19,6 +19,7 @@ const char *const COMMAND_SHOW = "show";
 const char *const COMMAND_NEW = "new";
 const char *const COMMAND_DELETE = "delete";
 const char *const COMMAND_LIST = "list";
+const char *const COMMAND_GROUP = "group";
 
 
 const char *const SHAPE_LINE = "line";
@@ -51,6 +52,8 @@ const char *const SET_ENTER_COLOR_RGB_INVALID = "Entered color part is invalid "
 const char *const SET_ENTER_COLOR_RGB_NAME = "Enter name: ";
 const char *const SET_ENTER_COLOR_ID = "Enter color <id> \noptions: \n$";
 const char *const SET_ENTER_COLOR_ID_INVALID = "Entered color id is invalid";
+const char *const SET_ENTER_GROUP_ID= "Set group. To list all groups use command 'list'. Enter id: ";
+const char *const SET_ENTER_GROUP_ID_INVALID= "Can not find group by provided id. Is it really a group? ";
 
 const char *const PRINT_SHAPE = "id: $, name: $, color: $, fill: $, pos: $, detail: $ ";
 const char *const INVALID_INPUT = "Invalid input";
@@ -69,6 +72,7 @@ const char *const HELP_HELP = "Prints this help";
 const char *const HELP_QUIT = "Ends this pain";
 
 const char *const HELP_SAVE = "Saves output of this pain to file";
+const char *const HELP_GROUP = "Used to create group from Shapes/groups by their ID.\ngroup <number_of_entered_ids> [id...]";
 
 const char *const HELP_SET = "HELP_SET";
 const char *const HELP_DRAW = "HELP_DRAW";
@@ -79,6 +83,8 @@ const char *const HELP_NEW = "HELP_NEW";
 const char *const HELP_DELETE = "HELP_DELETE";
 const char *const HELP_LIST = "List all objects in tspaint";
 const char *const TSPAINT_INFO = "ThisIsPain.T\n-----------------------------------------------\nSimple drawing tool for experienced FIT students.\n";
+
+const char *const ROOT_GROUP = "Root";
 
 const char *const PROGTEST_ERROR_LOADING = "Error in basic compilation - source file not accessible [Access help (934 B)] (2 hits available, 4 with penalisation -10%";
 const char *const QUIT_MESSAGE = "Error in basic logic. On behalf of This Is Pain(t), LTD, we would like to thank you for using our services and wish you a nice day. ";

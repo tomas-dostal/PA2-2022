@@ -15,7 +15,7 @@ ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float proba
         probability(probability),
         interface(interface) {
 
-    std::cerr << std::filesystem::current_path();
+//    std::cerr << std::filesystem::current_path();
 
     std::ifstream f;
     f.open(fileName, std::ios::in);

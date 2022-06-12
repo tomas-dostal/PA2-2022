@@ -12,17 +12,25 @@
 
 class Tspaint {
 public:
-    void AddShape(const std::shared_ptr<SuperShape> superShape) const;
+    Tspaint();
+
+    void AddShape(std::shared_ptr<SuperShape> superShape);
 
     void AddGroup();
 
-    unsigned long GenerateId();
+    void AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes);
 
-    unsigned long GenerateGroupId();
+    bool UseGroup(int id);
 
-    Tspaint();
+    int GenerateId();
+
+    std::string Print() const;
 
     explicit Tspaint(const std::shared_ptr<Tspaint>& src);
+
+    bool IsValidIndex(int) const;
+
+    std::shared_ptr<SuperShape> GetSuperShape(int index);
 
     ColorPalette colorPalette;
     std::shared_ptr<Color> color;
@@ -33,8 +41,9 @@ public:
 
     std::shared_ptr<ShapeGroup> currentGroup;
 
-    unsigned long idGenerator = 0;
-    unsigned long groupIdGenerator = 0;
 
-    void AddShape(SuperShape superShape) const;
+    int idGenerator = 0;
+
+    std::map<int, std::shared_ptr<SuperShape>> superShapesById;
+
 };

@@ -92,7 +92,7 @@ Command DrawCommand() {
 
                            tspaint->AddShape(
                                    std::make_shared<Circle>(tspaint->GenerateId(),
-                                                            "Circle",
+                                                            SHAPE_CIRCLE,
                                                             std::make_shared<Pos>(center),
                                                             diameter,
                                                             tspaint->thickness,
@@ -117,7 +117,7 @@ Command DrawCommand() {
 
                            tspaint->AddShape(
                                    std::make_shared<Line>(tspaint->GenerateId(),
-                                                          "line",
+                                                          SHAPE_LINE,
                                                           start,
                                                           end,
                                                           tspaint->thickness,
@@ -147,6 +147,45 @@ Command DrawCommand() {
                        return std::any_cast<std::function<void(void)>>(shapes[commandName])();
                    }
     };
+
+}
+
+Command GroupCommand() {
+    return Command{COMMAND_GROUP, HELP_GROUP, true,
+                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                       std::invoke([&interface, &tspaint]() {
+                           size_t groupSize = std::invoke([&interface]() {
+                               return interface->PromptInteger(
+                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                             FormatterParams({"Group size"})),
+                                       "",
+                                       [](int x) { return x > 0 && x < 3; });
+                           });
+                           std::vector<int> ids = std::invoke([&interface, &tspaint, &groupSize]() {
+                               return interface->PromptMultipleIntegers(
+                                       groupSize,
+                                       std::vector<std::string>(
+                                               {interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                                      FormatterParams(
+                                                                                              {"Provide IDs of objects to be added to the group"}))}),
+                                       std::vector<std::string>({"ID is not valid. "}),
+                                       std::vector<std::function<bool(const int &)>>({[&tspaint](int index) {
+                                           if (index >= 0)
+                                               return tspaint->IsValidIndex(index);
+                                           return false;
+                                       }})
+                               );
+                           });
+                           std::vector<std::shared_ptr<SuperShape>> ss;
+                           for (int id: ids) {
+                               // new IDs are generated inside of Tspaint
+                               auto shape = tspaint->GetSuperShape(id);
+                               ss.emplace_back();
+                           }
+                           tspaint->AddGroup(ss);
+                       });
+                   }
+    };
 }
 
 /**
@@ -159,23 +198,7 @@ Command ListCommand() {
     return Command{COMMAND_LIST, HELP_LIST, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
                        return std::invoke([&interface, &tspaint]() {
-//                           for (const auto &shape: tspaint->GetShapes()) {
-//                               interface->PrintHelp(
-//                                       interface->formatter->FillPlaceholder(
-//                                               PRINT_SHAPE,
-//                                               FormatterParams({
-//                                                                       shape->Id(),
-//                                                                       shape->Name(),
-//                                                                       interface->formatter->FormatColor(
-//                                                                               shape->ShapeColor()),
-//                                                                       interface->formatter->FormatColor(
-//                                                                               shape->ShapeFill()),
-//                                                                       //formatter.FormatNamedCoords(shape->ShapeNamedCoords())
-//                                                               })
-//                                       )
-//                               );
-//                           }
-                        return "Shapes not asdfgasdfdsaf";
+                           interface->PrintInfo(tspaint->Print());
                        });
                    }
     };
@@ -266,6 +289,8 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>,std::shared_ptr<
     };
 }
 
+// todo status command showing tspaint config
+
 /**
  * SetCommand is a modifier of tspaint options. It is similar to mspaint when you are selecting color and then
  * applying it to the shape you want to draw.
@@ -298,11 +323,29 @@ Command SetCommand() {
                                        return Helper::_isInRange(value, THICKNESS_MIN, THICKNESS_MAX);
                                    });
                        };
+                       auto setGroup = [&interface, &tspaint]() {
+                           int id = (size_t) interface->PromptInteger(
+                                   interface->formatter->FillPlaceholder(SET_ENTER_GROUP_ID,
+                                                                         FormatterParams{}),
+                                   SET_ENTER_GROUP_ID_INVALID,
+                                   [&tspaint](const int value) {
+                                       if(tspaint->IsValidIndex(value)){
+                                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>( tspaint->GetSuperShape(value) );
+                                           if(ptr)
+                                               return true;
+                                       }
+                                       return false;
+                                   });
+                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>( tspaint->GetSuperShape(id) );
+                           tspaint->currentGroup = ptr;
+
+                       };
 
                        std::map<std::string, std::function<void(void)>> setOptions{
                                {"color",     setColor},
                                {"fill",      setFill},
-                               {"thickness", setThickness}
+                               {"thickness", setThickness},
+                               {"group",     setGroup}
                        };
 
                        std::vector<std::string> setOptionKeys;

@@ -26,7 +26,7 @@ public:
      * @param color
      * @param fill
      */
-    Shape(unsigned int id, std::string name, std::shared_ptr<Pos> center, size_t height, size_t width, size_t thickness,
+    Shape(int id, std::string name, std::shared_ptr<Pos> center, size_t height, size_t width, size_t thickness,
           std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
     Shape() = delete;
@@ -56,13 +56,13 @@ public:
 
     //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();
 protected:
-    size_t height{};
-    size_t width{};
 
-    size_t thickness{};
+    size_t thickness;
     std::shared_ptr<Color> color;
 
     std::shared_ptr<Color> fill;
+
+//    std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
 };
 
 //std::vector<std::pair<std::string, std::any>> Shape::ShapeNamedCoords() {

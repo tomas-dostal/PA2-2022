@@ -4,7 +4,7 @@
   */
 
 #pragma once
-
+#include "memory"
 
 class Pos {
 public:
@@ -19,6 +19,8 @@ public:
     bool operator==(const Pos &p) const { return this->x == p.x && this->y == p.y; };
 
     bool operator!=(const Pos &p) const { return !(*this == p); };
+
+    std::shared_ptr<Pos> Clone();
 
     int x, y;
 };

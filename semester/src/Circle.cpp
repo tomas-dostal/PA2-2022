@@ -5,7 +5,7 @@
 
 #include "Circle.h"
 
-Circle::Circle(unsigned int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickness,  std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
+Circle::Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickness,  std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
         : Shape(id, name, center, 2 * diameter, 2 * diameter, thickness, color, fill), diameter(diameter) {
     {
 
@@ -27,5 +27,5 @@ bool Circle::operator==(const SuperShape &s) {
 }
 
 std::string Circle::Print() const{
-    return name;
+    return "" + name + " (" + std::to_string(id) + ")";
 }

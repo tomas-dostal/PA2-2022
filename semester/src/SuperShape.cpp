@@ -5,7 +5,7 @@
 
 #include "SuperShape.h"
 
-SuperShape::SuperShape( unsigned int id,
+SuperShape::SuperShape( int id,
             std::string name,
             std::shared_ptr<Pos> center,
             size_t width,
@@ -23,7 +23,7 @@ std::string SuperShape::Name(){
     return name;
 }
 
-unsigned int SuperShape::Id(){
+int SuperShape::Id(){
     return id;
 }
 
@@ -33,4 +33,8 @@ size_t SuperShape::Width() {
 
 size_t SuperShape::Height() {
     return height;
+}
+
+void SuperShape::NewId( const std::function<int(void)> IdGenerator){
+    this->id = IdGenerator();
 }

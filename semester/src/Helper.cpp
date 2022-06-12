@@ -46,7 +46,14 @@ int Helper::Extreme(const std::initializer_list<int> &values, std::function<bool
     }
     return max;
 }
+std::string Helper::ToString(const std::vector<std::string> & in){
+    std::string out = "";
+    for(auto line: in){
+        out += line + "\n";
+    }
+    return out;
 
+}
 std::vector<std::string> Helper::Indent(const std::string & sep, const std::vector<std::string> & in){
 
     std::vector<std::string> out(in.size());

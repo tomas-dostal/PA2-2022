@@ -4,3 +4,7 @@
   */
 
 #include "Pos.h"
+
+std::shared_ptr<Pos> Pos::Clone(){
+    return std::make_shared<Pos>(x, y);
+}

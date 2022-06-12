@@ -21,7 +21,7 @@ public:
      * @param color
      * @param fill
      */
-    Line(unsigned long id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
+    Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shared_ptr<Color> color, std::shared_ptr<Color> fill);
 
     void Draw(std::shared_ptr<Interface> interface, std::string format) override;
 

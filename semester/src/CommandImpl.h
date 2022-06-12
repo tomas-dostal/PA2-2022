@@ -16,6 +16,8 @@ Command SetCommand();
 
 Command DrawCommand();
 
+Command GroupCommand();
+
 Command ListCommand();
 
 SysCommand SaveCommand();

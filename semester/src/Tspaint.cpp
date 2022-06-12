@@ -6,6 +6,7 @@
 #include "Tspaint.h"
 #include "ShapeGroup.h"
 #include "constants.h"
+#include "messages.h"
 
 Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(170, 170, 170, "GRAY__PROGTEST")));
@@ -24,32 +25,49 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     color = colorPalette.getColorByName("YELLOW__FIT");
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
     thickness = THICKNESS_DEFAULT;
-    root = std::make_shared<ShapeGroup>(GenerateId(), "root", std::vector<std::shared_ptr<SuperShape>>());
+    root = std::make_shared<ShapeGroup>(GenerateId(), ROOT_GROUP, std::vector<std::shared_ptr<SuperShape>>());
     currentGroup = root;
 }
 
 void Tspaint::AddGroup() {
-    auto group = std::make_shared<ShapeGroup>(GenerateGroupId(),
+    auto group = std::make_shared<ShapeGroup>(GenerateId(),
             "group",
             std::vector<std::shared_ptr<SuperShape>>()
             );
 
+    currentGroup->Add(group);
+    this->superShapesById.insert({group->Id(), group});
+}
+
+
+void Tspaint::AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes) {
+
+//    std::vector<std::shared_ptr<SuperShape>> shapeClones;
+//    for(const auto & ss: superShapes){
+//        std::shared_ptr<SuperShape> clone = ss->Clone([this](){
+//            return GenerateId();
+//        });
+
+
+    auto group = std::make_shared<ShapeGroup>(GenerateId(), "Group", superShapes);
     this->currentGroup->Add(group);
+    this->superShapesById.insert({group->Id(), group});
+}
+
+void Tspaint::AddShape(std::shared_ptr<SuperShape> superShape){
+    this->currentGroup->Add(superShape);
+    superShapesById.insert({superShape->Id(), superShape});
+}
+
+std::string Tspaint::Print() const {
+    return root->Print();
 }
 
 
 
-
-
-unsigned long Tspaint::GenerateId() {
-    return ++idGenerator;
+int Tspaint::GenerateId() {
+    return idGenerator++;
 }
-
-
-unsigned long Tspaint::GenerateGroupId() {
-    return ++groupIdGenerator;
-}
-
 
 Tspaint::Tspaint(const std::shared_ptr<Tspaint>& src) {
     if (this != src.get()) {
@@ -62,4 +80,28 @@ Tspaint::Tspaint(const std::shared_ptr<Tspaint>& src) {
         this->idGenerator = src->idGenerator;
     }
 
+}
+
+bool Tspaint::UseGroup(int id) {
+    auto ss = superShapesById.find(id);
+    if(ss != superShapesById.end())
+    {
+        std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>( ss->second );
+        if(ptr){
+            currentGroup = ptr;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Tspaint::IsValidIndex(int index) const {
+    return !(superShapesById.find(index) == superShapesById.end());
+}
+
+std::shared_ptr<SuperShape> Tspaint::GetSuperShape(int index){
+    auto shape = superShapesById.find(index);
+    if(shape != superShapesById.end())
+        return shape->second;
+    return nullptr;
 }

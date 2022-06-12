@@ -21,5 +21,7 @@ public:
     static std::string PrintOrDefault(const std::string &text, const std::string &def);
 
     static std::vector<std::string> Indent(const std::string & sep, const std::vector<std::string> & in) ;
+
+    static std::string ToString(const std::vector<std::string> &in);
 };
 

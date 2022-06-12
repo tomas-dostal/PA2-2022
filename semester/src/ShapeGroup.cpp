@@ -20,14 +20,14 @@ std::ostream & operator<<(std::ostream & os, const ShapeGroup & shapeGroup) {
 }
 
 std::string ShapeGroup::Print() const {
-    std::string out = "Group: ";
+    std::string out = "Group (" + std::to_string(id) + "): \n";
     for(const auto & child : children){
-        out += "  "+ child->Print() + "\n";
+        out += Helper::ToString(Helper::Indent("   ", std::vector<std::string>({child->Print()})));
     }
     return out;
 }
 
-ShapeGroup::ShapeGroup(unsigned int id,
+ShapeGroup::ShapeGroup(int id,
                        std::string name,
                        std::vector<std::shared_ptr<SuperShape>> children):
     SuperShape(id,
@@ -53,7 +53,8 @@ ShapeGroup::ShapeGroup(unsigned int id,
 
 }
 
-void ShapeGroup::Add(std::shared_ptr<SuperShape> && superShape){
+// todo &&
+void ShapeGroup::Add(std::shared_ptr<SuperShape> superShape){
     this->children.push_back(superShape);
 }
 
@@ -89,3 +90,20 @@ void ShapeGroup::Draw(std::shared_ptr<Interface> interface, std::string format) 
         superShape->Draw(interface, format);
     }
 }
+
+void ShapeGroup::NewId( const std::function<int(void)> IdGenerator){
+    id = IdGenerator();
+    for(auto item: children){
+        item->NewId(IdGenerator);
+    }
+}
+
+
+//std::shared_ptr<SuperShape> ShapeGroup::Clone(std::function<int(void)> IdGenerator){
+//    std::vector<std::shared_ptr<SuperShape>> childrenCopy;
+//    for(const auto & child: childrenCopy){
+//        childrenCopy.push_back(child->Clone(IdGenerator));
+//    }
+//    return std::make_shared<ShapeGroup>(IdGenerator(), name, childrenCopy);
+//}
+//
