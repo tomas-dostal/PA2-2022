@@ -2,7 +2,7 @@
 # @author David Bernhauer <bernhdav@fit.cvut.cz>
 # @basedon https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
 
-TARGET = tspaint
+TARGET = dostato6
 
 CXX = g++
 MKDIR = mkdir -p
