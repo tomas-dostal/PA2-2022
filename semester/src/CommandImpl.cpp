@@ -51,6 +51,8 @@
 #include "Circle.h"
 #include "Line.h"
 #include "Rectangle.h"
+#include "PolyLine.h"
+#include "Ellipse.h"
 
 
 /**
@@ -98,6 +100,67 @@ Command DrawCommand() {
                                                             tspaint->thickness,
                                                             tspaint->color,
                                                             tspaint->fill)
+                           );
+                       };
+                       auto newEllipse = [&interface, &tspaint]() {
+
+                           Pos center = std::invoke([&interface]() {
+                               return interface->PromptPos(
+                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
+                                                                             FormatterParams({"center"}))
+                               );
+                           });
+                           size_t diameter_x = std::invoke([&interface]() {
+                               return interface->PromptInteger(
+                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                             FormatterParams({"diameter_x"})),
+                                       "",
+                                       [](int x) { return x > 0; });
+                           });
+
+                           size_t diameter_y = std::invoke([&interface]() {
+                               return interface->PromptInteger(
+                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                             FormatterParams({"diameter_y"})),
+                                       "",
+                                       [](int x) { return x > 0; });
+                           });
+
+                           tspaint->AddShape(
+                                   std::make_shared<Ellipse>(tspaint->GenerateId(),
+                                                            SHAPE_CIRCLE,
+                                                            std::make_shared<Pos>(center),
+                                                            diameter_x,
+                                                            diameter_y,
+                                                            tspaint->thickness,
+                                                            tspaint->color,
+                                                            tspaint->fill)
+                           );
+                       };
+                       auto newPolyLine = [&interface, &tspaint]() {
+                           size_t numberOfPoints = std::invoke([&interface]() {
+                               return interface->PromptInteger(
+                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                             FormatterParams({"Number of points"})),
+                                       "",
+                                       [](int x) { return x > 0; });
+                           });
+                           std::vector<Pos> res;
+                           for(size_t i = 0; i < numberOfPoints; i++) {
+                               res.push_back(std::invoke([&interface , &i, &numberOfPoints]() {
+                                   return interface->PromptPos(
+                                           interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
+                                                                                 FormatterParams({"Point" + std::to_string(i + 1) + "/ " + std::to_string(numberOfPoints)}))
+                                   );
+                               }));
+                           }
+                           tspaint->AddShape(
+                                   std::make_shared<PolyLine>(tspaint->GenerateId(),
+                                                          SHAPE_POLYLINE,
+                                                          res,
+                                                          tspaint->thickness,
+                                                          tspaint->color,
+                                                          tspaint->fill)
                            );
                        };
                        auto newLine = [&interface, &tspaint]() {
@@ -163,7 +226,9 @@ Command DrawCommand() {
 
                        std::map<std::string, std::function<void(void)>> shapes{
                                {"circle", newCircle},
+                               {"ellipse", newEllipse},
                                {"line",   newLine},
+                               {"polyline",   newPolyLine},
                                {"rectangle",   newRectangle},
                        };
 
@@ -266,6 +331,7 @@ SysCommand SaveCommand() {
                               exporter.Start(maxDim.first, maxDim.second);
                               tspaint->root->Draw(exporter);
                               exporter.End();
+
                           };
                           auto tspaintSave = [&fileName, &tspaint]() {
                               ExportTspaint(fileName).Start(tspaint->root->Width(), tspaint->root->Height());

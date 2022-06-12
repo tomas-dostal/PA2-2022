@@ -1,5 +1,6 @@
+
 /**
-  * @author Tomas Dostal <dostato6@fit.cvut.cz> 
+  * @author Tomas Dostal <dostato6@fit.cvut.cz>
   * @date 08.05.2022
   */
 
@@ -18,8 +19,8 @@ Line::Line(int id, std::string name, Pos &a, Pos &b, size_t thickness, std::shar
                 thickness,
                 color,
                 fill),
-                a(a),
-                b(b){
+          a(a),
+          b(b){
 
 
 }

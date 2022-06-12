@@ -65,6 +65,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
                       std::function<bool(void)> Continue,
                       std::function<bool(Command *)> IsCommandAllowed) {
 
+    interface->PrintInfo(TSPAINT_INFO);
     while (Continue() && !interface->End()) {
 
         auto tellgLast = interface->is.tellg();

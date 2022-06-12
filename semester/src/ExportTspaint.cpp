@@ -19,7 +19,7 @@ ExportTspaint::ExportTspaint(const std::string &fileName):
 }
 
 bool ExportTspaint::Start(int width, int height) {
-    std::cout << " ExporTspaint::Export I'm alive" << std::endl;
+    std::cout << " ExporTspaint::Export" << std::endl;
     return false;
 }
 
@@ -28,4 +28,5 @@ bool ExportTspaint::Process(std::string SuperShapeName, std::map<std::string, st
 }
 bool ExportTspaint::End(){
     std::cout << "tspaint end " << std::endl;
+    fileOut.close();
 }

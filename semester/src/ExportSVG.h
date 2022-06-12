@@ -17,8 +17,7 @@ public:
 
     bool End() override;
 
-
-    bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict);
+    bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) override;
 
     std::map<std::string, std::string> svgDict;
 };

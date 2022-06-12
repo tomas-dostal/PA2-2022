@@ -41,22 +41,24 @@ bool ExportSVG::Process(std::string SuperShapeName, std::map<std::string, std::s
         dict.erase(dict.find(COLOR_B));
     }
     
-    std::cout << Formatter().FillNamedPlaceholders(svgShape->second, dict) << std::endl;
+    fileOut << Formatter().FillNamedPlaceholders(svgShape->second, dict) << std::endl;
+    return true;
 }
 
 bool ExportSVG::Start(int width, int height) {
-    std::cout << Formatter().FillNamedPlaceholders(SVG_INIT,
+    fileOut << Formatter().FillNamedPlaceholders(SVG_INIT,
                                                    {
                                                     {MAX_WIDTH,  std::to_string(height)},
                                                     {MAX_HEIGHT, std::to_string(width)}
                                                    }
         ) << std::endl;
 
-    //root->Draw(*this);
-
+    return true;
 }
 
 bool ExportSVG::End() {
-    std::cout << Formatter().FillNamedPlaceholders(SVG_END, {}) << std::endl;
+    fileOut << Formatter().FillNamedPlaceholders(SVG_END, {}) << std::endl;
+    fileOut.close();
+    return true;
 }
 
