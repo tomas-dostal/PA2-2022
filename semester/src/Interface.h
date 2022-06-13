@@ -10,6 +10,7 @@
 #include <functional>
 #include <vector>
 #include <memory>
+#include <cassert>
 
 #include "Color.h"
 #include "Pos.h"

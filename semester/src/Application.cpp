@@ -76,7 +76,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
                                    [&name](Command &command) { return name == command.Name(); });
             }));
         }
-        catch (std::ifstream::failure e) {
+        catch (std::ifstream::failure & e) {
             interface->PrintInfo(interface->formatter->FillPlaceholder(FormatterParams({END_OF_INPUT_REACHED})));
             break;
         }
@@ -95,7 +95,7 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
                 }
             }
         }
-        catch( std::runtime_error e){
+        catch( std::runtime_error & e){
             interface->PrintInfo(e.what());
             interface->is.clear();
             interface->is.seekg(tellgLast);

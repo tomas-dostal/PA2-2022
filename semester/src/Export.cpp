@@ -12,4 +12,4 @@ Export::Export(const std::string &fileName) : fileName(fileName){
     if (!fileOut) {
         throw std::runtime_error(ERROR_FILE_IO);
     }
-};
+}
