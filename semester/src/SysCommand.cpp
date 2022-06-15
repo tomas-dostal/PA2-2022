@@ -10,5 +10,5 @@
 
 SysCommand::SysCommand(std::string name, std::string help, std::string example,
                        const std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> &execute) :
-        Command(name, help, false, execute) {
+        Command(name, help, example, false, execute) {
 }
