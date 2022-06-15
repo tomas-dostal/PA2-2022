@@ -76,10 +76,9 @@ const char *const HELP_QUIT = "Ends this pain";
 
 const char *const HELP_SAVE = "Saves output of this pain to file";
 const char *const HELP_GROUP = "Used to create group from Shapes/groups by their ID.\ngroup <number_of_entered_ids> [id...]";
-
-const char *const HELP_SET = "HELP_SET";
-const char *const HELP_DRAW = "HELP_DRAW";
-const char *const HELP_LOAD = "HELP_LOAD";
+const char *const HELP_SET = "Modify color/fill/thickness etc of created objects. Similar to standard mspaint where you first select a color and then draw. ";
+const char *const HELP_DRAW = "Draw a shape circle/line/polyline/ellipse/rectangle";
+const char *const HELP_LOAD = "Load instance of tspaint from file. ";
 const char *const HELP_HIDE = "HELP_HIDE";
 const char *const HELP_SHOW = "HELP_SHOW";
 const char *const HELP_NEW = "HELP_NEW";
