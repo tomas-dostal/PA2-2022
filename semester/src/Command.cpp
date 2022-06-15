@@ -12,11 +12,11 @@
 #include "Tspaint.h"
 
 
-Command::Command(std::string name, std::string help, bool availableInHeadless,
+Command::Command(std::string name, std::string help, std::string example, bool availableInHeadless,
                  const std::function<void(std::shared_ptr<Tspaint>,
                                           std::shared_ptr<Interface>)> &execute
 )
-        : name(move(name)), help(move(help)), availableInHeadless(availableInHeadless), execute(execute) {
+        : name(move(name)), help(move(help)), example(move(example)), availableInHeadless(availableInHeadless), execute(execute) {
 
 }
 

@@ -8,7 +8,7 @@
 #include "SysCommand.h"
 
 
-SysCommand::SysCommand(const std::string &name, const std::string &help,
+SysCommand::SysCommand(std::string name, std::string help, std::string example,
                        const std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> &execute) :
         Command(name, help, false, execute) {
 }

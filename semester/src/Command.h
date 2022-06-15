@@ -29,10 +29,11 @@ public:
      * Command
      * @param name Name of the command
      * @param help Explanation how to use the command
+     * @param example Example use of the command
      * @param execute  Lambda of what to execute
      * @param availableInHeadless True if command should be available in import from file. Syscontrol commands should be set to false.
      */
-    Command(std::string name, std::string help, bool availableInHeadless,
+    Command(std::string name, std::string help, std::string example, bool availableInHeadless,
             const std::function<void(std::shared_ptr<Tspaint>,
                                      std::shared_ptr<Interface>)> &execute);
 

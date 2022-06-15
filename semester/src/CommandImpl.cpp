@@ -65,7 +65,7 @@
  * @return implementation of 'draw' command
  */
 Command DrawCommand() {
-    return Command{COMMAND_DRAW, HELP_DRAW, true,
+    return Command{COMMAND_DRAW, HELP_DRAW, EXAMPLE_DRAW, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
 //                this would be pretty cool, but requires cpp20 templates in lambda and a lot of template stuff, so maybe later
@@ -251,7 +251,7 @@ Command DrawCommand() {
 }
 
 Command GroupCommand() {
-    return Command{COMMAND_GROUP, HELP_GROUP, true,
+    return Command{COMMAND_GROUP, HELP_GROUP, EXAMPLE_HELP, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
                        std::invoke([&interface, &tspaint]() {
                            size_t groupSize = std::invoke([&interface]() {
@@ -295,7 +295,7 @@ Command GroupCommand() {
  * @return Implementation of ListCommand
  */
 Command ListCommand() {
-    return Command{COMMAND_LIST, HELP_LIST, true,
+    return Command{COMMAND_LIST, HELP_LIST, EXAMPLE_LIST, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
                        return std::invoke([&interface, &tspaint]() {
                            interface->PrintInfo(tspaint->Print());
@@ -369,7 +369,7 @@ SysCommand SaveCommand() {
  */
 SysCommand
 LoadCommand(const std::function<void(std::shared_ptr<Interface>,std::shared_ptr<Interface>, std::shared_ptr<Tspaint> & targetTspaint)> loadFn) {
-    return SysCommand{COMMAND_LOAD, HELP_LOAD,
+    return SysCommand{COMMAND_LOAD, HELP_LOAD, EXAMPLE_LOAD,
                       [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
                           std::string fileName = interface->PromptBasic("Enter filename: ",
@@ -408,7 +408,7 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>,std::shared_ptr<
  * @return set command implementation
  */
 Command SetCommand() {
-    return Command{COMMAND_SET, HELP_SET, true,
+    return Command{COMMAND_SET, HELP_SET, EXAMPLE_SET, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
                        // inspired by https://stackoverflow.com/questions/61969316/is-it-possible-to-put-lambda-expressions-into-a-map-or-list-in-c
@@ -478,7 +478,7 @@ Command SetCommand() {
  * @return SysCommand implementation of command "help"
  */
 SysCommand HelpCommand(const std::shared_ptr<std::vector<Command>> &commands) {
-    return SysCommand{COMMAND_HELP, HELP_HELP,
+    return SysCommand{COMMAND_HELP, HELP_HELP, EXAMPLE_HELP,
                       [commands](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
                           interface->ClearScreen();
@@ -503,7 +503,7 @@ SysCommand HelpCommand(const std::shared_ptr<std::vector<Command>> &commands) {
  * @return QuitCommand implementation.
  */
 SysCommand QuitCommand(const std::function<void(void)> stopApplication) {
-    return SysCommand{COMMAND_QUIT, HELP_QUIT,
+    return SysCommand{COMMAND_QUIT, HELP_QUIT, EXAMPLE_QUIT,
                       [stopApplication](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
                           interface->PrintHelp(QUIT_MESSAGE);
                           stopApplication();

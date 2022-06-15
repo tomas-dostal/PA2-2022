@@ -87,6 +87,20 @@ const char *const HELP_DELETE = "HELP_DELETE";
 const char *const HELP_LIST = "List all objects in tspaint";
 const char *const TSPAINT_INFO = "ThisIsPain.T\n-----------------------------------------------\nSimple drawing tool for experienced FIT students.\n";
 
+
+const char *const EXAMPLE_SAVE = "save <outfile.svg> <format> \nSupported formats: tspaint, svg";
+const char *const EXAMPLE_GROUP = "Assuming we have two circles with ids: 1, 2. \ngroup <number_of_ids> [id,...]\ngroup 2 1 2";
+const char *const EXAMPLE_SET = "set color byname BLACK__INSIDE_OF_MY_SOUL\nset color id 3\nset color rgb 255 255 255 myNewColor";
+const char *const EXAMPLE_DRAW = "draw circle <center_x> <center_y> <diameter>\ndraw circle 50 50 10";
+const char *const EXAMPLE_LOAD = "load examples/house.in.tspaint";
+const char *const EXAMPLE_HIDE = "EXAMPLE_HIDE";
+const char *const EXAMPLE_SHOW = "EXAMPLE_HIDE";
+const char *const EXAMPLE_NEW = "EXAMPLE_NEW";
+const char *const EXAMPLE_DELETE = "EXAMPLE_DELETE";
+const char *const EXAMPLE_LIST = "list";
+const char *const EXAMPLE_HELP = "help";
+const char *const EXAMPLE_QUIT = "quit";
+
 const char *const ROOT_GROUP = "Root";
 
 const char *const PROGTEST_ERROR_LOADING = "Error in basic compilation - source file not accessible [Access help (934 B)] (2 hits available, 4 with penalisation -10%";

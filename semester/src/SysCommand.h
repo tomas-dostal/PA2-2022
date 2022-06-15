@@ -19,9 +19,10 @@ public:
  *
  * @param name Name of the command
  * @param help Explanation how to use the command
+ * @param example Example usage
  * @param execute  Lambda of what to execute
  * @param availableInHeadless True if command should be available in import from file. SysCommands are always false.
  */
-    SysCommand(const std::string &name, const std::string &help,
+    SysCommand(std::string name, std::string help, std::string example,
                const std::function<void(std::shared_ptr<Tspaint>, std::shared_ptr<Interface>)> &execute);
 };
