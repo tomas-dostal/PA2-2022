@@ -17,6 +17,7 @@ const int POS_X_MAX = 1920;
 const int POS_Y_MIN = 0;
 const int POS_Y_MAX = 1080;
 const int THICKNESS_DEFAULT = 5;
+const int GROUP_MAX_SIZE = 10;
 const std::vector<std::string> YES_NO = {"y", "n"};
 const std::vector<std::string> YES = {"y"};
 const std::vector<std::string> NO = {"n"};

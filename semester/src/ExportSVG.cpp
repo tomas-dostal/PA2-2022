@@ -29,13 +29,13 @@ bool ExportSVG::Process(std::string SuperShapeName, std::map<std::string, std::s
     if(svgShape == svgDict.end())
         throw std::runtime_error("ExportSVG:: No such a shape");
     if(dict.find(FILL_R) != dict.end() && dict.find(FILL_G) != dict.end() && dict.find(FILL_B) != dict.end()) {
-        dict.insert({FILL_RGBA, Formatter().FillNamedPlaceholders(SVG_FILL_RGBA, dict)});
+        dict.insert({FILL_RGBA, Formatter().FillNamedPlaceholders(SVG_FILL_RGB, dict)});
         dict.erase(dict.find(FILL_R)); 
         dict.erase(dict.find(FILL_G)); 
         dict.erase(dict.find(FILL_B));
     }
     if(dict.find(COLOR_R) != dict.end() && dict.find(COLOR_G) != dict.end() && dict.find(COLOR_B) != dict.end()) {
-        dict.insert({COLOR_RGBA, Formatter().FillNamedPlaceholders(SVG_COLOR_RGBA, dict)});
+        dict.insert({COLOR_RGB, Formatter().FillNamedPlaceholders(SVG_COLOR_RGB, dict)});
         dict.erase(dict.find(COLOR_R));
         dict.erase(dict.find(COLOR_G));
         dict.erase(dict.find(COLOR_B));

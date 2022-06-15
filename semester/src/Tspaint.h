@@ -42,7 +42,7 @@ public:
     std::shared_ptr<ShapeGroup> currentGroup;
     std::map<int, std::shared_ptr<SuperShape>> superShapesById;
 private:
-    int idGenerator = 0;
+    int idGenerator = 1;
 
 
 };

@@ -259,7 +259,7 @@ Command GroupCommand() {
                                        interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
                                                                              FormatterParams({"Group size"})),
                                        "",
-                                       [](int x) { return x > 0 && x < 3; });
+                                       [](int x) { return x > 0 && x <= GROUP_MAX_SIZE; });
                            });
                            std::vector<int> ids = std::invoke([&interface, &tspaint, &groupSize]() {
                                return interface->PromptMultipleIntegers(
