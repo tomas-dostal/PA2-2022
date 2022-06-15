@@ -41,6 +41,7 @@ public:
 
     [[nodiscard]] size_t Thickness() const;
 
+    std::string Print(int indent) const override;
 
 protected:
 

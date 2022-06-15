@@ -57,12 +57,6 @@ void Rectangle::Draw(Export &exporter) {
 
 }
 
-std::string Rectangle::Print() const {
-    // todo finish formatting
-    return "" + name + " (" + std::to_string(id) + ")";
-
-}
-
 std::pair<size_t, size_t> Rectangle::CalcMaxDimensions(){
     return std::make_pair(width + start.x + thickness * 2, height + start.y + thickness * 2);
 }

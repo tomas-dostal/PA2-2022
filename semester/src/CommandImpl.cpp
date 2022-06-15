@@ -280,7 +280,8 @@ Command GroupCommand() {
                            for (int id: ids) {
                                // new IDs are generated inside of Tspaint
                                auto shape = tspaint->GetSuperShape(id);
-                               ss.emplace_back();
+                               ss.emplace_back(shape);
+                               tspaint->RemoveSuperShapeFromRootGroup(id);
                            }
                            tspaint->AddGroup(ss);
                        });
@@ -310,7 +311,7 @@ Command ListCommand() {
  * @return save command implementation
  */
 SysCommand SaveCommand() {
-    return SysCommand{COMMAND_SAVE, HELP_SAVE,
+    return SysCommand{COMMAND_SAVE, HELP_SAVE, EXAMPLE_SAVE,
                       [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
                           std::string fileName = interface->PromptBasic("Enter filename: ",

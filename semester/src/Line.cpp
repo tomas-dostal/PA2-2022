@@ -56,12 +56,6 @@ void Line::Draw(Export & exporter) {
 
 }
 
-std::string Line::Print() const {
-    // todo finish formatting
-    return "" + name + " (" + std::to_string(id) + ")";
-
-}
-
 std::pair<size_t, size_t> Line::CalcMaxDimensions(){
     return std::make_pair(thickness * 2 + std::max(a.x, b.x), thickness * 2 + std::max(a.y, b.y));
 }

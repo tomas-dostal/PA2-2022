@@ -41,11 +41,6 @@ bool Ellipse::operator==(const SuperShape &s) {
     // that's enough
 }
 
-std::string Ellipse::Print() const {
-    return "" + name + " (" + std::to_string(id) + ")";
-}
-
-
 std::pair<size_t, size_t> Ellipse::CalcMaxDimensions() {
     return std::make_pair(width + thickness, height + thickness);
 }

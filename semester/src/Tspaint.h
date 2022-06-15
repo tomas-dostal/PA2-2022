@@ -15,11 +15,13 @@ public:
 
     void AddShape(std::shared_ptr<SuperShape> superShape);
 
-    void AddGroup();
+    std::shared_ptr<ShapeGroup> AddGroup();
 
     void AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes);
 
     bool UseGroup(int id);
+
+    void RemoveSuperShapeFromRootGroup(int shapeId);
 
     int GenerateId();
 

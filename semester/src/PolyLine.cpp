@@ -84,11 +84,6 @@ void PolyLine::Draw(Export & exporter) {
     exporter.Process(SHAPE_GROUP_END, {});
 }
 
-std::string PolyLine::Print() const {
-    return "" + name + " (" + std::to_string(id) + ")";
-
-}
-
 std::pair<size_t, size_t> PolyLine::CalcMaxDimensions(){
     return std::make_pair(width + thickness, height + thickness);
 }

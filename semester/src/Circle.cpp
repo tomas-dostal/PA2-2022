@@ -40,10 +40,6 @@ bool Circle::operator==(const SuperShape &s) {
     // that's enough
 }
 
-std::string Circle::Print() const {
-    return "" + name + " (" + std::to_string(id) + ")";
-}
-
 
 std::pair<size_t, size_t> Circle::CalcMaxDimensions(){
     return std::make_pair(((int) width/2) + center->x + thickness,((int) height/2) + center->y + thickness);

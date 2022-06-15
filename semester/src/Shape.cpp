@@ -22,7 +22,7 @@ std::shared_ptr<Color> Shape::ShapeFill() {
 size_t Shape::Thickness() const{
     return thickness;
 }
-//
-//std::shared_ptr<SuperShape> Shape::Clone(std::function<int(void)> IdGenerator){
-//    return std::make_shared<SuperShape>(IdGenerator(), name, center->Clone(), width, height);
-//}
+std::string Shape::Print(int indent) const {
+    return std::string(indent, ' ')  + name + " (" + std::to_string(id) + ")\n";
+}
+

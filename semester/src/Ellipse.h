@@ -19,8 +19,6 @@ public:
 
     void Draw(Export &exporter) override;
 
-    [[nodiscard]] std::string Print() const override;
-
     bool operator==(const SuperShape &s) override;
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;

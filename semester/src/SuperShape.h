@@ -50,7 +50,7 @@ public:
 
     //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();
 
-    virtual std::string Print() const = 0;
+    virtual std::string Print(int indent) const = 0;
 
     virtual void NewId( const std::function<int(void)> IdGenerator);
 

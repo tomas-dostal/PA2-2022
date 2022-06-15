@@ -24,6 +24,8 @@ public:
 
     void Add(std::shared_ptr<SuperShape> ss);
 
+    void RemoveIfExists(int id);
+
     ~ShapeGroup() noexcept = default;
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;
@@ -48,7 +50,7 @@ public:
      * Print basic info about shape/group
      * @return string
      */
-    [[nodiscard]] std::string Print() const override;
+    [[nodiscard]] std::string Print(int indent) const override;
 
     /**
      * Method Draw is used for export in specified format
@@ -69,10 +71,8 @@ public:
 
     void NewId( const std::function<int(void)> IdGenerator) override;
 
-    // std::shared_ptr<SuperShape> Clone(std::function<int(void)> IdGenerator);
-
 protected:
-    std::vector<std::shared_ptr<SuperShape>> children;
+    std::map<int, std::shared_ptr<SuperShape>> children;
 
 };
 

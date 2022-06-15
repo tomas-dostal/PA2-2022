@@ -25,18 +25,18 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     color = colorPalette.getColorByName("YELLOW__FIT");
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
     thickness = THICKNESS_DEFAULT;
-    root = std::make_shared<ShapeGroup>(GenerateId(), ROOT_GROUP, std::vector<std::shared_ptr<SuperShape>>());
-    currentGroup = root;
+    root = currentGroup = AddGroup();
 }
 
-void Tspaint::AddGroup() {
+std::shared_ptr<ShapeGroup> Tspaint::AddGroup() {
     auto group = std::make_shared<ShapeGroup>(GenerateId(),
             "group",
             std::vector<std::shared_ptr<SuperShape>>()
             );
-
-    currentGroup->Add(group);
+    if(currentGroup)
+        currentGroup->Add(group);
     this->superShapesById.insert({group->Id(), group});
+    return group;
 }
 
 
@@ -60,7 +60,7 @@ void Tspaint::AddShape(std::shared_ptr<SuperShape> superShape){
 }
 
 std::string Tspaint::Print() const {
-    return root->Print();
+    return root->Print(0);
 }
 
 
@@ -108,4 +108,8 @@ std::shared_ptr<SuperShape> Tspaint::GetSuperShape(int index){
 
 std::pair<size_t, size_t> Tspaint::MaxDimensions() const {
     return root->CalcMaxDimensions();
+}
+
+void Tspaint::RemoveSuperShapeFromRootGroup(int shapeId) {
+    currentGroup->RemoveIfExists(shapeId);
 }

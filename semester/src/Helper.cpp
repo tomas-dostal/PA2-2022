@@ -56,11 +56,9 @@ std::string Helper::ToString(const std::vector<std::string> & in){
 }
 std::vector<std::string> Helper::Indent(const std::string & sep, const std::vector<std::string> & in){
 
-    std::vector<std::string> out(in.size());
-    auto it = out.begin();
-
+    std::vector<std::string> out;
     for(auto & line: in){
-        out.insert(it++, sep + line);
+        out.emplace_back(sep + line);
     }
     return out;
 }

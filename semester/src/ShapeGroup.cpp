@@ -10,61 +10,57 @@
 #include "Export.h"
 
 std::vector<std::shared_ptr<SuperShape>> ShapeGroup::List() const {
-    return children;
+    std::vector<std::shared_ptr<SuperShape>> res;
+    for(const auto & [id, child]: children)
+        res.push_back(child);
+    return res;
 }
 
 std::ostream & operator<<(std::ostream & os, const ShapeGroup & shapeGroup) {
-    for(const auto & shapeOrGroup: shapeGroup.children){
-        os << shapeOrGroup->Print() << std::endl;
-    }
+    for(const auto& [id, child]: shapeGroup.children)
+        os << child->Print(0) << std::endl;
     return os;
 }
 
-std::string ShapeGroup::Print() const {
-    std::string out = "Group (" + std::to_string(id) + "): \n";
-    for(const auto & child : children){
-        out += Helper::ToString(Helper::Indent("   ", std::vector<std::string>({child->Print()})));
+std::string ShapeGroup::Print(int indent) const {
+    std::string out = std::string(indent, ' ') + "Group (" + std::to_string(id) + "): \n";
+    for(const auto & [id, child] : children){
+        out += child->Print(indent + 2);
     }
     return out;
 }
 
-ShapeGroup::ShapeGroup(int id,
-                       std::string name,
-                       std::vector<std::shared_ptr<SuperShape>> children):
-    SuperShape(id,
-               name,
-               std::make_shared<Pos>(0,0),
-               [&children]() {
-                   size_t max = 0;
-                   for (auto child: children) {
-                       if (child->Height() > max)
-                           max = child->Height();
-                   }
-                   return max;
-               }(),
-               [&children]() {
-                   size_t max = 0;
-                   for (auto child: children) {
-                       if (child->Width() > max)
-                           max = child->Width();
-                   }
-                   return max;
-               }()
-               ), children(children){
-
+ShapeGroup::ShapeGroup( int id,
+                        std::string name,
+                        std::vector<std::shared_ptr<SuperShape>> children):
+                        SuperShape(id,
+                           name,
+                           std::make_shared<Pos>(0,0),
+                           [&children]() {
+                               size_t max = 0;
+                               for (auto child: children) {
+                                   if (child->Height() > max)
+                                       max = child->Height();
+                               }
+                               return max;
+                           }(),
+                           [&children]() {
+                               size_t max = 0;
+                               for (auto child: children) {
+                                   if (child->Width() > max)
+                                       max = child->Width();
+                               }
+                               return max;
+                           }()
+                           ){
+        for(const auto & child: children)
+            this->children.insert({child->Id(), child});
 }
 
 // todo &&
 void ShapeGroup::Add(std::shared_ptr<SuperShape> superShape){
-    this->children.push_back(superShape);
+    this->children.insert({superShape->Id(), superShape});
 }
-
-//std::shared_ptr<ShapeGroup> ShapeGroup::Clone(unsigned int newId) const {
-//    auto res = std::make_shared<ShapeGroup>(*this);
-//    res->id = newId;
-//    return res;
-//}
-
 bool ShapeGroup::operator==(const SuperShape &s) {
     // todo
     const ShapeGroup *ptr = dynamic_cast<const ShapeGroup *>( &s );
@@ -76,7 +72,7 @@ bool ShapeGroup::operator==(const SuperShape &s) {
 ShapeGroup::ShapeGroup(const ShapeGroup &shapeGroup) : SuperShape(shapeGroup.id, shapeGroup.name, shapeGroup.center, shapeGroup.width, shapeGroup.height) {
     // todo
     if(!(*this == shapeGroup)){
-        children = std::vector<std::shared_ptr<SuperShape>>(shapeGroup.children);
+        children = std::map<int, std::shared_ptr<SuperShape>>(shapeGroup.children);
         id = shapeGroup.id;
         height = shapeGroup.height;
         width = shapeGroup.width;
@@ -86,17 +82,19 @@ ShapeGroup::ShapeGroup(const ShapeGroup &shapeGroup) : SuperShape(shapeGroup.id,
 }
 
 void ShapeGroup::NewId( const std::function<int(void)> IdGenerator){
-    id = IdGenerator();
-    for(auto item: children){
-        item->NewId(IdGenerator);
+    std::map<int, std::shared_ptr<SuperShape>> tmp;
+
+    for(auto & [id, child]: children){
+        tmp.insert({IdGenerator(), child});
     }
+    children = tmp;
 }
 
 void ShapeGroup::Draw(Export & exporter) {
     exporter.Process(SHAPE_GROUP_BEGIN, {
             {GROUP_ID, std::to_string(id)}
     });
-    for(const auto & child: children){
+    for(const auto &[id, child]: children){
         child->Draw(exporter);
     }
     exporter.Process(SHAPE_GROUP_END, {});
@@ -105,8 +103,8 @@ void ShapeGroup::Draw(Export & exporter) {
 std::pair<size_t, size_t> ShapeGroup::CalcMaxDimensions() {
     size_t max_width = 0;
     size_t max_height = 0;
-    for(const auto & child: this->children){
-        std::pair<size_t, size_t> tmp = child->CalcMaxDimensions();
+    for(auto const& [id, shape] : this->children){
+        std::pair<size_t, size_t> tmp = shape->CalcMaxDimensions();
         if(tmp.first > max_width)
             max_width = tmp.first;
         if(tmp.second > max_height)
@@ -119,12 +117,10 @@ std::pair<size_t, size_t> ShapeGroup::CalcMaxDimensions() {
     return std::pair<size_t, size_t>{max_width, max_height};
 }
 
+void ShapeGroup::RemoveIfExists(int id){
+    auto it = children.find(id);
+    if(it != children.end()){
+        children.erase(it);
+    }
+}
 
-//std::shared_ptr<SuperShape> ShapeGroup::Clone(std::function<int(void)> IdGenerator){
-//    std::vector<std::shared_ptr<SuperShape>> childrenCopy;
-//    for(const auto & child: childrenCopy){
-//        childrenCopy.push_back(child->Clone(IdGenerator));
-//    }
-//    return std::make_shared<ShapeGroup>(IdGenerator(), name, childrenCopy);
-//}
-//
