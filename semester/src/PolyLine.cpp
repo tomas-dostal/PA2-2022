@@ -22,9 +22,9 @@ PolyLine::PolyLine(int id, std::string name, std::vector<Pos> positions, size_t 
                     std::shared_ptr<Color> fill)
         : Shape(id,
                 name,
-                std::invoke([&positions](){
-                    int sumWidth = 0;
-                    int sumHeight = 0;
+                std::invoke([&positions, &thickness](){
+                    int sumWidth = 2*thickness;
+                    int sumHeight = 2*thickness;
                     for(const auto & p: positions){
                         sumWidth += p.x;
                         sumHeight += p.y;
@@ -36,10 +36,10 @@ PolyLine::PolyLine(int id, std::string name, std::vector<Pos> positions, size_t 
                 }),
                 (*std::max_element(positions.begin(), positions.end(), [](const Pos & a, const Pos & b){
                     return a.x > b.x;
-                })).x,
+                })).x + 2 * thickness,
                 (*std::max_element(positions.begin(), positions.end(), [](const Pos & a, const Pos & b){
                     return a.y > b.y;
-                })).y,
+                })).y + 2 * thickness,
                 thickness,
                 color,
                 fill),
@@ -90,5 +90,5 @@ std::string PolyLine::Print() const {
 }
 
 std::pair<size_t, size_t> PolyLine::CalcMaxDimensions(){
-    return std::make_pair(width, height);
+    return std::make_pair(width + thickness, height + thickness);
 }

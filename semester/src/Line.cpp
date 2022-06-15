@@ -63,5 +63,5 @@ std::string Line::Print() const {
 }
 
 std::pair<size_t, size_t> Line::CalcMaxDimensions(){
-    return std::make_pair(width + std::max(a.x, b.x), height + std::max(a.y, b.y));
+    return std::make_pair(thickness * 2 + std::max(a.x, b.x), thickness * 2 + std::max(a.y, b.y));
 }

@@ -47,5 +47,5 @@ std::string Ellipse::Print() const {
 
 
 std::pair<size_t, size_t> Ellipse::CalcMaxDimensions() {
-    return std::make_pair(width, height);
+    return std::make_pair(width + thickness, height + thickness);
 }

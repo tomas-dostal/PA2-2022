@@ -64,6 +64,6 @@ std::string Rectangle::Print() const {
 }
 
 std::pair<size_t, size_t> Rectangle::CalcMaxDimensions(){
-    return std::make_pair(width + start.x, height + start.x);
+    return std::make_pair(width + start.x + thickness * 2, height + start.y + thickness * 2);
 }
 
