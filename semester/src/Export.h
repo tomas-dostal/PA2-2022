@@ -24,5 +24,4 @@ public:
 protected:
 
     std::string fileName;
-    std::ofstream fileOut;
 };

@@ -1,0 +1,5 @@
+set thickness 6
+set color byname RED__COMPILED_WITH_ERRORS
+set thickness 10
+draw line 20 80 102 12
+draw line 180 80 98 12

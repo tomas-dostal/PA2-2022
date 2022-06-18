@@ -53,6 +53,7 @@
 #include "Rectangle.h"
 #include "PolyLine.h"
 #include "Ellipse.h"
+#include "ExportBMP.h"
 
 
 /**
@@ -128,13 +129,13 @@ Command DrawCommand() {
 
                            tspaint->AddShape(
                                    std::make_shared<Ellipse>(tspaint->GenerateId(),
-                                                            SHAPE_CIRCLE,
-                                                            std::make_shared<Pos>(center),
-                                                            diameter_x,
-                                                            diameter_y,
-                                                            tspaint->thickness,
-                                                            tspaint->color,
-                                                            tspaint->fill)
+                                                             SHAPE_CIRCLE,
+                                                             std::make_shared<Pos>(center),
+                                                             diameter_x,
+                                                             diameter_y,
+                                                             tspaint->thickness,
+                                                             tspaint->color,
+                                                             tspaint->fill)
                            );
                        };
                        auto newPolyLine = [&interface, &tspaint]() {
@@ -146,21 +147,25 @@ Command DrawCommand() {
                                        [](int x) { return x > 0; });
                            });
                            std::vector<Pos> res;
-                           for(size_t i = 0; i < numberOfPoints; i++) {
-                               res.push_back(std::invoke([&interface , &i, &numberOfPoints]() {
+                           for (size_t i = 0; i < numberOfPoints; i++) {
+                               res.push_back(std::invoke([&interface, &i, &numberOfPoints]() {
                                    return interface->PromptPos(
                                            interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                                 FormatterParams({"Point" + std::to_string(i + 1) + "/ " + std::to_string(numberOfPoints)}))
+                                                                                 FormatterParams({"Point" +
+                                                                                                  std::to_string(
+                                                                                                          i + 1) +
+                                                                                                  "/ " + std::to_string(
+                                                                                         numberOfPoints)}))
                                    );
                                }));
                            }
                            tspaint->AddShape(
                                    std::make_shared<PolyLine>(tspaint->GenerateId(),
-                                                          SHAPE_POLYLINE,
-                                                          res,
-                                                          tspaint->thickness,
-                                                          tspaint->color,
-                                                          tspaint->fill)
+                                                              SHAPE_POLYLINE,
+                                                              res,
+                                                              tspaint->thickness,
+                                                              tspaint->color,
+                                                              tspaint->fill)
                            );
                        };
                        auto newLine = [&interface, &tspaint]() {
@@ -213,23 +218,23 @@ Command DrawCommand() {
 
                            tspaint->AddShape(
                                    std::make_shared<Rectangle>(tspaint->GenerateId(),
-                                                          SHAPE_RECTANGLE,
-                                                          start,
-                                                          width,
-                                                          height,
-                                                          tspaint->thickness,
-                                                          tspaint->color,
-                                                          tspaint->fill)
+                                                               SHAPE_RECTANGLE,
+                                                               start,
+                                                               width,
+                                                               height,
+                                                               tspaint->thickness,
+                                                               tspaint->color,
+                                                               tspaint->fill)
                            );
                        };
 
 
                        std::map<std::string, std::function<void(void)>> shapes{
-                               {"circle", newCircle},
-                               {"ellipse", newEllipse},
-                               {"line",   newLine},
-                               {"polyline",   newPolyLine},
-                               {"rectangle",   newRectangle},
+                               {"circle",    newCircle},
+                               {"ellipse",   newEllipse},
+                               {"line",      newLine},
+                               {"polyline",  newPolyLine},
+                               {"rectangle", newRectangle},
                        };
 
                        std::vector<std::string> setOptionKeys;
@@ -334,6 +339,16 @@ SysCommand SaveCommand() {
                               exporter.End();
 
                           };
+                          auto bmpSave = [&fileName, &tspaint]() {
+                              auto exporter = ExportBMP(fileName);
+                              auto maxDim = tspaint->MaxDimensions();
+                              exporter.SetBackground(tspaint->background);
+                              exporter.Start(maxDim.first, maxDim.second);
+
+                              tspaint->root->Draw(exporter);
+                              exporter.End();
+
+                          };
                           auto tspaintSave = [&fileName, &tspaint]() {
                               ExportTspaint(fileName).Start(tspaint->root->Width(), tspaint->root->Height());
                           };
@@ -341,6 +356,7 @@ SysCommand SaveCommand() {
 
                           std::map<std::string, std::function<void(void)>> exportOptions{
                                   {"svg",     svgSave},
+                                  {"bmp",     bmpSave},
                                   {"tspaint", tspaintSave}
                           };
 
@@ -349,12 +365,22 @@ SysCommand SaveCommand() {
                               exportOptionKeys.push_back(key);
                           }
 
-                          std::string commandName = interface->PromptOption(
-                                  exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
-                                      return std::find(exportOptionKeys.begin(), exportOptionKeys.end(), commandName) !=
-                                             exportOptionKeys.end();
-                                  }
-                          );
+
+                          size_t lastDot = fileName.find_last_of('.');
+                          std::string commandName;
+                          if (lastDot != std::string::npos &&
+                              std::find(exportOptionKeys.begin(), exportOptionKeys.end(), fileName.substr(++lastDot)) !=
+                              exportOptionKeys.end()) {
+                              commandName = fileName.substr(lastDot);
+                          } else {
+                              commandName = interface->PromptOption(
+                                      exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
+                                          return std::find(exportOptionKeys.begin(), exportOptionKeys.end(),
+                                                           commandName) !=
+                                                 exportOptionKeys.end();
+                                      }
+                              );
+                          }
 
                           return std::any_cast<std::function<void(void)>>(exportOptions[commandName])();
                       }
@@ -369,7 +395,8 @@ SysCommand SaveCommand() {
  * @return LoadCommand implementation
  */
 SysCommand
-LoadCommand(const std::function<void(std::shared_ptr<Interface>,std::shared_ptr<Interface>, std::shared_ptr<Tspaint> & targetTspaint)> loadFn) {
+LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr<Interface>,
+                                     std::shared_ptr<Tspaint> &targetTspaint)> loadFn) {
     return SysCommand{COMMAND_LOAD, HELP_LOAD, EXAMPLE_LOAD,
                       [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
@@ -435,14 +462,16 @@ Command SetCommand() {
                                                                          FormatterParams{}),
                                    SET_ENTER_GROUP_ID_INVALID,
                                    [&tspaint](const int value) {
-                                       if(tspaint->IsValidIndex(value)){
-                                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>( tspaint->GetSuperShape(value) );
-                                           if(ptr)
+                                       if (tspaint->IsValidIndex(value)) {
+                                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>(
+                                                   tspaint->GetSuperShape(value));
+                                           if (ptr)
                                                return true;
                                        }
                                        return false;
                                    });
-                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>( tspaint->GetSuperShape(id) );
+                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>(
+                                   tspaint->GetSuperShape(id));
                            tspaint->currentGroup = ptr;
 
                        };

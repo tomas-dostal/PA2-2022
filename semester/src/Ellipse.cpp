@@ -42,5 +42,5 @@ bool Ellipse::operator==(const SuperShape &s) {
 }
 
 std::pair<size_t, size_t> Ellipse::CalcMaxDimensions() {
-    return std::make_pair(width + thickness, height + thickness);
+    return std::make_pair(width + thickness * 2, height + thickness * 2);
 }

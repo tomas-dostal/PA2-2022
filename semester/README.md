@@ -72,3 +72,6 @@ formátu BMP by zjednodušený přístup "prostě to poskládat z úseček" uše
 s std::cin a std::cout, tak například se soubory (vlastní "formát", který je definovaný jako set instrukcí, které by jinak 
 byly zadané do terminálu)
 
+
+
+

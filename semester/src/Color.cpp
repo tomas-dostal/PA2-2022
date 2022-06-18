@@ -9,3 +9,7 @@
 bool Color::operator==(const Color &other) const {
     return this->r == other.r && this->g == other.g && this->b == other.b && this->name == other.name;
 }
+
+std::shared_ptr<Pixel> Color::GetPixel() const {
+    return std::make_shared<Pixel>(r, g, b);
+}

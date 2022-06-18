@@ -38,6 +38,7 @@ public:
     ColorPalette colorPalette;
     std::shared_ptr<Color> color;
     std::shared_ptr<Color> fill;
+    std::shared_ptr<Color> background;
     size_t thickness;
 
     std::shared_ptr<ShapeGroup> root;

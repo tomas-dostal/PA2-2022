@@ -42,5 +42,5 @@ bool Circle::operator==(const SuperShape &s) {
 
 
 std::pair<size_t, size_t> Circle::CalcMaxDimensions(){
-    return std::make_pair(((int) width/2) + center->x + thickness,((int) height/2) + center->y + thickness);
+    return std::make_pair(((int) width/2) + center->x + thickness * 2,((int) height/2) + center->y + thickness * 2);
 }

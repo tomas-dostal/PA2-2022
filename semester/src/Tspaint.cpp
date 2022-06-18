@@ -24,6 +24,7 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     // todo load from file
     color = colorPalette.getColorByName("YELLOW__FIT");
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
+    background = colorPalette.getColorByName("BLACK__INSIDE_OF_MY_SOUL");
     thickness = THICKNESS_DEFAULT;
     root = currentGroup = AddGroup();
 }

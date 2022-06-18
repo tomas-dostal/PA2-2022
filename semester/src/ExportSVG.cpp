@@ -14,6 +14,10 @@
 
 ExportSVG::ExportSVG(const std::string &fileName):
         Export(fileName) {
+    fileOut.open(fileName, std::ofstream::out);
+    if (!fileOut) {
+        throw std::runtime_error(ERROR_FILE_IO);
+    }
     svgDict = {
             {SHAPE_CIRCLE,    SVG_CIRCLE },
             {SHAPE_ELLIPSE,   SVG_ELLIPSE },
@@ -48,8 +52,8 @@ bool ExportSVG::Process(std::string SuperShapeName, std::map<std::string, std::s
 bool ExportSVG::Start(int width, int height) {
     fileOut << Formatter().FillNamedPlaceholders(SVG_INIT,
                                                    {
-                                                    {MAX_WIDTH,  std::to_string(height)},
-                                                    {MAX_HEIGHT, std::to_string(width)}
+                                                    {MAX_WIDTH,  std::to_string(width)},
+                                                    {MAX_HEIGHT, std::to_string(height)}
                                                    }
         ) << std::endl;
 

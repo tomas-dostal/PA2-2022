@@ -19,5 +19,8 @@ public:
 
     bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) override;
 
+private:
+
+    std::fstream fileOut;
     std::map<std::string, std::string> svgDict;
 };

@@ -5,7 +5,7 @@
 
 #include "Shape.h"
 
-Shape::Shape(int id, std::string name, std::shared_ptr<Pos> center, size_t height, size_t width, size_t thickness,
+Shape::Shape(int id, std::string name, std::shared_ptr<Pos> center, size_t width,  size_t height, size_t thickness,
       std::shared_ptr<Color> color, std::shared_ptr<Color> fill):
       SuperShape(id, name, center, width, height), thickness(thickness), color(color), fill(fill){
 

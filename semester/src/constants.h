@@ -18,6 +18,14 @@ const int POS_Y_MIN = 0;
 const int POS_Y_MAX = 1080;
 const int THICKNESS_DEFAULT = 5;
 const int GROUP_MAX_SIZE = 10;
+const int SHAPE_NA_CIRCLE = 1.0;
+const int SHAPE_NA_RECTANGLE = 0.2;
+const int SHAPE_NA_ELLISPE = 1.0;
+const int SHAPE_NA_DIAMOND = 2.0;
+const int SHAPE_NA_STAR = 5.0;
+const int SHAPE_NA_CROSS = 100.0;
+const int BMP_THICKNESS = 1;
+
 const std::vector<std::string> YES_NO = {"y", "n"};
 const std::vector<std::string> YES = {"y"};
 const std::vector<std::string> NO = {"n"};

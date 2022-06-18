@@ -128,7 +128,7 @@ const char *const SVG_INIT = "<svg width='MAX_WIDTH' height='MAX_HEIGHT' xmlns='
 const char *const SVG_END = "</svg>";
 const char *const SVG_GROUP_BEGIN = "<g id='GROUP_ID'>";
 const char *const SVG_GROUP_END= "</g>";
-const char *const SVG_CIRCLE = "<circle cx='CENTER_X' cy='CENTER_Y' r='DIAMETER_X' style=\"stroke:COLOR_RGB;stroke-width:$;fill:FILL_RGBA;\"/>";
+const char *const SVG_CIRCLE = "<circle cx='CENTER_X' cy='CENTER_Y' r='DIAMETER_X' style=\"stroke:COLOR_RGB;stroke-width:THICKNESS;fill:FILL_RGBA;\"/>";
 const char *const SVG_ELLIPSE = "<ellipse cx='CENTER_X' cy='CENTER_Y' rx='DIAMETER_X' ry='DIAMETER_Y' style=\"stroke:COLOR_RGB;stroke-width:THICKNESS;fill:FILL_RGBA;\"/>";
 const char *const SVG_RECTANGLE = "<rect x='START_X' y='START_Y' width='WIDTH' height='HEIGHT' style=\"stroke:COLOR_RGB;stroke-width:THICKNESS;fill:FILL_RGBA;\"/>";
 const char *const SVG_LINE = "<line x1='START_X' y1='START_Y' x2='END_X' y2='END_Y' style=\"stroke:COLOR_RGB;stroke-width:THICKNESS;\"/>";

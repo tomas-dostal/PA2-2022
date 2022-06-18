@@ -8,8 +8,5 @@
 #include "messages.h"
 
 Export::Export(const std::string &fileName) : fileName(fileName){
-    this->fileOut.open(fileName, std::ofstream::out);
-    if (!fileOut) {
-        throw std::runtime_error(ERROR_FILE_IO);
-    }
+
 }

@@ -7,6 +7,7 @@
 
 #include <string>
 #include <utility>
+#include "Pixel.h"
 
 class Color {
 public:
@@ -20,6 +21,7 @@ public:
                                                                                  g(g),
                                                                                  b(b),
                                                                                  name(std::move(name)) {};
+    std::shared_ptr<Pixel> GetPixel() const;
 
     [[nodiscard]] int R() const { return r; }
 
