@@ -61,7 +61,7 @@ ExportBMP::ExportBMP(const std::string &fileName) :
                             SHAPE_NA_ELLISPE);
             }},
             {SHAPE_RECTANGLE,   [this](std::map<std::string, std::string> params) {
-                Pos start = Pos(std::stoi(params[START_X]), std::stoi(params[START_X]));
+                Pos start = Pos(std::stoi(params[START_X]), std::stoi(params[START_Y]));
                 Pos right_top = Pos(std::stoi(params[START_X]) + std::stoi(params[WIDTH]),
                                     start.y);
                 Pos right_bottom = Pos(start.x + std::stoi(params[WIDTH]),
@@ -334,7 +334,7 @@ void ExportBMP::SaveToFile() {
     header.bmpOffset = sizeof(bmpfileMagic)
                        + sizeof(bmpfile_header) + sizeof(bmpfile_dib_info);
     header.fileSize = header.bmpOffset
-                      + (image[0].size() * 3 + image.size() % 4) * image[0].size();
+                      + (image.size() * 3 + image[0].size() % 4) * image.size();
     fileOut.write((char *) (&header), sizeof(header));
     bmpfile_dib_info dibInfo = {0};
     dibInfo.headerSize = sizeof(bmpfile_dib_info);
