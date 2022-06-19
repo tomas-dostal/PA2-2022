@@ -18,7 +18,7 @@ Circle::Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t dia
 void Circle::Draw(Export & exporter) {
     exporter.Process(SHAPE_CIRCLE, {
             {CENTER_X,   std::to_string(this->center->x)},
-            {CENTER_Y,   std::to_string(this->center->x)},
+            {CENTER_Y,   std::to_string(this->center->y)},
             {DIAMETER_X, std::to_string(this->diameter)},
             {COLOR_R,    std::to_string(this->color->R())},
             {COLOR_G,    std::to_string(this->color->G())},
@@ -43,4 +43,13 @@ bool Circle::operator==(const SuperShape &s) {
 
 std::pair<size_t, size_t> Circle::CalcMaxDimensions(){
     return std::make_pair(((int) width/2) + center->x + thickness * 2,((int) height/2) + center->y + thickness * 2);
+}
+
+void Circle::MoveRelative(int x, int y) {
+    center->x += x;
+    center->y += y;
+}
+
+std::shared_ptr<SuperShape> Circle::Clone(const std::function<int(void)> &IdGenerator) {
+    return std::make_shared<Circle>(IdGenerator(), name, center->Clone(), diameter, thickness, color->Clone(), fill->Clone());
 }

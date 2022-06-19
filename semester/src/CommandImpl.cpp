@@ -129,7 +129,7 @@ Command DrawCommand() {
 
                            tspaint->AddShape(
                                    std::make_shared<Ellipse>(tspaint->GenerateId(),
-                                                             SHAPE_CIRCLE,
+                                                             SHAPE_ELLIPSE,
                                                              std::make_shared<Pos>(center),
                                                              diameter_x,
                                                              diameter_y,
@@ -258,7 +258,9 @@ Command DrawCommand() {
 Command GroupCommand() {
     return Command{COMMAND_GROUP, HELP_GROUP, EXAMPLE_HELP, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
-                       std::invoke([&interface, &tspaint]() {
+
+
+                       auto groupObjects = [&interface, &tspaint]() {
                            size_t groupSize = std::invoke([&interface]() {
                                return interface->PromptInteger(
                                        interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
@@ -289,7 +291,61 @@ Command GroupCommand() {
                                tspaint->RemoveSuperShapeFromRootGroup(id);
                            }
                            tspaint->AddGroup(ss);
-                       });
+                       };
+
+
+                       auto cloneGroup = [&interface, &tspaint]() {
+                           int id = interface->PromptInteger(
+                                   interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                                                         FormatterParams(
+                                                                                 {"Provide IDs of group to be clonned"})),
+                                   INVALID_ID,
+                                   [&tspaint](int index) {
+                                       if (index >= 0) {
+                                           auto ptr = std::dynamic_pointer_cast<ShapeGroup>(
+                                                   tspaint->GetSuperShape(index));
+                                           return ptr != nullptr;
+                                       }
+                                       return false;
+                                   }
+                           );
+
+                           auto srcGroup = std::dynamic_pointer_cast<ShapeGroup>(tspaint->GetSuperShape(id));
+                           auto dimensions = srcGroup->CalcMaxDimensions();
+                           tspaint->currentGroup = tspaint->root;
+                           auto clone = srcGroup->Clone([tspaint]() { return tspaint->GenerateId(); });
+                           auto dstGroup = tspaint->AddExistingGroup(std::dynamic_pointer_cast<ShapeGroup>(clone));
+                           dstGroup->MoveRelative((int) dimensions.first, 0);
+
+                           return true;
+
+                       };
+
+                       auto listGroup = [&interface, &tspaint]() {
+                           interface->PrintInfo(PRINTING_GROUP);
+                           interface->PrintInfo(tspaint->currentGroup->Print(0));
+                       };
+
+
+                       std::map<std::string, std::function<void(void)>> shapes{
+                               {"objects", groupObjects},
+                               {"clone",   cloneGroup},
+                               {"list",    listGroup}
+                       };
+
+                       std::vector<std::string> setOptionKeys;
+                       for (const auto &[key, _]: shapes) {
+                           setOptionKeys.push_back(key);
+                       }
+
+                       std::string commandName = interface->PromptOption(
+                               setOptionKeys, [&setOptionKeys](const std::string &commandName) {
+                                   return std::find(setOptionKeys.begin(), setOptionKeys.end(), commandName) !=
+                                          setOptionKeys.end();
+                               }
+                       );
+
+                       return std::any_cast<std::function<void(void)>>(shapes[commandName])();
                    }
     };
 }
@@ -415,7 +471,6 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr
                           std::stringstream ss;
                           auto fileInterface = std::make_shared<Interface>(fileIn, ss);
                           fileInterface->setHeadless(true);
-
                           loadFn(interface, fileInterface, tspaint);
                       }
     };

@@ -69,18 +69,6 @@ bool ShapeGroup::operator==(const SuperShape &s) {
     return false;
 }
 
-ShapeGroup::ShapeGroup(const ShapeGroup &shapeGroup) : SuperShape(shapeGroup.id, shapeGroup.name, shapeGroup.center, shapeGroup.width, shapeGroup.height) {
-    // todo
-    if(!(*this == shapeGroup)){
-        children = std::map<int, std::shared_ptr<SuperShape>>(shapeGroup.children);
-        id = shapeGroup.id;
-        height = shapeGroup.height;
-        width = shapeGroup.width;
-        name = shapeGroup.name;
-        center = shapeGroup.center;
-    }
-}
-
 void ShapeGroup::NewId( const std::function<int(void)> IdGenerator){
     std::map<int, std::shared_ptr<SuperShape>> tmp;
 
@@ -124,3 +112,23 @@ void ShapeGroup::RemoveIfExists(int id){
     }
 }
 
+void ShapeGroup::MoveRelative(int x, int y) {
+    for(auto & child: children){
+        child.second->MoveRelative(x, y);
+    }
+    center->x += x;
+    center->y += y;
+}
+
+std::shared_ptr<SuperShape> ShapeGroup::Clone( const std::function<int(void)>& IdGenerator){
+
+    std::vector<std::shared_ptr<SuperShape>> childrenCloneVector(0);
+    for(const auto & child: children) {
+        childrenCloneVector.emplace_back(child.second->Clone(IdGenerator));
+    }
+
+        return std::make_shared<ShapeGroup>(  IdGenerator(),
+                                              this->name,
+                                              childrenCloneVector);
+
+}

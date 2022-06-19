@@ -87,3 +87,19 @@ void PolyLine::Draw(Export & exporter) {
 std::pair<size_t, size_t> PolyLine::CalcMaxDimensions(){
     return std::make_pair(width + thickness, height + thickness);
 }
+
+void PolyLine::MoveRelative(int x, int y) {
+    for(auto & point: positions){
+        point.x += x;
+        point.y += y;
+    }
+    center->x += x;
+    center->y += y;
+}
+
+std::shared_ptr<SuperShape> PolyLine::Clone(const std::function<int(void)>& IdGenerator) {
+    std::vector<Pos> clonePositions(0);
+    for(const auto & position: positions)
+        clonePositions.emplace_back(Pos(position));
+    return std::make_shared<PolyLine>(IdGenerator(), name, clonePositions, thickness, color->Clone(), fill->Clone());
+}

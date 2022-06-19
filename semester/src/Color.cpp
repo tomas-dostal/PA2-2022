@@ -13,3 +13,7 @@ bool Color::operator==(const Color &other) const {
 std::shared_ptr<Pixel> Color::GetPixel() const {
     return std::make_shared<Pixel>(r, g, b);
 }
+
+std::shared_ptr<Color> Color::Clone() {
+    return std::make_shared<Color>(r, g, b, name);
+}

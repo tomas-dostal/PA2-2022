@@ -7,6 +7,8 @@
 
 #include <string>
 #include <utility>
+#include <memory>
+
 #include "Pixel.h"
 
 class Color {
@@ -20,7 +22,7 @@ public:
     Color(unsigned char r, unsigned char g, unsigned char b, std::string name) : r(r),
                                                                                  g(g),
                                                                                  b(b),
-                                                                                 name(std::move(name)) {};
+                                                                                 name(name) {};
     std::shared_ptr<Pixel> GetPixel() const;
 
     [[nodiscard]] int R() const { return r; }
@@ -30,6 +32,8 @@ public:
     [[nodiscard]]  int B() const { return b; }
 
     bool operator==(const Color &other) const;
+
+    std::shared_ptr<Color> Clone();
 
     friend class Formatter;
 

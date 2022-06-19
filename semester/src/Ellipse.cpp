@@ -8,9 +8,9 @@
 #include "Export.h"
 
 Ellipse::Ellipse(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter_x, size_t diameter_y,
-                 size_t thick, std::shared_ptr<Color> color,
+                 size_t thickness, std::shared_ptr<Color> color,
                  std::shared_ptr<Color> fill)
-        : Shape(id, name, center, 2 * diameter_x, 2 * diameter_y, thick, color, fill), diameter_x(diameter_x),
+        : Shape(id, name, center, 2 * diameter_x, 2 * diameter_y, thickness, color, fill), diameter_x(diameter_x),
           diameter_y(diameter_y) {
 }
 
@@ -43,4 +43,13 @@ bool Ellipse::operator==(const SuperShape &s) {
 
 std::pair<size_t, size_t> Ellipse::CalcMaxDimensions() {
     return std::make_pair(width + thickness * 2, height + thickness * 2);
+}
+
+void Ellipse::MoveRelative(int x, int y) {
+    center->x += x;
+    center->y += y;
+}
+
+std::shared_ptr<SuperShape> Ellipse::Clone(const std::function<int(void)> &IdGenerator) {
+    return std::make_shared<Ellipse>(IdGenerator(), name, center->Clone(), width, height, thickness, color->Clone(), fill->Clone());
 }

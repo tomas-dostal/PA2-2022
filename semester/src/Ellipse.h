@@ -14,10 +14,14 @@ public:
     Ellipse() = delete;
 
     Ellipse(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter_x, size_t diameter_y,
-            size_t thickenss, std::shared_ptr<Color> color,
+            size_t thickness, std::shared_ptr<Color> color,
             std::shared_ptr<Color> fill);
 
     void Draw(Export &exporter) override;
+
+    void MoveRelative(int x, int y) override;
+
+    std::shared_ptr<SuperShape> Clone(const std::function<int(void)>& IdGenerator) override;
 
     bool operator==(const SuperShape &s) override;
 

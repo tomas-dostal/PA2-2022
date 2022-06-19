@@ -58,3 +58,19 @@ void Line::Draw(Export & exporter) {
 std::pair<size_t, size_t> Line::CalcMaxDimensions(){
     return std::make_pair(thickness * 2 + std::max(a.x, b.x), thickness * 2 + std::max(a.y, b.y));
 }
+
+void Line::MoveRelative(int x, int y) {
+    a.x += x;
+    a.y += y;
+    b.x += x;
+    b.y += y;
+    center->x += x;
+    center->y += y;
+}
+
+std::shared_ptr<SuperShape> Line::Clone(const std::function<int(void)> &IdGenerator) {
+    Pos startClone = Pos(a.x, a.y);
+    Pos endClone = Pos(b.x, b.y);
+    return std::make_shared<Line>(IdGenerator(), name, startClone, endClone, thickness, color->Clone(), fill->Clone());
+}
+

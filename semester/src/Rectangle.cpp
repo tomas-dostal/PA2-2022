@@ -56,7 +56,18 @@ void Rectangle::Draw(Export &exporter) {
 
 }
 
+void Rectangle::MoveRelative(int x, int y) {
+    start.x += x;
+    start.y += y;
+    center->x += x;
+    center->y += y;
+}
+
 std::pair<size_t, size_t> Rectangle::CalcMaxDimensions(){
     return std::make_pair(width + start.x + thickness * 2, height + start.y + thickness * 2);
 }
 
+std::shared_ptr<SuperShape> Rectangle::Clone(const std::function<int(void)>& IdGenerator) {
+    Pos start2 = Pos(start.x, start.y);
+    return std::make_shared<Rectangle>(IdGenerator(), name, start2, width, height, thickness, color->Clone(), fill->Clone());
+}

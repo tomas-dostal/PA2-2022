@@ -46,18 +46,18 @@ Application::Application() noexcept:
 
 void Application::Load(const std::shared_ptr<Interface> & interface, const std::shared_ptr<Interface>&  fileInterface, std::shared_ptr<Tspaint> & targetTspaint) {
 
-    std::shared_ptr<Tspaint> tspaintCopy = std::make_shared<Tspaint>(*targetTspaint);
+    std::shared_ptr<Tspaint> tspaintTmp = std::make_shared<Tspaint>();
     if (!this->Run(fileInterface,
-                  tspaintCopy,
-                  [&fileInterface]() { return !fileInterface->End(); },
-                  [](Command *command) { return command->IsAllowedHeadless(); }
+                   tspaintTmp,
+                   [&fileInterface]() { return !fileInterface->End(); },
+                   [](Command *command) { return command->IsAllowedHeadless(); }
         )){
         interface->PrintInfo(FILE_LOADING_ERROR);
         return;
     }
 
     interface->PrintInfo(IMPORT_SUCCESSFUL);
-    *targetTspaint = *tspaintCopy;
+    *targetTspaint = *tspaintTmp;
 }
 
 bool Application::Run(const std::shared_ptr<Interface> & interface,

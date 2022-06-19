@@ -28,6 +28,10 @@ public:
 
     ~ShapeGroup() noexcept = default;
 
+    void MoveRelative(int, int) override;
+
+    std::shared_ptr<SuperShape> Clone( const std::function<int(void)>& IdGenerator) override;
+
     std::pair<size_t, size_t> CalcMaxDimensions() override;
     /**
      * Add Shape or Group into group.

@@ -48,7 +48,9 @@ public:
 
     virtual size_t Height();
 
-    //virtual std::vector<std::pair<std::string, std::any>> ShapeNamedCoords();
+    virtual void MoveRelative(int, int) = 0;
+
+    virtual std::shared_ptr<SuperShape> Clone( const std::function<int(void)>& IdGenerator) = 0;
 
     virtual std::string Print(int indent) const = 0;
 

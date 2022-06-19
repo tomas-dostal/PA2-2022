@@ -18,6 +18,10 @@ public:
 
     void Draw(Export & exporter) override;
 
+    void MoveRelative(int x, int y) override;
+
+    std::shared_ptr<SuperShape> Clone(const std::function<int(void)>& IdGenerator) override;
+
     bool operator==(const SuperShape &s) override;
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;

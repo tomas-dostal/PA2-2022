@@ -15,9 +15,9 @@ public:
 
     void AddShape(std::shared_ptr<SuperShape> superShape);
 
-    std::shared_ptr<ShapeGroup> AddGroup();
+    std::shared_ptr<ShapeGroup> NewGroup();
 
-    void AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes);
+    std::shared_ptr<ShapeGroup> AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes);
 
     bool UseGroup(int id);
 
@@ -44,8 +44,13 @@ public:
     std::shared_ptr<ShapeGroup> root;
     std::shared_ptr<ShapeGroup> currentGroup;
     std::map<int, std::shared_ptr<SuperShape>> superShapesById;
+
+    std::shared_ptr<ShapeGroup> AddExistingGroup(std::shared_ptr<ShapeGroup> group);
+
 private:
     int idGenerator = 1;
 
+
+    bool IsValidGroupIndex(int index) const;
 
 };

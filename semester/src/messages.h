@@ -27,7 +27,7 @@ const char *const SHAPE_POLYLINE = "polyline";
 const char *const SHAPE_RECTANGLE = "rectangle";
 const char *const SHAPE_SQUARE = "square";
 const char *const SHAPE_CIRCLE = "circle";
-const char *const SHAPE_ELLIPSE = "elipsys";
+const char *const SHAPE_ELLIPSE = "ellipse";
 
 const char *const SHAPE_GROUP_BEGIN = "groupBegin";
 const char *const SHAPE_GROUP_END = "groupEnd";
@@ -60,6 +60,7 @@ const char *const SET_ENTER_GROUP_ID_INVALID= "Can not find group by provided id
 
 const char *const PRINT_SHAPE = "id: $, name: $, color: $, fill: $, pos: $, detail: $ ";
 const char *const INVALID_INPUT = "Invalid input";
+const char *const INVALID_ID = "Invalid id.";
 const char *const UNKNOWN_COMMAND = "Unknown command '$'. For help type '$'";
 const char *const UNKNOWN_OPTION = "Unknown option '$'. For help type '$'";
 const char *const ERROR_FILE_IO = "Unable to read/write file '$'";
@@ -68,6 +69,8 @@ const char *const IMPORT_ABORTED = "Import aborted. ";
 const char *const COMMAND_NOT_ALLOWED_IN_HEADLESS = "Command $ is unavailable in headless mode. ";
 const char *const LOAD_WILL_OVERWRITE = "Loading from file will overwrite current instance of tspaint, which might cause you a lot of pain. \nAre you sure you want to do that? \nYour progress will be lost unless saved. \n Do you want to proceed? ";
 const char *const YES_OR_NO_WITH_MESSAGE = "$ [y/n]";
+const char *const PRINTING_GROUP = "Printing group details";
+
 
 const char *const AVAILABLE_OPTION = "Options available: $";
 
@@ -91,7 +94,7 @@ const char *const EXAMPLE_SAVE = "save <outfile.svg> <format> \nSupported format
 const char *const EXAMPLE_GROUP = "Assuming we have two circles with ids: 1, 2. \ngroup <number_of_ids> [id,...]\ngroup 2 1 2";
 const char *const EXAMPLE_SET = "set color byname BLACK__INSIDE_OF_MY_SOUL\nset color id 3\nset color rgb 255 255 255 myNewColor";
 const char *const EXAMPLE_DRAW = "draw circle <center_x> <center_y> <diameter>\ndraw circle 50 50 10";
-const char *const EXAMPLE_LOAD = "load examples/house.in.tspaint";
+const char *const EXAMPLE_LOAD = "load examples/house.tspaint";
 const char *const EXAMPLE_HIDE = "EXAMPLE_HIDE";
 const char *const EXAMPLE_SHOW = "EXAMPLE_HIDE";
 const char *const EXAMPLE_NEW = "EXAMPLE_NEW";

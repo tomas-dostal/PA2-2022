@@ -17,7 +17,7 @@ SuperShape::SuperShape( int id,
 
 {
 
-};
+}
 
 std::string SuperShape::Name(){
     return name;

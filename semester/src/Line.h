@@ -26,15 +26,21 @@ public:
 
     void Draw(Export & exporter) override;
 
+    void MoveRelative(int x, int y) override;
+
     bool operator==(const SuperShape &s) override;
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;
 
     bool isParalel(Line &other);
 
-
     bool isPerpendicular(Line &other);
+
+    std::shared_ptr<SuperShape> Clone(const std::function<int(void)>& IdGenerator) override;
+
 private:
 
     Pos a, b;
+
+    std::shared_ptr<SuperShape> Clone();
 };

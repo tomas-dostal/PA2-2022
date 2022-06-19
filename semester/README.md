@@ -8,7 +8,7 @@ Program musí splňovat následující funkcionality:
 Načíst ze souboru a z konzole definici jednotlivých objektů v prostoru (velikost obrázku, pozice a parametry objektů, ...).
 - Program podporuje minimálně čáru, polyline, kruh, elipsu, obdélník a skupinu objektů.
 - Objektům se dají nastavovat různé barvy (v případě ASCII styl vykreslování) a výplně.
-- Obrázek je nutné reprezentovat jako graf scény - stromovou strukturu (případně DAG)
+- ***Obrázek je nutné reprezentovat jako graf scény - stromovou strukturu (případně DAG)***
 - Skupina objektů funguje jako vzor, tudíž po vytvoření skupiny objektů můžu tuto skupinu vložit několikrát do obrázku na různá místa.
 - Implementujte alespoň 2 různé výstupní formáty (ASCII, BMP, SVG, ..., SDL, OpenGL, ...)
 
@@ -71,6 +71,38 @@ formátu BMP by zjednodušený přístup "prostě to poskládat z úseček" uše
 Šikovným návrhem rozhraní se pak dá pomocí vstupních a výstupních streamů udělat rozhraní pracující např. jak interaktivně
 s std::cin a std::cout, tak například se soubory (vlastní "formát", který je definovaný jako set instrukcí, které by jinak 
 byly zadané do terminálu)
+
+
+## Tspaint standard 
+
+This is a specification for tspaint input/output format. Format is matching interactive command line input, however 
+for a purpose of this work there needs to be a strict format specified.
+
+Tspaint is a plaintext file with instructions/command calls. Only non-system commands are allowed in this standard, 
+thus it is not allowed to import file with commands like 'load', 'save', 'quit' etc. 
+
+Set command is a modifier, similary to old good mspaint, it changes the color/fill/thickness/..., which is applied to 
+any shape created since that. 
+
+[[TODO]]
+
+Allowed commands are:
+- set
+  - color
+    - id <size_t>
+    - rgb <unsigned_char:r> <unsigned_char:g> <unsigned_char:b> <std::string name> 
+  - fill
+    - id <size_t> 
+    - rgb <unsigned_char:r> <unsigned_char:g> <unsigned_char:b> <std::string name>
+- draw
+  - circle <size_t:center_x> <size_t:center_y> 
+  - ...
+- list
+
+> Note: Range of {color,fill} id may differ depending on available colors stored in ColorPallete. 
+
+Recommended separators are whitespaces. It is advised, however not required to write one command per line. 
+If invalid input is detected (e.g. string where integer is expected), the rest of line is ignored.
 
 
 

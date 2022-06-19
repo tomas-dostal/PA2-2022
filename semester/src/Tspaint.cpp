@@ -26,37 +26,52 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     fill = colorPalette.getColorByName("GRAY__PROGTEST");
     background = colorPalette.getColorByName("BLACK__INSIDE_OF_MY_SOUL");
     thickness = THICKNESS_DEFAULT;
-    root = currentGroup = AddGroup();
+    root = currentGroup = NewGroup();
 }
 
-std::shared_ptr<ShapeGroup> Tspaint::AddGroup() {
+std::shared_ptr<ShapeGroup> Tspaint::NewGroup() {
     auto group = std::make_shared<ShapeGroup>(GenerateId(),
             "group",
             std::vector<std::shared_ptr<SuperShape>>()
             );
     if(currentGroup)
         currentGroup->Add(group);
-    this->superShapesById.insert({group->Id(), group});
+    superShapesById.insert({group->Id(), group});
     return group;
 }
 
 
-void Tspaint::AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes) {
+std::shared_ptr<ShapeGroup> Tspaint::AddExistingGroup(std::shared_ptr<ShapeGroup> group) {
+    currentGroup->Add(group);
+    superShapesById.insert({group->Id(), group});
+    for(const auto & item: group->List()){
+        auto ptr = std::dynamic_pointer_cast<ShapeGroup>(item);
+        if(ptr)
+            AddExistingGroup(ptr);
+        else
+            superShapesById.insert({item->Id(), item});
+    }
+    return group;
+}
 
-//    std::vector<std::shared_ptr<SuperShape>> shapeClones;
-//    for(const auto & ss: superShapes){
-//        std::shared_ptr<SuperShape> clone = ss->Clone([this](){
-//            return GenerateId();
-//        });
 
-
+std::shared_ptr<ShapeGroup> Tspaint::AddGroup(std::vector<std::shared_ptr<SuperShape>> superShapes) {
     auto group = std::make_shared<ShapeGroup>(GenerateId(), "Group", superShapes);
-    this->currentGroup->Add(group);
-    this->superShapesById.insert({group->Id(), group});
+
+    superShapesById.insert({group->Id(), group});
+    currentGroup->Add(group);
+    for(const auto & item: group->List()){
+        auto ptr = std::dynamic_pointer_cast<ShapeGroup>(item);
+        if(ptr)
+            AddExistingGroup(ptr);
+        else
+            superShapesById.insert({item->Id(), item});
+    }
+    return group;    return group;
 }
 
 void Tspaint::AddShape(std::shared_ptr<SuperShape> superShape){
-    this->currentGroup->Add(superShape);
+    currentGroup->Add(superShape);
     superShapesById.insert({superShape->Id(), superShape});
 }
 
