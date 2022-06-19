@@ -20,8 +20,6 @@ public:
      */
     ShapeGroup(int id, std::string name, std::vector<std::shared_ptr<SuperShape>>);
 
-    ShapeGroup(const ShapeGroup &shapeGroup);
-
     void Add(std::shared_ptr<SuperShape> ss);
 
     void RemoveIfExists(int id);

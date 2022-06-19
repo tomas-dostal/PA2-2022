@@ -11,6 +11,11 @@ class Pos {
 public:
     Pos() : x(0), y(0) {};
 
+    /**
+     * Position
+     * @param x
+     * @param y
+     */
     Pos(int x, int y) : x(x), y(y) {};
 
     Pos(const Pos &p) = default;
@@ -21,6 +26,10 @@ public:
 
     bool operator!=(const Pos &p) const { return !(*this == p); };
 
+    /**
+     * Clones position
+     * @return std::shared_ptr<Pos>(*this)
+     */
     std::shared_ptr<Pos> Clone();
 
     int x, y;
