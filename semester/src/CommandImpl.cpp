@@ -228,6 +228,13 @@ Command DrawCommand() {
                            );
                        };
 
+                       auto helpDraw = [&interface]() {
+                           interface->PrintInfo(EXAMPLE_DRAW_CIRCLE);
+                           interface->PrintInfo(EXAMPLE_DRAW_ELLIPSE);
+                           interface->PrintInfo(EXAMPLE_DRAW_LINE);
+                           interface->PrintInfo(EXAMPLE_DRAW_POLYLINE);
+                           interface->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
+                       };
 
                        std::map<std::string, std::function<void(void)>> shapes{
                                {"circle",    newCircle},
@@ -235,6 +242,7 @@ Command DrawCommand() {
                                {"line",      newLine},
                                {"polyline",  newPolyLine},
                                {"rectangle", newRectangle},
+                               {"help",      helpDraw}
                        };
 
                        std::vector<std::string> setOptionKeys;
@@ -326,11 +334,17 @@ Command GroupCommand() {
                            interface->PrintInfo(tspaint->currentGroup->Print(0));
                        };
 
+                       auto helpGroup = [&interface]() {
+                           interface->PrintInfo(EXAMPLE_GROUP_OBJECTS);
+                           interface->PrintInfo(EXAMPLE_GROUP_CLONE);
+                           interface->PrintInfo(EXAMPLE_GROUP_LIST);
+                       };
 
                        std::map<std::string, std::function<void(void)>> shapes{
                                {"objects", groupObjects},
                                {"clone",   cloneGroup},
-                               {"list",    listGroup}
+                               {"list",    listGroup},
+                               {"help",    helpGroup}
                        };
 
                        std::vector<std::string> setOptionKeys;
@@ -531,11 +545,21 @@ Command SetCommand() {
 
                        };
 
+
+                       auto helpDraw = [&interface]() {
+                           interface->PrintInfo(EXAMPLE_SET_COLOR);
+                           interface->PrintInfo(EXAMPLE_SET_FILL);
+                           interface->PrintInfo(EXAMPLE_SET_THICKNESS);
+                           interface->PrintInfo(EXAMPLE_SET_GROUP);
+                           interface->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
+                       };
+
                        std::map<std::string, std::function<void(void)>> setOptions{
                                {"color",     setColor},
                                {"fill",      setFill},
                                {"thickness", setThickness},
-                               {"group",     setGroup}
+                               {"group",     setGroup},
+                               {"help",     helpDraw}
                        };
 
                        std::vector<std::string> setOptionKeys;

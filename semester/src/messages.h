@@ -91,9 +91,23 @@ const char *const TSPAINT_INFO = "ThisIsPain.T\n--------------------------------
 
 
 const char *const EXAMPLE_SAVE = "save <outfile.svg> <format> \nSupported formats: tspaint, svg";
-const char *const EXAMPLE_GROUP = "Assuming we have two circles with ids: 1, 2. \ngroup <number_of_ids> [id,...]\ngroup 2 1 2";
+const char *const EXAMPLE_GROUP = "Assuming we have two circles with ids: 2, 3 and we want to create a group out from them. \ngroup objects <number_of_ids> [id,...]\ngroup objects 2 2 3";
+const char *const EXAMPLE_GROUP_OBJECTS = "group objects: Assuming we have two circles with ids: 1, 2. \ngroup objects <number_of_ids> [id,...]\ngroup 2 1 2";
+const char *const EXAMPLE_GROUP_CLONE = "group clone: Assuming we have group id: 1 circles with ids: 2, 3. \ngroup clone <group_id> creates a deep copy of group <group_id>. Result is placed in the root group.";
+const char *const EXAMPLE_GROUP_LIST = "group list: List all children of current group. If not set, root group is used (everything is printed). Default group can be switched by 'set group' command. ";
+
 const char *const EXAMPLE_SET = "set color byname BLACK__INSIDE_OF_MY_SOUL\nset color id 3\nset color rgb 255 255 255 myNewColor";
+const char *const EXAMPLE_SET_COLOR = "set color {byname,id,rgb} \nexample: \nset color byname BLACK__INSIDE_OF_MY_SOUL\nset color id 3\nset color rgb 255 255 255 myNewColor";
+const char *const EXAMPLE_SET_FILL = "set fill {byname,id,rgb} \nexample: \nset fill byname BLACK__INSIDE_OF_MY_SOUL\nset fill id 3\nset fill rgb 255 255 255 myNewColor";
+const char *const EXAMPLE_SET_THICKNESS = "set thickness <int> \nUsed to chenge thicknes of new created shapes. Example:\nset thickness 3";
+const char *const EXAMPLE_SET_GROUP = "set group <id> \nUsed for switching between groups. Default is root (id=1). Example:\nset thickness 3";
+
 const char *const EXAMPLE_DRAW = "draw circle <center_x> <center_y> <diameter>\ndraw circle 50 50 10";
+const char *const EXAMPLE_DRAW_CIRCLE = "draw circle <center_x> <center_y> <diameter>\ndraw circle 50 50 10";
+const char *const EXAMPLE_DRAW_RECTANGLE = "draw rectangle <start_x> <start_y> <width> <height>\ndraw rectangle 10 10 100 50";
+const char *const EXAMPLE_DRAW_ELLIPSE = "draw ellipse <center_x> <center_y> <width> <height>\ndraw ellipse 10 10 100 50";
+const char *const EXAMPLE_DRAW_POLYLINE = "draw polyline <number_of_points> <p1x> <p1y> ... \ndraw polyline 3 1 1 2 2 3 3";
+const char *const EXAMPLE_DRAW_LINE = "draw line <start_x> <start_y> <end_x> <end_y> \ndraw line 10 10 100 100";
 const char *const EXAMPLE_LOAD = "load examples/house.tspaint";
 const char *const EXAMPLE_HIDE = "EXAMPLE_HIDE";
 const char *const EXAMPLE_SHOW = "EXAMPLE_HIDE";
