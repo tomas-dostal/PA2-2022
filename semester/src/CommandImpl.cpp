@@ -423,11 +423,16 @@ SysCommand SaveCommand() {
                               ExportTspaint(fileName).Start(tspaint->root->Width(), tspaint->root->Height());
                           };
 
+                          auto helpSave = [&interface]() {
+                              interface->PrintInfo(EXAMPLE_SAVE);
+                          };
+
 
                           std::map<std::string, std::function<void(void)>> exportOptions{
                                   {"svg",     svgSave},
                                   {"bmp",     bmpSave},
-                                  {"tspaint", tspaintSave}
+                                  {"tspaint", tspaintSave},
+                                  {"help",    helpSave}
                           };
 
                           std::vector<std::string> exportOptionKeys;
@@ -546,7 +551,7 @@ Command SetCommand() {
                        };
 
 
-                       auto helpDraw = [&interface]() {
+                       auto helpSet = [&interface]() {
                            interface->PrintInfo(EXAMPLE_SET_COLOR);
                            interface->PrintInfo(EXAMPLE_SET_FILL);
                            interface->PrintInfo(EXAMPLE_SET_THICKNESS);
@@ -559,7 +564,7 @@ Command SetCommand() {
                                {"fill",      setFill},
                                {"thickness", setThickness},
                                {"group",     setGroup},
-                               {"help",     helpDraw}
+                               {"help", helpSet}
                        };
 
                        std::vector<std::string> setOptionKeys;
