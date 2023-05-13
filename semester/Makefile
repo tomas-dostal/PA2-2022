@@ -3,7 +3,8 @@
 # @basedon https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
 # @modified by Tomas Dostal <dostato6@fit.cvut.cz>
 
-TARGET = dostato6	# Name of the executable to be created
+# Name of the executable to be created
+TARGET = dostato6
 
 CXX = g++
 MKDIR = mkdir -p
@@ -53,7 +54,8 @@ doc: Doxyfile README.md $(HEADERS)
 	doxygen Doxyfile
 
 EXAMPLES = $(wildcard examples/*)
-zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES)
+IMAGES = $(wildcard img/*)
+zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES) $(IMAGES)
 	mkdir -p .archive/$(TARGET)/
 	cp -r README.md zadani.txt prohlaseni.txt Makefile Doxyfile src/ examples/ .archive/$(TARGET)/
 	cd .archive/; zip -r ../$(TARGET).zip $(TARGET)/
