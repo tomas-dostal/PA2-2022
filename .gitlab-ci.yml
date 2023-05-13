@@ -1,36 +1,19 @@
-# .gitlab-ci.yml
-
-# Define the stages for the pipeline
 stages:
-  - build
-  - test
-
-# Build stage
+- build
+- test
 build:
-  # Use the Docker image that contains the necessary dependencies for building
+  stage: build
   image: cmake:latest
-
-  # Define the build job
-  build:
-    stage: build
-    script:
-      - cd semester/test
-      - mkdir build  # Create the build directory
-      - cd build  # Move into the build directory
-      - make  # Build the project
-
-# Test stage
+  before_script:
+    - cd semester/
+  script:
+    - make
 test:
-  # Use the Docker image that contains the necessary dependencies for testing
+  stage: test
   image: cmake:latest
-
-  # Define the test job
-  test:
-    stage: test
-    script:
-      - cd semester/test
-      - cmake .  # Generate the build files using the test-level CMakeLists.txt
-      - make  # Build the test project
-      - ./main  # Run the main.cpp test application
-
-# Add additional stages or jobs if needed
+  before_script: 
+    - cd semester/test
+    - cmake .
+    - make
+  script:
+    - ./main
