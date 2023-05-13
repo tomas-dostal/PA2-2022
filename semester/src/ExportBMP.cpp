@@ -336,7 +336,7 @@ void ExportBMP::SaveToFile() {
     header.fileSize = header.bmpOffset
                       + (image.size() * 3 + image[0].size() % 4) * image.size();
     fileOut.write((char *) (&header), sizeof(header));
-    bmpfile_dib_info dibInfo = {0};
+    bmpfile_dib_info dibInfo {};
     dibInfo.headerSize = sizeof(bmpfile_dib_info);
     dibInfo.width = image[0].size();
     dibInfo.height = image.size();
@@ -355,7 +355,7 @@ void ExportBMP::SaveToFile() {
     for (int row = image.size() - 1; row >= 0; row--) {
         const std::vector<Pixel> &rowData = image[row];
 
-        for (int col = 0; col < rowData.size(); col++) {
+        for (unsigned long col = 0; col < rowData.size(); col++) {
             const Pixel &pix = rowData[col];
             fileOut.put((uchar_t) (pix.blue));
             fileOut.put((uchar_t) (pix.green));
@@ -364,7 +364,7 @@ void ExportBMP::SaveToFile() {
 
         // Rows are padded so that they're always a multiple of 4
         // bytes. This line skips the padding at the end of each row.
-        for (int i = 0; i < rowData.size() % 4; i++) {
+        for (unsigned long i = 0; i < rowData.size() % 4; i++) {
             fileOut.put(0);
         }
     }
