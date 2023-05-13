@@ -104,6 +104,6 @@ std::shared_ptr<SuperShape> PolyLine::Clone(const std::function<int(void)>& IdGe
     return std::make_shared<PolyLine>(IdGenerator(), name, clonePositions, thickness, color->Clone(), fill->Clone());
 }
 
-std::shared_ptr<SuperShape> PolyLine::ToPolyLine(){
+std::shared_ptr<PolyLine> PolyLine::ToPolyLine(){
     return std::make_shared<PolyLine>(*this);
 }

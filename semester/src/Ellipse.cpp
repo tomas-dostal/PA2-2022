@@ -62,7 +62,7 @@ std::shared_ptr<SuperShape> Ellipse::Clone(const std::function<int(void)> &IdGen
 }
 
 
-std::shared_ptr<SuperShape> Ellipse::ToPolyLine() {
+std::shared_ptr<PolyLine> Ellipse::ToPolyLine() {
     std::vector<Pos> positions;
     const double angleIncrement = 360.0 / ELLIPSE_PRECISION;
 

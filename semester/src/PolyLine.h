@@ -33,7 +33,7 @@ public:
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;
 
-    std::shared_ptr<SuperShape> ToPolyLine() override;
+    std::shared_ptr<PolyLine> ToPolyLine() override;
 
 private:
 

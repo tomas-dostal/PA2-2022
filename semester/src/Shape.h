@@ -13,8 +13,9 @@
 #include "Pos.h"
 #include "Color.h"
 #include "Interface.h"
-#include "PolyLine.h"
 
+class PolyLine; // forward declaration
+// it's either this, or later dynamic pointer cast
 
 class Shape : public SuperShape {
 public:
@@ -46,7 +47,7 @@ public:
     std::string Print(int indent) const override;
 
 protected:
-    virtual std::shared_ptr<SuperShape> ToPolyLine() = 0;
+    virtual std::shared_ptr<PolyLine> ToPolyLine() = 0;
 
     size_t thickness;
     std::shared_ptr<Color> color;
@@ -55,3 +56,4 @@ protected:
 
 };
 
+#include "PolyLine.h"
