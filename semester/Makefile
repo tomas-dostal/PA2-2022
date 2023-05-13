@@ -53,7 +53,7 @@ doc: Doxyfile README.md $(HEADERS)
 	doxygen Doxyfile
 
 EXAMPLES = $(wildcard examples/*)
-$(TARGET).zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES)
+zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES)
 	mkdir -p .archive/$(TARGET)/
 	cp -r README.md zadani.txt prohlaseni.txt Makefile Doxyfile src/ examples/ .archive/$(TARGET)/
 	cd .archive/; zip -r ../$(TARGET).zip $(TARGET)/
