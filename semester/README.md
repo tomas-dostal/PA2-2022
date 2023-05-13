@@ -28,7 +28,7 @@ Další informace:
 Možno implementovat i sekvenci obrázků (video)
 
 
-## Input from progtest
+## Assignment from progtest
 Program a simple tool to display images defined in a text file.
 
 The program must meet the following functionalities:
@@ -89,34 +89,39 @@ user interface that has nothing extra.
 The program allows export to a format in which even users with less imagination will be able to view it 
 outside tspain(t), where it won't be such a pain.
 
-### Polymorfismus 
+### Polymorphism
 
 
-- objekty k vykreslení: kruh, trojúhelník, obdélník,...
-- dekodér vstupních dat: příkazová řádka, (vlastní) textový formát, XML, ...
-- enkodér výstupních dat: ASCII (různé druhy), BMP, SVG, ..., SDL, OpenGL, (výstup můžete zobrazit přímo na obrazovku) ...
-- nástroje k vykreslení: stínování, vyplnění objektu barvou, ...
-
-> todo ne uplne v kazde tride, snazim se to protlacit co nejvys 
-Polymorfismus je silně využit u vykreslování objektů, kde se pro libovolný objekt dědící z `SuperShape` volá metoda `Draw()`, 
-která je přetížena v každé třídě, která dědí z `SuperShape`. Téměř každý objekt je popsatelný pomocí PolyLine, 
-tudíž se při exportu využívá výpisu PolyLine.
-Dále například čtverec je speciálním případem obdélníku a v podstatě jsou to jenom čtyři čáry, u kterých je daná nějaká
-kolmost, či rovnoběžnost, mohou tedy sdílet metodu Draw() od předka PolyLine, naopak třeba kruh, či elipsa budou mít 
-oproti PolyLine metodu Draw() rozdílnou (přestože by teoreticky nic nebránilo tomu všechny objekty vykreslovat jako 
-PolyLine, u kruhu a elipsy by toto řešení při exportu do SVG způsobovalo nedokonalosti)
+- objects to draw: circle, ellipse, rectangle, polyline, group of objects, line
+- output data encoder: BMP, SVG, tspaint
 
 
-Ačkoliv tento přístup kupříkladu u SVG není ideální (jelikož zde existují speciální tvary kupříkladu pro čtverec)
+Polymorphism is used for rendering and exporting objects. Across the code we can see a `Draw` method.
+This is used to prepare objects for export. All objects inheriting from `Shape` can actually be rendered using `PolyLine`,
+so the conversion to `PolyLine` is used in the export. The `Draw` method is also used to prepare the ShapeGroup objects for export,
+so any child of `SuperShape` can actually be drawn using the `Draw` method.
 
-Toto se nejspíše může ještě změnit i v závislosti na výstupním formátu, kde 
-se například u SVG docela hodí využít basic shapes, které jsou v podstatě identické s těmi z tspain(t), naopak například 
-formátu BMP by zjednodušený přístup "prostě to poskládat z úseček" ušetřil nemálo práce. 
+The modification with `PolyLine` was based on a previous submit last year, where the `SuperShape`'s `Draw` method was used to draw any object, 
+however for every sigle one the implementation differed. Besides, it used shape-specific commands, thus required exporters
+to support multiple shapes which could be substitued with single universal `PolyLine` object. 
+This comes for a price of unability of usage of more advanced shapes for example in SVG, but makes the code 
+easier to maintain.
+The different exporters only define the minimum number of different objects - Polylines. 
+Literally any object or group of objects can be converted to PolyLine, but it is sufficient to implement any of the exporters
+actually only one method.
 
-Šikovným návrhem rozhraní se pak dá pomocí vstupních a výstupních streamů udělat rozhraní pracující např. jak interaktivně
-s std::cin a std::cout, tak například se soubory (vlastní "formát", který je definovaný jako set instrukcí, které by jinak 
-byly zadané do terminálu)
+Inheritance is used for some shapes, for example, a square is a special case of a rectangle and basically they are just
+four lines that are given some perpendicularity or parallelism, so they can be rendered with PolyLine.
+With a little imagination, this can also be applied to an ellipse, or a circle, which is a special case of an ellipse.
 
+By cleverly designing the interface, one can then use the input and output streams to make the interface work interactively. 
+But not only that, it is also possible to use the same interface to work with files, which is a great advantage.
+Basically that's the `.tspaint` "format".
+
+
+### Class diagram of SuperShape and its children
+
+![SuperShape class diagram](img/class_super_shape.png)
 
 ## Tspaint standard 
 
@@ -150,9 +155,8 @@ Recommended separators are whitespaces. It is advised, however not required to w
 If invalid input is detected (e.g. string where integer is expected), the rest of line is ignored.
 
 
-# TODO
-Forward deklarace
-Konstatny koreluji s polymofrmini třídami // napriklad     exporter.Process(SHAPE_RECTANGLE, { // to lines!!!
-Dynamic cast
-Osestreni souboru zapis/cteni
-Osetri progtesterrors I/O! 
+## TODO
+- Forward declarations
+- Dynamic cast (avoid if possible)
+- Files I/O + file already exists 
+- progtesterrors I/O!
