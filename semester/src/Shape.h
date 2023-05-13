@@ -1,5 +1,5 @@
 /**
-  * @author Tomas Dostal <dostato6@fit.cvut.cz> 
+  * @author Tomas Dostal <dostato6@fit.cvut.cz>
   * @date 08.05.2022
   */
 
@@ -13,10 +13,8 @@
 #include "Pos.h"
 #include "Color.h"
 #include "Interface.h"
+#include "PolyLine.h"
 
-// Forward declaration of PolyLine;
-// fixme maybe chnage to SuperShape or whatever
-class PolyLine;
 
 class Shape : public SuperShape {
 public:
@@ -48,7 +46,7 @@ public:
     std::string Print(int indent) const override;
 
 protected:
-    virtual std::shared_ptr<PolyLine> ToPolyLine() = 0;
+    virtual std::shared_ptr<SuperShape> ToPolyLine() = 0;
 
     size_t thickness;
     std::shared_ptr<Color> color;
@@ -57,4 +55,3 @@ protected:
 
 };
 
-//#include "PolyLine.h"

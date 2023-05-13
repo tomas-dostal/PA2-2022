@@ -28,8 +28,6 @@ public:
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;
 
-//    std::shared_ptr<PolyLine> ToPolyLine();
-
 private:
     size_t diameter;
 

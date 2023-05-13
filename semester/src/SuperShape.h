@@ -89,7 +89,7 @@ public:
 
 
 protected:
-//    virtual std::shared_ptr<PolyLine> ToPolyLine() = 0;
+//    virtual std::shared_ptr<SuperShape> ToPolyLine() = 0;
     std::string name;
 
     std::shared_ptr<Pos> center;

@@ -3,6 +3,8 @@
   * @date 12.06.2022
   */
 
+#include "cmath"
+
 #include "Ellipse.h"
 #include "messages.h"
 #include "Export.h"
@@ -60,7 +62,7 @@ std::shared_ptr<SuperShape> Ellipse::Clone(const std::function<int(void)> &IdGen
 }
 
 
-std::shared_ptr<PolyLine> Ellipse::ToPolyLine() {
+std::shared_ptr<SuperShape> Ellipse::ToPolyLine() {
     std::vector<Pos> positions;
     const double angleIncrement = 360.0 / ELLIPSE_PRECISION;
 
@@ -71,9 +73,8 @@ std::shared_ptr<PolyLine> Ellipse::ToPolyLine() {
         positions.emplace_back(x, y);
     }
 
-    std::shared_ptr<PolyLine> polyLine = std::make_shared<PolyLine>(this->id, this->name, positions,
+    return std::make_shared<PolyLine>(this->id, this->name, positions,
                                                                     this->thickness, this->color,
                                                                     this->fill);
 
-    return polyLine;
 }
