@@ -55,5 +55,3 @@ protected:
     std::shared_ptr<Color> fill;
 
 };
-
-#include "PolyLine.h"

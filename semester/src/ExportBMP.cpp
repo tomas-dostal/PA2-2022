@@ -20,33 +20,6 @@ ExportBMP::ExportBMP(const std::string &fileName) :
         Export(fileName) {
 
     bmpDict = {
-            {SHAPE_CIRCLE,      [this](std::map<std::string, std::string> params) {
-                Pos pos = Pos(std::stoi(params[CENTER_X]), std::stoi(params[CENTER_Y]));
-                Color color = Color(std::stoi(params[COLOR_R]),
-                                    std::stoi(params[COLOR_G]),
-                                    std::stoi(params[COLOR_B]),
-                                    "colorname");
-                // draw fill
-                Color fill = Color(std::stoi(params[FILL_R]),
-                                   std::stoi(params[FILL_G]),
-                                   std::stoi(params[FILL_B]),
-                                   "fill");
-                DrawEllipse(pos,
-                            0,
-                            0,
-                            color,
-                            std::stoi(params[DIAMETER_X]),
-                            SHAPE_NA_CIRCLE);
-                // draw circle
-                DrawEllipse(pos,
-                            std::stoi(params[DIAMETER_X]),
-                            std::stoi(params[DIAMETER_X]),
-                            color,
-                            std::stoi(params[THICKNESS]),
-                            SHAPE_NA_CIRCLE);
-
-            }
-            },
             {SHAPE_ELLIPSE,     [this](std::map<std::string, std::string> params) {
                 Pos pos = Pos(std::stoi(params[CENTER_X]), std::stoi(params[CENTER_Y]));
                 Color color = Color(std::stoi(params[COLOR_R]),
@@ -60,39 +33,6 @@ ExportBMP::ExportBMP(const std::string &fileName) :
                             std::stoi(params[THICKNESS]),
                             SHAPE_NA_ELLISPE);
             }},
-            {SHAPE_RECTANGLE,   [this](std::map<std::string, std::string> params) {
-                Pos start = Pos(std::stoi(params[START_X]), std::stoi(params[START_Y]));
-                Pos right_top = Pos(std::stoi(params[START_X]) + std::stoi(params[WIDTH]),
-                                    start.y);
-                Pos right_bottom = Pos(start.x + std::stoi(params[WIDTH]),
-                                       start.y + std::stoi(params[HEIGHT]));
-                Pos left_bottom = Pos(start.x,
-                                      start.y + std::stoi(params[HEIGHT]));
-
-                Color color = Color(std::stoi(params[COLOR_R]),
-                                    std::stoi(params[COLOR_G]),
-                                    std::stoi(params[COLOR_B]),
-                                    "colorname");
-
-                Color fill = Color(std::stoi(params[FILL_R]),
-                                    std::stoi(params[FILL_G]),
-                                    std::stoi(params[FILL_B]),
-                                    "fill");
-                // draw the fill
-                Pos centerY_left = Pos(start.x,
-                                       start.y + ceil(std::stoi(params[HEIGHT])/2));
-
-                Pos centerY_right =  Pos(right_top.x,
-                                         start.y + ceil(std::stoi(params[HEIGHT])/2));
-
-                DrawLine(centerY_left, centerY_right, fill, std::stoi(params[HEIGHT]));
-
-                DrawLine(start, right_top, color, std::stoi(params[THICKNESS]) * BMP_THICKNESS);
-                DrawLine(right_top, right_bottom, color, std::stoi(params[THICKNESS]) * BMP_THICKNESS);
-                DrawLine(right_bottom, left_bottom, color, std::stoi(params[THICKNESS]) * BMP_THICKNESS);
-                DrawLine(left_bottom, start, color, std::stoi(params[THICKNESS]) * BMP_THICKNESS);
-            }
-            },
             {SHAPE_LINE,        [this](std::map<std::string, std::string> params) {
                 Pos startPos = Pos(std::stoi(params[START_X]), std::stoi(params[START_Y]));
                 Pos endPos = Pos(std::stoi(params[END_X]), std::stoi(params[END_Y]));
@@ -173,85 +113,129 @@ void ExportBMP::DrawEllipse(Pos &center, size_t diameter_x, size_t diameter_y, C
 
 /**
  * @baseon http://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#C.2B.2B
- * @param start
- * @param end
- * @param c
+ * @param start point for the line
+ * @param end point for the line
+ * @param color
+ * @param thickness
  */
-void ExportBMP::DrawLine(Pos &start, Pos &end, Color &color, size_t thickness) {
+void ExportBMP::DrawLine(Pos& start, Pos& end, Color& color, size_t thickness) {
+    // Calculate the differences between start and end points
+    int dx = static_cast<int>(end.x) - static_cast<int>(start.x);
+    int dy = static_cast<int>(end.y) - static_cast<int>(start.y);
 
-    auto isHorizontalLine = [&start, &end](){
-        return start.y == end.y && !( start.x == end.x);
+    // Determine the direction of the line
+    int xStep = (dx >= 0) ? 1 : -1;
+    int yStep = (dy >= 0) ? 1 : -1;
 
-    };
+    // Calculate absolute values of dx and dy
+    dx = abs(dx);
+    dy = abs(dy);
 
-    auto isVerticalLine = [&start, &end](){
-        return start.x == end.x && !(start.y == end.y);
-    };
+    // Calculate the longest and shortest dimensions
+    int longestDim = (dx > dy) ? dx : dy;
+    int shortestDim = (dx > dy) ? dy : dx;
 
-    auto elseLine = [&start, &end](){
-        return !(start.y == end.y) && !( start.x == end.x);
-    };
+    // Calculate the error adjustment factors
+    int errorFactor = 2 * shortestDim;
+    int errorThreshold = shortestDim;
 
-    if(elseLine())
-        thickness *= 2;
-    // Bresenham's line algorithm
-    for (int thick = (int) (-1 * floor(thickness / 2)); thick <= ((int) ceil(thickness / 2)); thick++) {
-        int startX = start.x
-                + (isVerticalLine() ? thick : 0)
-                + (isHorizontalLine() ? 0 : 0)
-                + (elseLine() ? (int) (-1 * floor((thickness)) / 2): 0);
-        int startY = start.y
-                + (isVerticalLine() ?  0: 0)
-                + (isHorizontalLine() ? thick : 0)
-                + (elseLine() ? (int) floor((thick) / 2): 0);
-        int endX = end.x
-                +  (isVerticalLine() ? thick : 0)
-                + (isHorizontalLine() ? 0 : 0)
-                + (elseLine() ? (int) floor((thickness) / 2): 0);
-        int endY =  end.y
-                + (isVerticalLine() ? 0 : 0)
-                + (isHorizontalLine() ? thick : 0)
-                + (elseLine() ? (int) floor((thick) / 2): 0);
+    // Calculate the initial error
+    int error = errorFactor - longestDim;
 
-        //        int startX = start.x + (isStraihtLine() ? (int) floor((thick + 1) / 2): (int) floor((thick + 1) / 2));
-        //        int startY = start.y + (isStraihtLine() ? (int) floor(thick / 2): 0);
-        //        int endX = end.x + (isStraihtLine()? (int) floor((thick + 1) / 2);
-        //        int endY = end.y + (int) floor(thick / 2);
-        const bool steep = (fabs(endY - startY) > fabs(endX - startX));
-        if (steep) {
-            std::swap(startX, startY);
-            std::swap(endX, endY);
-        }
+    // Calculate the starting coordinates
+    int x = static_cast<int>(start.x);
+    int y = static_cast<int>(start.y);
 
-        if (startX > endX) {
-            std::swap(startX, endX);
-            std::swap(startY, endY);
-        }
+    // Calculate the thickness offset
+    int thicknessOffset = (thickness - 1) / 2;
 
-        const float dx = endX - startX;
-        const float dy = fabs(endY - startY);
+    // Iterate over the longest dimension
+    for (int i = 0; i <= longestDim; i++) {
+        // Draw a line of pixels for the given thickness
+        for (int t = -thicknessOffset; t <= thicknessOffset; t++) {
+            int px = x;
+            int py = y;
 
-        float error = dx / 2.0f;
-        const int yStep = (startY < endY) ? 1 : -1;
-        int y = (int) startY;
-
-        for (int x = startX; x <= endX; x++) {
-            if (steep) {
-                if (x < image.size() && y < image[0].size())
-                    image[x][y] = *color.GetPixel();
-            }
-            else {
-                if (x < image[0].size() && y < image.size())
-                    image[y][x] = *color.GetPixel();
+            // Adjust the coordinates based on the direction and thickness
+            if (dx >= dy) {
+                px += t;
+            } else {
+                py += t;
             }
 
-            error -= dy;
-            if (error < 0) {
+            // Check if the coordinates are within the image bounds
+            if (px >= 0 && px < image[0].size() && py >= 0 && py < image.size()) {
+                image[py][px] = *color.GetPixel();
+            }
+        }
+
+        // Update the error and coordinates
+        if (error >= 0) {
+            if (dx >= dy) {
                 y += yStep;
-                error += dx;
+            } else {
+                x += xStep;
             }
+            error -= errorFactor;
+        }
+
+        if (dx >= dy) {
+            x += xStep;
+        } else {
+            y += yStep;
+        }
+        error += errorThreshold;
+    }
+}
+
+void ExportBMP::Blur(int radius) {
+    auto blurredImage = std::vector<std::vector<Pixel>>(image);
+    auto height = image.size();
+    auto width = image[0].size();
+
+    for (int x = 0; x < height; x++) {
+        image[x] = std::vector<Pixel>(width);
+        for (int y = 0; y < width; y++) {
+            image[x][y] = Pixel(background->R(), background->G(), background->B());
         }
     }
+
+    blurredImage = std::vector<std::vector<Pixel>>(height);
+
+
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            int redSum = 0;
+            int greenSum = 0;
+            int blueSum = 0;
+            int pixelCount = 0;
+
+            for (int offsetX = -radius; offsetX <= radius; offsetX++) {
+                for (int offsetY = -radius; offsetY <= radius; offsetY++) {
+                    int neighborX = x + offsetX;
+                    int neighborY = y + offsetY;
+
+                    if (neighborX >= 0 && neighborX < width && neighborY >= 0 && neighborY < height) {
+                        redSum += image[neighborX][neighborY].red;
+                        greenSum += image[neighborX][neighborY].green;
+                        blueSum += image[neighborX][neighborY].blue;
+                        pixelCount++;
+                    }
+                }
+            }
+
+            int blurredRed = redSum / pixelCount;
+            int blurredGreen = greenSum / pixelCount;
+            int blurredBlue = blueSum / pixelCount;
+
+            blurredImage[x][y].red = blurredRed;
+            blurredImage[x][y].green = blurredGreen;
+            blurredImage[x][y].blue = blurredBlue;
+        }
+    }
+
+    // Update the original image with the blurred image
+    image = blurredImage;
 }
 
 
@@ -268,6 +252,7 @@ bool ExportBMP::Start(int width, int height) {
 }
 
 bool ExportBMP::End() {
+    // Blur(2);
     SaveToFile();
     // todo
     return fileOut.good();

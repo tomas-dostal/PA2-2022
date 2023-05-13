@@ -39,4 +39,5 @@ private:
 
     std::fstream fileOut;
 
+    void Blur(int radius);
 };
