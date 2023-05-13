@@ -3,14 +3,14 @@ stages:
 - test
 build:
   stage: build
-  image: cmake:latest
+  image: kitware/cmake:latest
   before_script:
     - cd semester/
   script:
     - make
 test:
   stage: test
-  image: cmake:latest
+  image: kitware/cmake:latest
   before_script: 
     - cd semester/test
     - cmake .
