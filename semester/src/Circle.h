@@ -5,11 +5,13 @@
 
 #pragma once
 
-#include "Shape.h"
 #include "Pos.h"
 #include "Export.h"
+#include "constants.h"
+#include "PolyLine.h"
+#include "Ellipse.h"
 
-class Circle : public Shape {
+class Circle : public Ellipse {
 public:
     Circle() = delete;
 
@@ -25,6 +27,8 @@ public:
     bool operator==(const SuperShape &s) override;
 
     std::pair<size_t, size_t> CalcMaxDimensions() override;
+
+//    std::shared_ptr<PolyLine> ToPolyLine();
 
 private:
     size_t diameter;

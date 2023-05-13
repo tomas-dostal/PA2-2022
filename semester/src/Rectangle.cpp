@@ -42,7 +42,7 @@ void Rectangle::Draw(Export &exporter) {
     // aka casting to PolyLine and drawing it instead of drawing rectangle directly.
     // This allows me to reuse the code from PolyLine, which is more advanced shape that theoretically
     // can be used for drawing any shape.
-    this->ToPolyline()->Draw(exporter);
+    this->ToPolyLine()->Draw(exporter);
 }
 
 void Rectangle::MoveRelative(int x, int y) {
@@ -61,7 +61,7 @@ std::shared_ptr<SuperShape> Rectangle::Clone(const std::function<int(void)>& IdG
     return std::make_shared<Rectangle>(IdGenerator(), name, start2, width, height, thickness, color->Clone(), fill->Clone());
 }
 
-std::shared_ptr<PolyLine> Rectangle::ToPolyline() {
+std::shared_ptr<PolyLine> Rectangle::ToPolyLine() {
     return std::make_shared<PolyLine>(this->id, name, std::vector<Pos>{
             Pos(start.x, start.y),
             Pos(start.x + (int) width, start.y),

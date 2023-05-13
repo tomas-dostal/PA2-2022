@@ -174,6 +174,8 @@ std::string Interface::PromptOption(const std::vector<std::string> &options,
     std::string option;
     while (true) {
         os << formatter->FillPlaceholder({PROMPT_OPTION}) << std::endl;
+        os << formatter->FillPlaceholder({AVAILABLE_OPTION},
+                                         FormatterParams{Helper::Concat(options, ", ", "\n")});
 
         if (!(is >> option) || (!valid(option))) {
             os << formatter->FillPlaceholder(UNKNOWN_OPTION, FormatterParams({option, COMMAND_HELP})) << std::endl;

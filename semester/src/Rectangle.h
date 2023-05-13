@@ -36,7 +36,7 @@ public:
 
     bool operator==(const SuperShape &s) override;
 
-    std::shared_ptr<PolyLine> ToPolyline();
+    std::shared_ptr<PolyLine> ToPolyLine() override;
 private:
 
     Pos start;

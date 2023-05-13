@@ -11,7 +11,9 @@
 #include "Pos.h"
 #include "Interface.h"
 #include "Export.h"
-
+//#include "PolyLine.h"
+// Forward declaration of PolyLine
+//class PolyLine;
 class SuperShape {
 public:
     /**
@@ -85,7 +87,9 @@ public:
      */
     virtual std::pair<size_t, size_t> CalcMaxDimensions();
 
+
 protected:
+//    virtual std::shared_ptr<PolyLine> ToPolyLine() = 0;
     std::string name;
 
     std::shared_ptr<Pos> center;

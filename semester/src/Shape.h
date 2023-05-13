@@ -14,6 +14,10 @@
 #include "Color.h"
 #include "Interface.h"
 
+// Forward declaration of PolyLine;
+// fixme maybe chnage to SuperShape or whatever
+class PolyLine;
+
 class Shape : public SuperShape {
 public:
 
@@ -44,6 +48,7 @@ public:
     std::string Print(int indent) const override;
 
 protected:
+    virtual std::shared_ptr<PolyLine> ToPolyLine() = 0;
 
     size_t thickness;
     std::shared_ptr<Color> color;
@@ -51,3 +56,5 @@ protected:
     std::shared_ptr<Color> fill;
 
 };
+
+//#include "PolyLine.h"

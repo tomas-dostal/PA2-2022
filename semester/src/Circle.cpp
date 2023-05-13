@@ -9,25 +9,15 @@
 
 Circle::Circle(int id, std::string name, std::shared_ptr<Pos> center, size_t diameter, size_t thickness,
                std::shared_ptr<Color> color, std::shared_ptr<Color> fill)
-        : Shape(id, name, center, 2 * diameter, 2 * diameter, thickness, color, fill), diameter(diameter) {
+        : Ellipse(id, name, center, diameter, diameter, thickness, color, fill), diameter(diameter) {
     {
 
     }
 }
 
+// Todo maybe pass Draw method to Circle?
 void Circle::Draw(Export & exporter) {
-    exporter.Process(SHAPE_CIRCLE, {
-            {CENTER_X,   std::to_string(this->center->x)},
-            {CENTER_Y,   std::to_string(this->center->y)},
-            {DIAMETER_X, std::to_string(this->diameter)},
-            {COLOR_R,    std::to_string(this->color->R())},
-            {COLOR_G,    std::to_string(this->color->G())},
-            {COLOR_B,    std::to_string(this->color->B())},
-            {FILL_R,     std::to_string(this->fill->R())},
-            {FILL_G,     std::to_string(this->fill->G())},
-            {FILL_B,     std::to_string(this->fill->B())},
-            {THICKNESS,  std::to_string(this->thickness)}
-    });
+    this->ToPolyLine()->Draw(exporter);
 }
 
 bool Circle::operator==(const SuperShape &s) {
@@ -53,3 +43,22 @@ void Circle::MoveRelative(int x, int y) {
 std::shared_ptr<SuperShape> Circle::Clone(const std::function<int(void)> &IdGenerator) {
     return std::make_shared<Circle>(IdGenerator(), name, center->Clone(), diameter, thickness, color->Clone(), fill->Clone());
 }
+
+
+//std::shared_ptr<PolyLine> Circle::ToPolyLine() {
+//    std::vector<Pos> positions;
+//    const double angleIncrement = 360.0 / CIRCLE_PRECISION;
+//
+//    for (size_t i = 0; i < CIRCLE_PRECISION; i++) {
+//        double angle = i * angleIncrement;
+//        double x = this->center->x + this->width / 2 * cos(angle * M_PI / 180.0);
+//        double y = this->center->y + this->height / 2 * sin(angle * M_PI / 180.0);
+//        positions.emplace_back(x, y);
+//    }
+//
+//    std::shared_ptr<PolyLine> polyLine = std::make_shared<PolyLine>(this->id, this->name, positions,
+//                                                                    this->thickness, this->color,
+//                                                                    this->fill);
+//
+//    return polyLine;
+//}

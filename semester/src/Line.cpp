@@ -37,7 +37,7 @@ bool Line::operator==(const SuperShape &s) {
 
 
 void Line::Draw(Export & exporter) {
-    this->ToPolyline()->Draw(exporter);
+    this->ToPolyLine()->Draw(exporter);
 }
 
 std::pair<size_t, size_t> Line::CalcMaxDimensions(){
@@ -59,7 +59,7 @@ std::shared_ptr<SuperShape> Line::Clone(const std::function<int(void)> &IdGenera
     return std::make_shared<Line>(IdGenerator(), name, startClone, endClone, thickness, color->Clone(), fill->Clone());
 }
 
-std::shared_ptr<PolyLine> Line::ToPolyline() {
+std::shared_ptr<PolyLine> Line::ToPolyLine() {
     return std::make_shared<PolyLine>(this->id, name, std::vector<Pos>{a, b}, thickness, color, fill);
 }
 

@@ -25,6 +25,8 @@ const float SHAPE_NA_DIAMOND = 2.0;
 const float SHAPE_NA_STAR = 5.0;
 const float SHAPE_NA_CROSS = 100.0;
 const int BMP_THICKNESS = 1;
+// How many lines are used to draw a circle with PolyLine
+const int ELLIPSE_PRECISION = 8;
 
 const std::vector<std::string> YES_NO = {"y", "n"};
 const std::vector<std::string> YES = {"y"};

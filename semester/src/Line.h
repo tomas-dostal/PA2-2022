@@ -39,7 +39,7 @@ public:
 
     std::shared_ptr<SuperShape> Clone(const std::function<int(void)>& IdGenerator) override;
 
-    std::shared_ptr<PolyLine> ToPolyline();
+    std::shared_ptr<PolyLine> ToPolyLine() override;
 private:
 
     Pos a, b;
