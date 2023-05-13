@@ -8,6 +8,7 @@
 #include "Shape.h"
 #include "SuperShape.h"
 #include "Export.h"
+#include "PolyLine.h"
 
 class Rectangle : public Shape {
 public:
@@ -34,6 +35,8 @@ public:
     std::pair<size_t, size_t> CalcMaxDimensions() override;
 
     bool operator==(const SuperShape &s) override;
+
+    std::shared_ptr<PolyLine> ToPolyline();
 private:
 
     Pos start;

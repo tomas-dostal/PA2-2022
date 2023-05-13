@@ -38,22 +38,11 @@ bool Rectangle::operator==(const SuperShape &s) {
 
 
 void Rectangle::Draw(Export &exporter) {
-    exporter.Process(SHAPE_RECTANGLE, {
-            {START_X,   std::to_string(start.x)},
-            {START_Y,   std::to_string(start.y)},
-            {WIDTH,     std::to_string(width)},
-            {HEIGHT,    std::to_string(height)},
-            {CENTER_X,  std::to_string(this->center->x)},
-            {CENTER_Y,  std::to_string(this->center->y)},
-            {COLOR_R,   std::to_string(this->color->R())},
-            {COLOR_G,   std::to_string(this->color->G())},
-            {COLOR_B,   std::to_string(this->color->B())},
-            {FILL_R,    std::to_string(this->fill->R())},
-            {FILL_G,    std::to_string(this->fill->G())},
-            {FILL_B,    std::to_string(this->fill->B())},
-            {THICKNESS, std::to_string(this->thickness)}
-    });
-
+    // After feedback from last year I decided to solve Draw more universally,
+    // aka casting to PolyLine and drawing it instead of drawing rectangle directly.
+    // This allows me to reuse the code from PolyLine, which is more advanced shape that theoretically
+    // can be used for drawing any shape.
+    this->ToPolyline()->Draw(exporter);
 }
 
 void Rectangle::MoveRelative(int x, int y) {
@@ -70,4 +59,14 @@ std::pair<size_t, size_t> Rectangle::CalcMaxDimensions(){
 std::shared_ptr<SuperShape> Rectangle::Clone(const std::function<int(void)>& IdGenerator) {
     Pos start2 = Pos(start.x, start.y);
     return std::make_shared<Rectangle>(IdGenerator(), name, start2, width, height, thickness, color->Clone(), fill->Clone());
+}
+
+std::shared_ptr<PolyLine> Rectangle::ToPolyline() {
+    return std::make_shared<PolyLine>(this->id, name, std::vector<Pos>{
+            Pos(start.x, start.y),
+            Pos(start.x + (int) width, start.y),
+            Pos(start.x + (int) width, start.y + (int) height),
+            Pos(start.x, start.y + (int) height),
+            Pos(start.x, start.y)
+    }, thickness, color, fill);
 }

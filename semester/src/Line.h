@@ -8,6 +8,7 @@
 #include "Shape.h"
 #include "SuperShape.h"
 #include "Export.h"
+#include "PolyLine.h"
 
 class Line : public Shape {
 public:
@@ -38,6 +39,7 @@ public:
 
     std::shared_ptr<SuperShape> Clone(const std::function<int(void)>& IdGenerator) override;
 
+    std::shared_ptr<PolyLine> ToPolyline();
 private:
 
     Pos a, b;

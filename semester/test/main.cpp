@@ -243,7 +243,6 @@ void TestSaveSvg(){
     std::string output = sout.str();
     assert(StringContains(output, "<svg") == true) ;
     assert(StringContains(output, "<line") == true) ;
-    assert(StringContains(output, "<rect") == true) ;
     assert(StringContains(output, "<g") == true) ;
     assert(StringContains(output, "</svg>") == true) ;
     std::remove("test_svg.svg");

@@ -37,22 +37,7 @@ bool Line::operator==(const SuperShape &s) {
 
 
 void Line::Draw(Export & exporter) {
-    exporter.Process(SHAPE_LINE, {
-            {START_X,   std::to_string(a.x)},
-            {START_Y,   std::to_string(a.y)},
-            {END_X,   std::to_string(b.x)},
-            {END_Y,   std::to_string(b.y)},
-            {CENTER_X,   std::to_string(this->center->x)},
-            {CENTER_Y,   std::to_string(this->center->y)},
-            {COLOR_R,    std::to_string(this->color->R())},
-            {COLOR_G,    std::to_string(this->color->G())},
-            {COLOR_B,    std::to_string(this->color->B())},
-            {FILL_R,     std::to_string(this->fill->R())},
-            {FILL_G,     std::to_string(this->fill->G())},
-            {FILL_B,     std::to_string(this->fill->B())},
-            {THICKNESS,  std::to_string(this->thickness)}
-    });
-
+    this->ToPolyline()->Draw(exporter);
 }
 
 std::pair<size_t, size_t> Line::CalcMaxDimensions(){
@@ -72,5 +57,9 @@ std::shared_ptr<SuperShape> Line::Clone(const std::function<int(void)> &IdGenera
     Pos startClone = Pos(a.x, a.y);
     Pos endClone = Pos(b.x, b.y);
     return std::make_shared<Line>(IdGenerator(), name, startClone, endClone, thickness, color->Clone(), fill->Clone());
+}
+
+std::shared_ptr<PolyLine> Line::ToPolyline() {
+    return std::make_shared<PolyLine>(this->id, name, std::vector<Pos>{a, b}, thickness, color, fill);
 }
 
