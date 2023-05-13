@@ -32,7 +32,7 @@ bool Circle::operator==(const SuperShape &s) {
 
 
 std::pair<size_t, size_t> Circle::CalcMaxDimensions(){
-    return std::make_pair(((int) width/2) + center->x + thickness * 2,((int) height/2) + center->y + thickness * 2);
+    return std::make_pair(center->x + diameter + thickness * 2, center->y + diameter + thickness * 2);
 }
 
 void Circle::MoveRelative(int x, int y) {

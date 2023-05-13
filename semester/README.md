@@ -156,4 +156,3 @@ Konstatny koreluji s polymofrmini třídami // napriklad     exporter.Process(SH
 Dynamic cast
 Osestreni souboru zapis/cteni
 Osetri progtesterrors I/O! 
-Elipsa export neprizpusobi velikost obrazku

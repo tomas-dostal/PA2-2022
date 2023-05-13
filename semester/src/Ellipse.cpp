@@ -49,7 +49,7 @@ bool Ellipse::operator==(const SuperShape &s) {
 }
 
 std::pair<size_t, size_t> Ellipse::CalcMaxDimensions() {
-    return std::make_pair(width + thickness * 2, height + thickness * 2);
+    return std::make_pair(center->x + diameter_x + thickness * 2, center->y + diameter_y + thickness * 2);
 }
 
 void Ellipse::MoveRelative(int x, int y) {
@@ -66,15 +66,16 @@ std::shared_ptr<SuperShape> Ellipse::Clone(const std::function<int(void)> &IdGen
 std::shared_ptr<PolyLine> Ellipse::ToPolyLine() {
     std::vector<Pos> positions;
     // Looks like a fixed value isn't good enough, so we calculate the precision based on the size of the ellipse
-    int precision = std::max(this->width, this->height) * ELLIPSE_PRECISION;
+    int precision = (int) (std::max(this->width, this->height) * ELLIPSE_PRECISION);
     const double angleIncrement = 360.0 / precision;
 
-    for (size_t i = 0; i <= ELLIPSE_PRECISION; i++) {
+    for (size_t i = 0; i <= precision; i++) {
         double angle = i * angleIncrement;
         double x = this->center->x + this->width / 2 * cos(angle * M_PI / 180.0);
         double y = this->center->y + this->height / 2 * sin(angle * M_PI / 180.0);
         positions.emplace_back(x, y);
     }
+
     return std::make_shared<PolyLine>(this->id, this->name, positions,
                                                                     this->thickness, this->color,
                                                                     this->fill);
