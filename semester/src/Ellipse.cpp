@@ -62,9 +62,12 @@ std::shared_ptr<SuperShape> Ellipse::Clone(const std::function<int(void)> &IdGen
 }
 
 
+
 std::shared_ptr<PolyLine> Ellipse::ToPolyLine() {
     std::vector<Pos> positions;
-    const double angleIncrement = 360.0 / ELLIPSE_PRECISION;
+    // Looks like a fixed value isn't good enough, so we calculate the precision based on the size of the ellipse
+    int precision = std::max(this->width, this->height) * ELLIPSE_PRECISION;
+    const double angleIncrement = 360.0 / precision;
 
     for (size_t i = 0; i <= ELLIPSE_PRECISION; i++) {
         double angle = i * angleIncrement;
@@ -72,7 +75,6 @@ std::shared_ptr<PolyLine> Ellipse::ToPolyLine() {
         double y = this->center->y + this->height / 2 * sin(angle * M_PI / 180.0);
         positions.emplace_back(x, y);
     }
-
     return std::make_shared<PolyLine>(this->id, this->name, positions,
                                                                     this->thickness, this->color,
                                                                     this->fill);

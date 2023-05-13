@@ -27,7 +27,7 @@ const float SHAPE_NA_CROSS = 100.0;
 const int BMP_THICKNESS = 1;
 // How many lines are used to draw a circle with PolyLine
 // after several attempts value 100 looked the best
-const int ELLIPSE_PRECISION = 100;
+const float ELLIPSE_PRECISION = 1.5;
 
 const std::vector<std::string> YES_NO = {"y", "n"};
 const std::vector<std::string> YES = {"y"};
