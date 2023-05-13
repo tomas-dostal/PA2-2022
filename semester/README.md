@@ -107,3 +107,8 @@ If invalid input is detected (e.g. string where integer is expected), the rest o
 
 
 
+# TODO
+Forward deklarace
+Konstatny koreluji s polymofrmini třídami // napriklad     exporter.Process(SHAPE_RECTANGLE, { // to lines!!!
+Dynamic cast
+Osestreni souboru zapis/cteni

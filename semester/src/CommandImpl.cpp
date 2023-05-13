@@ -400,7 +400,8 @@ SysCommand SaveCommand() {
                                                                             file.close();
                                                                             return true;
                                                                         });
-
+                          // fixme file I/O operations should check edge cases
+                          // todo check
                           auto svgSave = [&fileName, &tspaint]() {
                               auto exporter = ExportSVG(fileName);
                               auto maxDim = tspaint->MaxDimensions();
@@ -409,6 +410,7 @@ SysCommand SaveCommand() {
                               exporter.End();
 
                           };
+                          // fixme file I/O operations should check edge cases
                           auto bmpSave = [&fileName, &tspaint]() {
                               auto exporter = ExportBMP(fileName);
                               auto maxDim = tspaint->MaxDimensions();

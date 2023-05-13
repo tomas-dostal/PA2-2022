@@ -1,13 +1,14 @@
 # This is @copy of example semester work available on https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
 # @author David Bernhauer <bernhdav@fit.cvut.cz>
 # @basedon https://gitlab.fit.cvut.cz/bernhdav/pa2-bomb-tag/tree/1.1.0
+# @modified by Tomas Dostal <dostato6@fit.cvut.cz>
 
-TARGET = dostato6
+TARGET = dostato6	# Name of the executable to be created
 
 CXX = g++
 MKDIR = mkdir -p
 
-#  -g is debug flag
+# -g is debug flag
 CXXFLAGS = -Wall -pedantic -Wextra -std=c++17 -g
 
 SOURCE_DIR = src
@@ -29,15 +30,20 @@ compile: $(TARGET)
 	@echo "Compile..."
 
 
+# Target for running the compiled program
 .PHONY: run
 run: $(TARGET)
 	./$(TARGET)
 
-
+# Rule for linking the object files into the executable
+# $^ is all the dependencies of the current target.
+# All the object files that need to be linked together.
+# -o specifies the output file name.
+# $@ target (the file being generated) in a makefile.
 $(TARGET): $(OBJECTS)
 	$(CXX) $^ -o $@
 
-
+# Rule for compiling each source file into an object file
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	$(MKDIR) $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) $< -c -o $@
