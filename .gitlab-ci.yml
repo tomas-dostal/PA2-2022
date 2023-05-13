@@ -3,14 +3,14 @@ stages:
 - test
 build:
   stage: build
-  image: kitware/cmake:latest
+  image: kitware/cmake:ci-debian10-x86_64-2023-03-29
   before_script:
     - cd semester/
   script:
     - make
 test:
   stage: test
-  image: kitware/cmake:latest
+  image: kitware/cmake:ci-debian10-x86_64-2023-03-29
   before_script: 
     - cd semester/test
     - cmake .
