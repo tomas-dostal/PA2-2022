@@ -57,10 +57,10 @@ Image sequence can be implemented (video)
 
 ## Extending the assignment
 
-Few people have not encountered the "good old" painting, MSPAINT.
+Almost everyone remembers the "good old" painting, MSPAINT.
 
-This "extension" of the popular program targets BI-PA2 students who have already completed (many even multiple times) 
-the beautiful moments spent debugging code that for some reason crashes, and they have no idea why. 
+This "extension" of the popular program targets BI-PA2 students who have still in a vivid memory those  beautiful 
+moments spent by debugging code that for some reason crashes, and they have no idea why. 
 From the popular Progtest environment, the program tspain(t) takes only the best - strict user input, which, 
 if it does not match the specification, leads to program termination.
 Among other things, it offers only a limited number of colors, which students, aptly named after their favorite program on
@@ -95,6 +95,11 @@ outside tspain(t), where it won't be such a pain.
 - objects to draw: circle, ellipse, rectangle, polyline, group of objects, line
 - output data encoder: BMP, SVG, tspaint
 
+There are several usages of Polymorphism. 
+- First is the `Draw` class which allows any child of `SuperShape` to be exported.  The implementation for that method differs for `ShapeGroup` and `Shape`.
+- The second usage is the `PolyLine` class, which is used for exporting `Shape`-based objects.
+- Third usage (not that much polymorphism) is Export class it's `Process`method, which is used for exporting `ShapeGroup`-based objects for specific formats.
+**Long**
 
 Polymorphism is used for rendering and exporting objects. Across the code we can see a `Draw` method.
 This is used to prepare objects for export. All objects inheriting from `Shape` can actually be rendered using `PolyLine`,
@@ -110,7 +115,7 @@ The different exporters only define the minimum number of different objects - Po
 Literally any object or group of objects can be converted to PolyLine, but it is sufficient to implement any of the exporters
 actually only one method.
 
-Inheritance is used for some shapes, for example, a square is a special case of a rectangle and basically they are just
+Inheritance is used for some shapes, for example, a square is a special case of a rectangle, and basically they are just
 four lines that are given some perpendicularity or parallelism, so they can be rendered with PolyLine.
 With a little imagination, this can also be applied to an ellipse, or a circle, which is a special case of an ellipse.
 
