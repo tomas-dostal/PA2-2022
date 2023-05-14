@@ -57,7 +57,8 @@ Image sequence can be implemented (video)
 
 ## Extending the assignment
 
-Almost everyone remembers the "good old" painting, MSPAINT.
+Almost everyone remembers the "good old" painting, MSPAINT. It covers minimal requirements from [progtest assignment](#assignment-from-progtest)
+and adds some nice features like thematic Progtest (TM) Color pallet, randomly occurring error messages, and more.
 
 This "extension" of the popular program targets BI-PA2 students who have still in a vivid memory those  beautiful 
 moments spent by debugging code that for some reason crashes, and they have no idea why. 
@@ -66,17 +67,17 @@ if it does not match the specification, leads to program termination.
 Among other things, it offers only a limited number of colors, which students, aptly named after their favorite program on
 Sunday afternoons, by listing
 
-- Progtest grey `GRAY__PROGTEST` (#aaaaaa)
-- Where the eye cannot see `GRAY__OUT_OF_SIGHT` (#828272)
-- In the depths of the soul `BLACK__INSIDE_OF_MY_SOUL` (#000000)
-- Brain overflow - `MAGENTA__BRAIN_OVERFLOW` color test (#ff00ff)
-- At home - standard progtest color `GREEN__PROGTEST_HOME` (#00ff00)
-- Compiled with errors `RED__COMPILED_WITH_ERRORS` (#c04000)
-- Fun for the Weekend - task assignment color `BLUE__FUN_FOR_A_WEEKEND` (#0099cb)
-- Green "We're almost there" `GREEN__ALMOST_THERE` (#80c000)
-- Green Victory `GREEN__IM_DONE` (#00c000)
-- Loading - white `WHITE__LOADING` (#ffffff)
-- FIT yellow `YELLOW__FIT` (#f0ab00)
+- Progtest grey `GRAY__PROGTEST` (`#aaaaaa`)
+- Where the eye cannot see `GRAY__OUT_OF_SIGHT` (`#828272`)
+- In the depths of the soul `BLACK__INSIDE_OF_MY_SOUL` (`#000000`)
+- Brain overflow - `MAGENTA__BRAIN_OVERFLOW` color test (`#ff00ff`)
+- At home - standard progtest color `GREEN__PROGTEST_HOME` (`#00ff00`)
+- Compiled with errors `RED__COMPILED_WITH_ERRORS` (`#c04000`)
+- Fun for the Weekend - task assignment color `BLUE__FUN_FOR_A_WEEKEND` (`#0099cb`)
+- Green "We're almost there" `GREEN__ALMOST_THERE` (`#80c000`)
+- Green Victory `GREEN__IM_DONE` (`#00c000`)
+- Loading - white `WHITE__LOADING` (`#ffffff`)
+- FIT yellow `YELLOW__FIT` (`#f0ab00`)
 
 
 But where would we be if there wasn't some all-encompassing and at the same time absolutely unspoken error message, 
@@ -85,7 +86,8 @@ or their combination? At random moments, the user is delighted with the old fami
 or it's variation. 
 
 The program has a minimalist CLI user interface that allows everything a PA2 student could wish for - a strict
-user interface that has nothing extra.
+user interface that has nothing extra. As an act of kindness the program offers help command and asks the user several 
+times for correction in case the input is incorrect. 
 The program allows export to a format in which even users with less imagination will be able to view it 
 outside tspain(t), where it won't be such a pain.
 
@@ -96,10 +98,11 @@ outside tspain(t), where it won't be such a pain.
 - output data encoder: BMP, SVG, tspaint
 
 There are several usages of Polymorphism. 
-- First is the `Draw` class which allows any child of `SuperShape` to be exported.  The implementation for that method differs for `ShapeGroup` and `Shape`.
-- The second usage is the `PolyLine` class, which is used for exporting `Shape`-based objects.
-- Third usage (not that much polymorphism) is Export class it's `Process`method, which is used for exporting `ShapeGroup`-based objects for specific formats.
-**Long**
+- First usage is the `PolyLine` class, which is used for exporting `Shape`-based objects.
+- Second usage is Export class it's `Process` method, which is used for exporting `ShapeGroup`- based objects for specific formats, where each exporter has its own implementation for that method, but unified interface. Same goes with `Start` and `End` methods.
+- Third is the `Draw` class which allows any child of `SuperShape` to be exported.  The implementation for that method differs for `ShapeGroup` and `Shape`.
+
+#### Why nd how PolyLine is used
 
 Polymorphism is used for rendering and exporting objects. Across the code we can see a `Draw` method.
 This is used to prepare objects for export. All objects inheriting from `Shape` can actually be rendered using `PolyLine`,
@@ -119,6 +122,8 @@ Inheritance is used for some shapes, for example, a square is a special case of 
 four lines that are given some perpendicularity or parallelism, so they can be rendered with PolyLine.
 With a little imagination, this can also be applied to an ellipse, or a circle, which is a special case of an ellipse.
 
+
+#### Tspaint format 
 By cleverly designing the interface, one can then use the input and output streams to make the interface work interactively. 
 But not only that, it is also possible to use the same interface to work with files, which is a great advantage.
 Basically that's the `.tspaint` "format".
@@ -139,22 +144,58 @@ thus it is not allowed to import file with commands like 'load', 'save', 'quit' 
 Set command is a modifier, similary to old good mspaint, it changes the color/fill/thickness/..., which is applied to 
 any shape created since that. 
 
-[[TODO]]
+## Commands
 
-Allowed commands are:
-- set
-  - color
-    - id <size_t>
-    - rgb <unsigned_char:r> <unsigned_char:g> <unsigned_char:b> <std::string name> 
-  - fill
-    - id <size_t> 
-    - rgb <unsigned_char:r> <unsigned_char:g> <unsigned_char:b> <std::string name>
-- draw
-  - circle <size_t:center_x> <size_t:center_y> 
-  - ...
-- list
+### DRAW Command
 
-> Note: Range of {color,fill} id may differ depending on available colors stored in ColorPallete. 
+Generate shapes/groups based on user input and stores them in the tspaint object. The shape, position, and 
+other properties can be modified using the "set" command.
+
+
+#### Syntax 
+```Syntax: draw {line, polyline, circle, ellipse, rectangle, group} <coordinates...>```
+#### Usage
+- `draw line <pos_start> <pos_end>`: Draws a line segment.
+- `draw polyline <pos_start> [<input_len> <pos_i>...]`: Draws a sequence of connected line segments.
+- `draw circle <pos_center> <diameter>`: Draws a circle.
+- `draw ellipse <pos_center> <radius_x>, <radius_y>`: Draws an ellipse.
+- `draw rectangle <pos_left_bottom> <pos_right_top>`: Draws a rectangle.
+- `draw group <group_id> <pos_left_bottom>`: Draws a group object.
+
+
+### SET Command
+
+The SET command in the drawing program allows you to modify various attributes such as color, fill, and thickness. 
+
+#### Syntax: 
+```set {color, fill, thickness} <id> | <r> <g> <b>```
+#### Usage
+
+- `set color <id>;` or `set color <r> <g> <b>;`: Sets the color of the drawing object.
+- `set fill <id>;` or `set fill <r> <g> <b>;`: Sets the fill color of the drawing object.
+- `set thickness <int>;`: Sets the thickness of the lines in the drawing.
+
+### Group Commands
+
+Performs operations related to grouping shapes.
+#### Syntax
+- ```group {objects, clone, list, help}```
+#### Usage
+
+- `group objects <id>`: Retrieves a list of objects in the specified group.
+- `group clone <id> <new_id>`: Creates a clone of the specified group with a new ID.
+- `group list`: Lists all existing groups.
+- `group help`: Displays help information for group-related commands.
+
+### Save-Related Commands
+- `save <file_name>`: Saves the current state of the drawing to a file with the specified name and type. 
+- `load <file_name>`: Loads a saved drawing from the specified file.
+
+
+### Control Commands
+- `list` : Lists all created shapes with their colors, thickness, positions, etc.
+- `quit` : Quits the program.
+- `help` : Displays help information for all commands.
 
 Recommended separators are whitespaces. It is advised, however not required to write one command per line. 
 If invalid input is detected (e.g. string where integer is expected), the rest of line is ignored.
