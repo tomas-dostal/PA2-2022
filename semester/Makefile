@@ -56,11 +56,13 @@ doc: Doxyfile README.md $(HEADERS)
 EXAMPLES = $(wildcard examples/*)
 IMAGES = $(wildcard img/*)
 zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES) $(IMAGES)
-	mkdir -p .archive/$(TARGET)/
-	cp -r README.md zadani.txt prohlaseni.txt Makefile Doxyfile src/ examples/ .archive/$(TARGET)/
+	mkdir -p .archive/$(TARGET)/src
+	cp README.md zadani.txt prohlaseni.txt Makefile Doxyfile .archive/$(TARGET)/
+	cp -r src/* .archive/$(TARGET)/src/
+	cp -r examples/ .archive/$(TARGET)/examples/
+	cp -r img/ .archive/$(TARGET)/img/
 	cd .archive/; zip -r ../$(TARGET).zip $(TARGET)/
 	rm -r .archive/
-
 .PHONY: clean
 clean:
 	rm -rf $(TARGET) $(TARGET).zip doc/ .archive/ $(BUILD_DIR)/ 2>/dev/null
