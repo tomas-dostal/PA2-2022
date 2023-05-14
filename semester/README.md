@@ -1,5 +1,9 @@
 # tspain(t)
 
+> In case the project structure is broken again, please refer to [gitlab repo](https://gitlab.fit.cvut.cz/BI-PA2/b222/BI/dostato6/-/tree/master/semester). 
+> This is my last submit, I won't be able to fix it again. Locally the unpacked archive looks as expected. 
+
+
 ## Zadání z progtestu
 Naprogramujte jednoduchý nástroj pro zobrazení obrázků definovaných v textovém souboru.
 
