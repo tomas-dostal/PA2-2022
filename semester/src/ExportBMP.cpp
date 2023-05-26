@@ -17,7 +17,7 @@
 #include "Pos.h"
 
 ExportBMP::ExportBMP(const std::string &fileName) :
-        Export(fileName) {
+        Export(fileName, std::ios::out | std::ios::binary) {
 
     bmpDict = {
             {SHAPE_ELLIPSE,     [this](std::map<std::string, std::string> params) {
@@ -56,17 +56,12 @@ ExportBMP::ExportBMP(const std::string &fileName) :
             }
             }
     };
-
-    fileOut.open(fileName, std::ofstream::out | std::ofstream::binary);
-    if (!fileOut) {
-        throw std::runtime_error(ERROR_FILE_IO);
-    }
 }
 
 bool ExportBMP::Process(std::string SuperShapeName, std::map<std::string, std::string> dict) {
     auto svgShape = bmpDict.find(SuperShapeName);
     if (svgShape == bmpDict.end())
-        throw std::runtime_error("ExportBMP:: No such a shape");
+        throw std::runtime_error("ExportBMP:: No such a shape '" + SuperShapeName + "' in dictionary");
 
     std::invoke(svgShape->second, dict);
 
@@ -118,7 +113,7 @@ void ExportBMP::DrawEllipse(Pos &center, size_t diameter_x, size_t diameter_y, C
  * @param color
  * @param thickness
  */
-void ExportBMP::DrawLine(Pos& start, Pos& end, Color& color, size_t thickness) {
+void ExportBMP::DrawLine(Pos &start, Pos &end, Color &color, size_t thickness) {
     // Calculate the differences between start and end points
     int dx = static_cast<int>(end.x) - static_cast<int>(start.x);
     int dy = static_cast<int>(end.y) - static_cast<int>(start.y);
@@ -255,7 +250,7 @@ bool ExportBMP::End() {
     // Blur(2);
     SaveToFile();
     // todo
-    return fileOut.good();
+    return file.good();
 }
 
 void ExportBMP::SetBackground(std::shared_ptr<Color> c) {
@@ -275,14 +270,14 @@ struct bmpfileMagic {
     uchar_t magic[BMP_MAGIC_ID];
 };
 
-struct bmpfile_header {
+struct bmpFileHeader {
     uint32_t fileSize;
     uint16_t creator1;
     uint16_t creator2;
     uint32_t bmpOffset;
 };
 
-struct bmpfile_dib_info {
+struct bmpFileDibInfo {
     uint32_t headerSize;
     int32_t width;
     int32_t height;
@@ -306,7 +301,7 @@ struct bmpfile_dib_info {
  * Saves the current image, represented by the matrix of pixels, as a
  * Windows BMP file. File extension is not forced but should be .bmp.
  * Any errors will print to cerr and will NOT
- * attempt to save the fileOut.
+ * attempt to save the file.
  *
  **/
 void ExportBMP::SaveToFile() {
@@ -314,15 +309,15 @@ void ExportBMP::SaveToFile() {
     bmpfileMagic magic;
     magic.magic[0] = 'B';
     magic.magic[1] = 'M';
-    fileOut.write((char *) (&magic), sizeof(magic));
-    bmpfile_header header = {0};
+    file.write((char *) (&magic), sizeof(magic));
+    bmpFileHeader header = {0};
     header.bmpOffset = sizeof(bmpfileMagic)
-                       + sizeof(bmpfile_header) + sizeof(bmpfile_dib_info);
+                       + sizeof(bmpFileHeader) + sizeof(bmpFileDibInfo);
     header.fileSize = header.bmpOffset
                       + (image.size() * 3 + image[0].size() % 4) * image.size();
-    fileOut.write((char *) (&header), sizeof(header));
-    bmpfile_dib_info dibInfo {};
-    dibInfo.headerSize = sizeof(bmpfile_dib_info);
+    file.write((char *) (&header), sizeof(header));
+    bmpFileDibInfo dibInfo{};
+    dibInfo.headerSize = sizeof(bmpFileDibInfo);
     dibInfo.width = image[0].size();
     dibInfo.height = image.size();
     dibInfo.numPlanes = 1;
@@ -333,7 +328,7 @@ void ExportBMP::SaveToFile() {
     dibInfo.vres = 2835;
     dibInfo.numColors = 0;
     dibInfo.numImportantColors = 0;
-    fileOut.write((char *) (&dibInfo), sizeof(dibInfo));
+    file.write((char *) (&dibInfo), sizeof(dibInfo));
 
     // Write each row and column of Pixels into the image file -- we write
     // the rows upside-down to satisfy the easiest BMP format.
@@ -342,17 +337,15 @@ void ExportBMP::SaveToFile() {
 
         for (unsigned long col = 0; col < rowData.size(); col++) {
             const Pixel &pix = rowData[col];
-            fileOut.put((uchar_t) (pix.blue));
-            fileOut.put((uchar_t) (pix.green));
-            fileOut.put((uchar_t) (pix.red));
+            file.put((uchar_t) (pix.blue));
+            file.put((uchar_t) (pix.green));
+            file.put((uchar_t) (pix.red));
         }
 
         // Rows are padded so that they're always a multiple of 4
         // bytes. This line skips the padding at the end of each row.
         for (unsigned long i = 0; i < rowData.size() % 4; i++) {
-            fileOut.put(0);
+            file.put(0);
         }
     }
-
-    fileOut.close();
 }

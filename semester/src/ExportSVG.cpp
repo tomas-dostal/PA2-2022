@@ -13,15 +13,11 @@
 #include "Formatter.h"
 
 ExportSVG::ExportSVG(const std::string &fileName):
-        Export(fileName) {
-    fileOut.open(fileName, std::ofstream::out);
-    if (!fileOut) {
-        throw std::runtime_error(ERROR_FILE_IO);
-    }
+        Export(fileName, std::ofstream::out) {
     svgDict = {
-            {SHAPE_CIRCLE,    SVG_CIRCLE },
-            {SHAPE_ELLIPSE,   SVG_ELLIPSE },
-            {SHAPE_RECTANGLE, SVG_RECTANGLE },
+//            {SHAPE_CIRCLE,    SVG_CIRCLE },
+//            {SHAPE_ELLIPSE,   SVG_ELLIPSE },
+//            {SHAPE_RECTANGLE, SVG_RECTANGLE },
             {SHAPE_LINE,      SVG_LINE },
             {SHAPE_GROUP_BEGIN,  SVG_GROUP_BEGIN },
             {SHAPE_GROUP_END,    SVG_GROUP_END }
@@ -45,24 +41,24 @@ bool ExportSVG::Process(std::string SuperShapeName, std::map<std::string, std::s
         dict.erase(dict.find(COLOR_B));
     }
     
-    fileOut << Formatter().FillNamedPlaceholders(svgShape->second, dict) << std::endl;
-    return true;
+    file << Formatter().FillNamedPlaceholders(svgShape->second, dict) << std::endl;
+    return file.good();
 }
 
 bool ExportSVG::Start(int width, int height) {
-    fileOut << Formatter().FillNamedPlaceholders(SVG_INIT,
+    file << Formatter().FillNamedPlaceholders(SVG_INIT,
                                                    {
                                                     {MAX_WIDTH,  std::to_string(width)},
                                                     {MAX_HEIGHT, std::to_string(height)}
                                                    }
         ) << std::endl;
 
-    return true;
+    return file.good();
 }
 
 bool ExportSVG::End() {
-    fileOut << Formatter().FillNamedPlaceholders(SVG_END, {}) << std::endl;
-    fileOut.close();
-    return true;
+    file << Formatter().FillNamedPlaceholders(SVG_END, {}) << std::endl;
+    // File is closed in the descructor
+    return file.good();
 }
 

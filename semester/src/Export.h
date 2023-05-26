@@ -5,23 +5,29 @@
 
 #pragma once
 
+// fixme get rid of forward declaration
 class Export;
+
 #include <string>
 #include <map>
 #include <fstream>
-#include "SuperShape.h"
+#include "Pos.h"
 
 class Export {
 public:
 
-    explicit Export(const std::string &fileName);
+    Export(const std::string &fileName, std::ios_base::openmode mode);
+
+    ~Export();
 
     virtual bool Start(int width, int height) = 0;
-    virtual bool End() = 0;
 
     virtual bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) = 0;
+
+    virtual bool End() = 0;
 
 protected:
 
     std::string fileName;
+    std::fstream file;
 };

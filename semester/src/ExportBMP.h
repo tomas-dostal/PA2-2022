@@ -37,7 +37,5 @@ private:
 
     std::shared_ptr<Color> background;
 
-    std::fstream fileOut;
-
     void Blur(int radius);
 };

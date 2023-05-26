@@ -21,6 +21,6 @@ public:
 
 private:
 
-    std::fstream fileOut;
+    std::fstream file;
     std::map<std::string, std::string> svgDict;
 };

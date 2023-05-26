@@ -40,12 +40,12 @@
 #include "utility"
 #include "functional"
 
+#include "ExportSVG.h"
+#include "ExportTspaint.h"
 #include "Helper.h"
 #include "CommandImpl.h"
 #include "messages.h"
 #include "constants.h"
-#include "ExportSVG.h"
-#include "ExportTspaint.h"
 #include "Command.h"
 #include "SysCommand.h"
 #include "Circle.h"
@@ -382,7 +382,7 @@ Command ListCommand() {
 
 /**
  * SaveCommand 'save' is used to save/export tspaint to a file.
- * @example save {svg, tspaint} <filename>
+ * @example save {svg, bmp} <filename>
  * @return save command implementation
  */
 SysCommand SaveCommand() {
@@ -393,11 +393,11 @@ SysCommand SaveCommand() {
                                                                         "Error writing to file",
                                                                         [](const std::string &fileName) {
                                                                             std::ofstream file{fileName};
-                                                                            if (!file.is_open()) {
-                                                                                file.close();
+                                                                            if (!file) {
+                                                                                std::cerr << "Failed to open file: " << fileName << std::endl;
                                                                                 return false;
                                                                             }
-                                                                            file.close();
+                                                                            // File opened successfully, so no need to close it explicitly here
                                                                             return true;
                                                                         });
                           // fixme file I/O operations should check edge cases

@@ -11,11 +11,7 @@
 #include "messages.h"
 
 ExportTspaint::ExportTspaint(const std::string &fileName):
-        Export(fileName){
-    this->fileOut.open(fileName, std::ofstream::out);
-    if (!fileOut) {
-        throw std::runtime_error(ERROR_FILE_IO);
-    }
+        Export(fileName, std::ofstream::out){
 }
 
 bool ExportTspaint::Start(int width, int height) {
@@ -32,6 +28,5 @@ bool ExportTspaint::Process(std::string superShapeName, std::map<std::string, st
 }
 bool ExportTspaint::End(){
     std::cerr << "ExporTspaint Not implemented" << std::endl;
-    fileOut.close();
     return false;
 }

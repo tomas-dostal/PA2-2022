@@ -16,16 +16,21 @@ ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float proba
         probability(probability),
         interface(interface) {
 
-//    std::cerr << std::filesystem::current_path();
+    // This class is just an extra fun. The goal is to from time to time
+    // print some error message, it's not really important which one.
 
-    std::ifstream f;
-    f.open(fileName, std::ios::in);
-    if (f.is_open()) {
-        std::string line;
-        while (getline(f, line)) {
-            messages.emplace_back(line);
-        }
-    } else {
+    std::ifstream f(fileName);
+    if (!f) {
+        messages.emplace_back(PROGTEST_ERROR_LOADING);
+        return;
+    }
+
+    std::string line;
+    while (getline(f, line)) {
+        messages.emplace_back(line);
+    }
+
+    if (!f.eof()) {
         messages.emplace_back(PROGTEST_ERROR_LOADING);
     }
 }

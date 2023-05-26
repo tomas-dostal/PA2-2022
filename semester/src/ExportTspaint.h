@@ -22,6 +22,6 @@ public:
 
     std::map<std::string, std::string> tspaintDict;
 private:
-    std::ofstream fileOut;
+    std::ofstream file;
 
 };
