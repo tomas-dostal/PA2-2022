@@ -5,9 +5,6 @@
 
 #pragma once
 
-// fixme get rid of forward declaration
-class Export;
-
 #include <string>
 #include <map>
 #include <fstream>
