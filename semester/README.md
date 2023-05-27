@@ -192,7 +192,7 @@ Performs operations related to grouping shapes.
 - `group help`: Displays help information for group-related commands.
 
 ### Save-Related Commands
-- `save <file_name>`: Saves the current state of the drawing to a file with the specified name and type. 
+- `save {svg, bmp} <file_name>`: Saves the current state of the drawing to a file with the specified name and type.
 - `load <file_name>`: Loads a saved drawing from the specified file.
 
 
@@ -206,7 +206,40 @@ If invalid input is detected (e.g. string where integer is expected), the rest o
 
 
 ## TODO
+- some extra shapes, there should be 3 extra
 - Forward declarations
 - Dynamic cast (avoid if possible)
 - Files I/O + file already exists 
-- progtesterrors I/O!
+
+Function wishlist 
+
+//*    set color <id>;
+//    set color <r> <g> <b>;
+//
+//    set fill <id>;
+//    set fill <r> <g> <b>;
+//
+//    set thickness <int>;
+//
+//    draw line <pos_start> <pos_end>
+//    draw polyline <pos_start> [<pos_i>...]
+//
+//    draw circle <pos_center> <diameter>
+//    draw ellipse <pos_center> <radius_x>, <radius_y>,
+//
+//    draw rectangle <pos_left_bottom>  <pos_right_top>
+//
+//
+//    draw pa2 <pos_left_bottom> <pos_right_top>
+//
+//    draw group <group_id> <pos_left_bottom>
+//
+//    hide shape <id>
+//    hide group <id>
+//
+//    delete group <id>; // force delete group, so it will stop exist
+//
+//    new group <name> <id> [id...];
+//
+//    show all // get all ids of objects including their type
+//    show <id>

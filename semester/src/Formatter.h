@@ -19,7 +19,7 @@ class Formatter {
 public:
     explicit Formatter(std::map<std::string, std::string> dict);
 
-    explicit Formatter();
+    explicit Formatter() = default;
 
     std::string FormatColor(std::shared_ptr<Color> color);
 

@@ -74,8 +74,8 @@ std::vector<int> Interface::PromptMultipleIntegers(size_t howMany, const std::ve
 
     for (size_t index = 0; index < howMany; index++) {
         res[index] = this->PromptInteger((messages.size() > index) ? messages[index] : "",
-                                          (messagesInvalid.size() > index) ? messagesInvalid[index] : "",
-                                          (validators.size() > index) ? validators[index] : validators[0]);
+                                         (messagesInvalid.size() > index) ? messagesInvalid[index] : "",
+                                         (validators.size() > index) ? validators[index] : validators[0]);
     }
     return res;
 }
@@ -102,15 +102,13 @@ std::shared_ptr<Color> Interface::PromptColor(ColorPalette &colorPalette) const 
                     return Helper::_isInRange(result, 0, colors.size() - 1);
                 });
         return colors[index];
-    }
-    else if (option == "byname"){
+    } else if (option == "byname") {
         std::vector<std::string> colorNames;
-        for (auto const& element : colorPalette.colors) {
+        for (auto const &element: colorPalette.colors) {
             colorNames.push_back(element.first);
         }
         return colorPalette.getColorByName(PromptOption(colorNames));
-    }
-    else {
+    } else {
         std::vector<int> res = this->PromptMultipleIntegers(
                 3,
                 {
@@ -198,7 +196,7 @@ void Interface::PrintHelp(const std::string &help) {
     os << help << std::endl;
 }
 
-void Interface::PrintInfo(const std::string &info) {
+void Interface::PrintInfo(const std::string &info) const {
     os << info << std::endl;
 }
 
@@ -265,6 +263,39 @@ std::string Interface::PromptBasic(const std::string &msg, const std::string &ms
     }
 }
 
+std::shared_ptr<std::fstream> Interface::PromptFile(const std::string msg, std::ios_base::openmode mode) const {
+    // tmp placeholder
+    std::shared_ptr<std::fstream> file = std::make_unique<std::fstream>();
+    std::string fileName = PromptBasic(msg,
+                                       ERROR_FILE_DUPLICATE_OR_ERROR,
+                                       [mode, &file, this](const std::string &name) {
+
+                                           auto openFile = [&file, &name, mode]() {
+                                               file->open(name, mode);
+                                               return file && file->is_open();
+                                           };
+
+                                           if (mode & std::ios_base::in && std::filesystem::exists(name))
+                                               return openFile();
+                                           else if (mode & std::ios_base::out) {
+                                               if (std::filesystem::exists(name)) {
+                                                   PrintInfo("File already exists, do you want to override it? [y/n]");
+                                                   if (openFile() &&
+                                                       std::count(YES.begin(), YES.end(), PromptOption(YES_NO)) > 0)
+                                                       return true;
+                                               } else {
+                                                   return openFile(); // New file, so open it
+                                               }
+                                           }
+
+                                           if (file->is_open())
+                                               file->close();
+
+                                           return false;
+                                       }
+    );
+    return file;
+}
 
 bool Interface::isHeadless() const {
     return this->headless;

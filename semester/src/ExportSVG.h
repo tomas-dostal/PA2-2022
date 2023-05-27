@@ -11,7 +11,7 @@
 class ExportSVG : public Export {
 public:
 
-    ExportSVG(const std::string &fileName);
+    ExportSVG(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)>& openFile);
 
     bool Start(int width, int height) override;
 
@@ -20,7 +20,5 @@ public:
     bool Process(std::string SuperShapeName, std::map<std::string, std::string> dict) override;
 
 private:
-
-    std::fstream file;
     std::map<std::string, std::string> svgDict;
 };

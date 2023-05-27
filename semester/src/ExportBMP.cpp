@@ -15,17 +15,19 @@
 #include "messages.h"
 #include "constants.h"
 #include "Pos.h"
+#include "Helper.h"
 
-ExportBMP::ExportBMP(const std::string &fileName) :
-        Export(fileName, std::ios::out | std::ios::binary) {
+
+ExportBMP::ExportBMP(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)>& openFile) :
+        Export(openFile, OPEN_FILE_WRITE_BINARY) {
 
     bmpDict = {
             {SHAPE_ELLIPSE,     [this](std::map<std::string, std::string> params) {
-                Pos pos = Pos(std::stoi(params[CENTER_X]), std::stoi(params[CENTER_Y]));
                 Color color = Color(std::stoi(params[COLOR_R]),
                                     std::stoi(params[COLOR_G]),
                                     std::stoi(params[COLOR_B]),
                                     "colorname");
+                Pos pos = Pos(std::stoi(params[CENTER_X]), std::stoi(params[CENTER_Y]));
                 DrawEllipse(pos,
                             std::stoi(params[DIAMETER_X]),
                             std::stoi(params[DIAMETER_Y]),
@@ -250,7 +252,7 @@ bool ExportBMP::End() {
     // Blur(2);
     SaveToFile();
     // todo
-    return file.good();
+    return file->good();
 }
 
 void ExportBMP::SetBackground(std::shared_ptr<Color> c) {
@@ -309,13 +311,13 @@ void ExportBMP::SaveToFile() {
     bmpfileMagic magic;
     magic.magic[0] = 'B';
     magic.magic[1] = 'M';
-    file.write((char *) (&magic), sizeof(magic));
+    file->write((char *) (&magic), sizeof(magic));
     bmpFileHeader header = {0};
     header.bmpOffset = sizeof(bmpfileMagic)
                        + sizeof(bmpFileHeader) + sizeof(bmpFileDibInfo);
     header.fileSize = header.bmpOffset
                       + (image.size() * 3 + image[0].size() % 4) * image.size();
-    file.write((char *) (&header), sizeof(header));
+    file->write((char *) (&header), sizeof(header));
     bmpFileDibInfo dibInfo{};
     dibInfo.headerSize = sizeof(bmpFileDibInfo);
     dibInfo.width = image[0].size();
@@ -328,7 +330,7 @@ void ExportBMP::SaveToFile() {
     dibInfo.vres = 2835;
     dibInfo.numColors = 0;
     dibInfo.numImportantColors = 0;
-    file.write((char *) (&dibInfo), sizeof(dibInfo));
+    file->write((char *) (&dibInfo), sizeof(dibInfo));
 
     // Write each row and column of Pixels into the image file -- we write
     // the rows upside-down to satisfy the easiest BMP format.
@@ -337,15 +339,15 @@ void ExportBMP::SaveToFile() {
 
         for (unsigned long col = 0; col < rowData.size(); col++) {
             const Pixel &pix = rowData[col];
-            file.put((uchar_t) (pix.blue));
-            file.put((uchar_t) (pix.green));
-            file.put((uchar_t) (pix.red));
+            file->put((uchar_t) (pix.blue));
+            file->put((uchar_t) (pix.green));
+            file->put((uchar_t) (pix.red));
         }
 
         // Rows are padded so that they're always a multiple of 4
         // bytes. This line skips the padding at the end of each row.
         for (unsigned long i = 0; i < rowData.size() % 4; i++) {
-            file.put(0);
+            file->put(0);
         }
     }
 }

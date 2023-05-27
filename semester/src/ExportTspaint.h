@@ -12,7 +12,7 @@
 class ExportTspaint : public Export {
 public:
 
-    ExportTspaint(const std::string &fileName);
+    ExportTspaint(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)>& openFile);
 
     bool Start(int width, int height)  override;
 

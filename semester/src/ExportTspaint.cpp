@@ -8,10 +8,11 @@
 #include <iostream>
 
 #include "ExportTspaint.h"
+#include "Helper.h"
 #include "messages.h"
 
-ExportTspaint::ExportTspaint(const std::string &fileName):
-        Export(fileName, std::ofstream::out){
+ExportTspaint::ExportTspaint(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)>& openFile):
+        Export(openFile, OPEN_FILE_WRITE_STR){
 }
 
 bool ExportTspaint::Start(int width, int height) {

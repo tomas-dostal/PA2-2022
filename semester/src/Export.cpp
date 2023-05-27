@@ -3,22 +3,22 @@
  * @date 31.05.2022
  */
 
-#include "memory"
+#include <memory>
+#include <iostream>
 #include "Export.h"
 #include "messages.h"
-#include "iostream"
 
-Export::Export(const std::string &fileName, std::ios_base::openmode mode) : fileName(fileName) {
-    file.open(fileName, mode);
+Export::Export(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)> & openFile, std::ios_base::openmode mode){
+    file = openFile(mode);
     if (!file) {
-        std::cerr << "Error: Cannot open file " << fileName << "." << std::endl;
-        file.close();
+        std::cerr << "Error: Cannot open file." << std::endl;
+        file->close();
         throw std::runtime_error(ERROR_FILE_IO);
     }
 }
 
 Export::~Export() {
-    if (file.is_open()) {
-        file.close();
+    if (file->is_open()) {
+        file->close();
     }
 }

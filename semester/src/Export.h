@@ -13,7 +13,7 @@
 class Export {
 public:
 
-    Export(const std::string &fileName, std::ios_base::openmode mode);
+    Export(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)>& openFile, std::ios_base::openmode mode);
 
     ~Export();
 
@@ -24,7 +24,5 @@ public:
     virtual bool End() = 0;
 
 protected:
-
-    std::string fileName;
-    std::fstream file;
+    std::shared_ptr<std::fstream> file;
 };

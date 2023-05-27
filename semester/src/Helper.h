@@ -26,3 +26,8 @@ public:
     static std::string ToString(const std::vector<std::string> &in);
 };
 
+// predefined modes for file open
+static std::ios_base::openmode OPEN_FILE_READ_STR = std::ios_base::in;
+static std::ios_base::openmode OPEN_FILE_READ_BINARY = std::ios_base::in | std::ios_base::binary;
+static std::ios_base::openmode OPEN_FILE_WRITE_STR = std::ios_base::out;
+static std::ios_base::openmode OPEN_FILE_WRITE_BINARY = std::ios_base::out | std::ios_base::binary;

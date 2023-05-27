@@ -3,36 +3,6 @@
   * @date 19.05.2022
   */
 
-//*    set color <id>;
-//    set color <r> <g> <b>;
-//
-//    set fill <id>;
-//    set fill <r> <g> <b>;
-//
-//    set thickness <int>;
-//
-//    draw line <pos_start> <pos_end>
-//    draw polyline <pos_start> [<pos_i>...]
-//
-//    draw circle <pos_center> <diameter>
-//    draw ellipse <pos_center> <radius_x>, <radius_y>,
-//
-//    draw rectangle <pos_left_bottom>  <pos_right_top>
-//
-//
-//    draw pa2 <pos_left_bottom> <pos_right_top>
-//
-//    draw group <group_id> <pos_left_bottom>
-//
-//    hide shape <id>
-//    hide group <id>
-//
-//    delete group <id>; // force delete group, so it will stop exist
-//
-//    new group <name> <id> [id...];
-//
-//    show all // get all ids of objects including their type
-//    show <id>
 
 #include "map"
 #include "any"
@@ -40,8 +10,6 @@
 #include "utility"
 #include "functional"
 
-#include "ExportSVG.h"
-#include "ExportTspaint.h"
 #include "Helper.h"
 #include "CommandImpl.h"
 #include "messages.h"
@@ -54,6 +22,8 @@
 #include "PolyLine.h"
 #include "Ellipse.h"
 #include "ExportBMP.h"
+#include "ExportSVG.h"
+#include "ExportTspaint.h"
 
 
 /**
@@ -389,46 +359,42 @@ SysCommand SaveCommand() {
     return SysCommand{COMMAND_SAVE, HELP_SAVE, EXAMPLE_SAVE,
                       [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
 
-                          std::string fileName = interface->PromptBasic("Enter filename: ",
-                                                                        "Error writing to file",
-                                                                        [](const std::string &fileName) {
-                                                                            std::ofstream file{fileName};
-                                                                            if (!file) {
-                                                                                std::cerr << "Failed to open file: " << fileName << std::endl;
-                                                                                return false;
-                                                                            }
-                                                                            // File opened successfully, so no need to close it explicitly here
-                                                                            return true;
-                                                                        });
-                          // fixme file I/O operations should check edge cases
-                          // todo check
-                          auto svgSave = [&fileName, &tspaint]() {
-                              auto exporter = ExportSVG(fileName);
+                          // Following lambdas use different openmodes which are specified in
+                          // each instance of Export's children. To achieve some easy functionality
+                          // for getting file to Exporter child instance AND to be able to get
+                          // set file mode there I created following approach to pass a lambda
+                          // which prompts the user and creates a filestream, so in the end it's called
+                          // inside of Exporter child instance.
+                          auto getFile = [&interface](std::ios_base::openmode mode) {
+                              return interface->PromptFile("Select output file: ",
+                                                           mode);
+                          };
+                          // pre-define all possible save lambdas
+
+                          // all i/o errors are handled inside of Export* class, throws exception on error
+                          auto svgSave = [&getFile, &tspaint]() {
+                              auto exporter = ExportSVG(getFile);
                               auto maxDim = tspaint->MaxDimensions();
                               exporter.Start(maxDim.first, maxDim.second);
                               tspaint->root->Draw(exporter);
                               exporter.End();
-
                           };
-                          // fixme file I/O operations should check edge cases
-                          auto bmpSave = [&fileName, &tspaint]() {
-                              auto exporter = ExportBMP(fileName);
+                          // all i/o errors are handled inside of Export* class, throws exception on error
+                          auto bmpSave = [&getFile, &tspaint]() {
+                              auto exporter = ExportBMP(getFile);
                               auto maxDim = tspaint->MaxDimensions();
                               exporter.SetBackground(tspaint->background);
                               exporter.Start(maxDim.first, maxDim.second);
-
                               tspaint->root->Draw(exporter);
                               exporter.End();
 
                           };
-                          auto tspaintSave = [&fileName, &tspaint]() {
-                              ExportTspaint(fileName).Start(tspaint->root->Width(), tspaint->root->Height());
+                          auto tspaintSave = [&getFile, &tspaint]() {
+                              ExportTspaint(getFile).Start(tspaint->root->Width(), tspaint->root->Height());
                           };
-
                           auto helpSave = [&interface]() {
                               interface->PrintInfo(EXAMPLE_SAVE);
                           };
-
 
                           std::map<std::string, std::function<void(void)>> exportOptions{
                                   {"svg",     svgSave},
@@ -436,30 +402,20 @@ SysCommand SaveCommand() {
                                   {"tspaint", tspaintSave},
                                   {"help",    helpSave}
                           };
-
                           std::vector<std::string> exportOptionKeys;
                           for (const auto &[key, _]: exportOptions) {
                               exportOptionKeys.push_back(key);
                           }
 
+                          std::string optionName = interface->PromptOption(
+                                  exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
+                                      return std::find(exportOptionKeys.begin(), exportOptionKeys.end(),
+                                                       commandName) !=
+                                             exportOptionKeys.end();
+                                  }
+                          );
 
-                          size_t lastDot = fileName.find_last_of('.');
-                          std::string commandName;
-                          if (lastDot != std::string::npos &&
-                              std::find(exportOptionKeys.begin(), exportOptionKeys.end(), fileName.substr(++lastDot)) !=
-                              exportOptionKeys.end()) {
-                              commandName = fileName.substr(lastDot);
-                          } else {
-                              commandName = interface->PromptOption(
-                                      exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
-                                          return std::find(exportOptionKeys.begin(), exportOptionKeys.end(),
-                                                           commandName) !=
-                                                 exportOptionKeys.end();
-                                      }
-                              );
-                          }
-
-                          return std::any_cast<std::function<void(void)>>(exportOptions[commandName])();
+                          return std::any_cast<std::function<void(void)>>(exportOptions[optionName])();
                       }
     };
 }
@@ -476,21 +432,11 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr
                                      std::shared_ptr<Tspaint> &targetTspaint)> loadFn) {
     return SysCommand{COMMAND_LOAD, HELP_LOAD, EXAMPLE_LOAD,
                       [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
-
-                          std::string fileName = interface->PromptBasic("Enter filename: ",
-                                                                        "Error writing to file",
-                                                                        [](const std::string &fileName) {
-                                                                            std::ifstream file{fileName};
-                                                                            if (!file.is_open()) {
-                                                                                file.close();
-                                                                                return false;
-                                                                            }
-                                                                            file.close();
-                                                                            return true;
-                                                                        });
-                          std::ifstream fileIn{fileName};
+                          std::shared_ptr<std::fstream> fileIn = interface->PromptFile("Enter filename: ",
+                                                                                       OPEN_FILE_READ_STR);
                           std::stringstream ss;
-                          auto fileInterface = std::make_shared<Interface>(fileIn, ss);
+                          // this is probably not a good idea
+                          auto fileInterface = std::make_shared<Interface>(*fileIn, ss);
                           fileInterface->setHeadless(true);
                           loadFn(interface, fileInterface, tspaint);
                       }
@@ -533,7 +479,7 @@ Command SetCommand() {
                                    });
                        };
                        auto setGroup = [&interface, &tspaint]() {
-                           int id = (size_t) interface->PromptInteger(
+                           int id = interface->PromptInteger(
                                    interface->formatter->FillPlaceholder(SET_ENTER_GROUP_ID,
                                                                          FormatterParams{}),
                                    SET_ENTER_GROUP_ID_INVALID,
@@ -566,7 +512,7 @@ Command SetCommand() {
                                {"fill",      setFill},
                                {"thickness", setThickness},
                                {"group",     setGroup},
-                               {"help", helpSet}
+                               {"help",      helpSet}
                        };
 
                        std::vector<std::string> setOptionKeys;

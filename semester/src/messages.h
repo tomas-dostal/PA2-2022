@@ -64,6 +64,7 @@ const char *const INVALID_ID = "Invalid id.";
 const char *const UNKNOWN_COMMAND = "Unknown command '$'. For help type '$'";
 const char *const UNKNOWN_OPTION = "Unknown option '$'. For help type '$'";
 const char *const ERROR_FILE_IO = "Unable to read/write file '$'";
+const char *const ERROR_FILE_DUPLICATE_OR_ERROR = "File already exists or can't open it";
 const char *const FILE_LOADING_ERROR = "Loading error. Correct the input data and try again.";
 const char *const IMPORT_ABORTED = "Import aborted. ";
 const char *const COMMAND_NOT_ALLOWED_IN_HEADLESS = "Command $ is unavailable in headless mode. ";
@@ -90,7 +91,7 @@ const char *const HELP_LIST = "List all objects in tspaint";
 const char *const TSPAINT_INFO = "ThisIsPain.T\n-----------------------------------------------\nSimple drawing tool for experienced FIT students.\n";
 
 
-const char *const EXAMPLE_SAVE = "save <outfile.svg> <format> \nSupported formats: tspaint, svg";
+const char *const EXAMPLE_SAVE = "save <format> <outfile> \nSupported formats: bmp, svg";
 const char *const EXAMPLE_GROUP = "Assuming we have two circles with ids: 2, 3 and we want to create a group out from them. \ngroup objects <number_of_ids> [id,...]\ngroup objects 2 2 3";
 const char *const EXAMPLE_GROUP_OBJECTS = "group objects: Assuming we have two circles with ids: 1, 2. \ngroup objects <number_of_ids> [id,...]\ngroup 2 1 2";
 const char *const EXAMPLE_GROUP_CLONE = "group clone: Assuming we have group id: 1 circles with ids: 2, 3. \ngroup clone <group_id> creates a deep copy of group <group_id>. Result is placed in the root group.";

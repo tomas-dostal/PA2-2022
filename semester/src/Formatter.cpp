@@ -66,7 +66,3 @@ bool Formatter::Replace(std::string & text, const std::string & from, const std:
     text.replace(start_pos, from.length(), to);
     return true;
 }
-
-Formatter::Formatter():  dict(std::map<std::string, std::string>()) {
-
-}

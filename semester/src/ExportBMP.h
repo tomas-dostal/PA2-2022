@@ -14,7 +14,7 @@
 class ExportBMP : public Export {
 public:
 
-    ExportBMP(const std::string &fileName);
+    ExportBMP(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)>& openFile);
 
     bool Start(int width, int height) override;
 

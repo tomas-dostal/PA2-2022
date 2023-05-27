@@ -112,6 +112,17 @@ public:
                   const std::function<bool(const int &)> &valid) const;
 
     /**
+    * Prompt for file stream. Based on open mode
+    * @param msg Prints this message to @param os to get input from user
+    * @param openmode mode of file (input/output/string/binary)
+    * @param allowOverwrite If true, the user is prompted to overwrite the file if it already exists.
+     * Applicable only for Output files.
+    * @return std::fstream instance
+    */
+
+    std::shared_ptr<std::fstream> PromptFile(const std::string msg, std::ios_base::openmode mode) const;
+
+    /**
     * Prompt for a Pos (int, int)
     * Custom messages, auto validator.
     * @param msg Prints this message to @param os to get input from user
@@ -137,7 +148,7 @@ public:
     * Method for printing info to output stream
     * @param info std::string info to be printed
     */
-    void PrintInfo(const std::string &info);
+    void PrintInfo(const std::string &info) const;
 
 
     void PrintCommandExample(const std::string &example);
@@ -175,4 +186,5 @@ private:
     bool headless;
 
     void ClearOrThrow() const;
+
 };

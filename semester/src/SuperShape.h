@@ -11,9 +11,6 @@
 #include "Pos.h"
 #include "Interface.h"
 #include "Export.h"
-//#include "PolyLine.h"
-// Forward declaration of PolyLine
-//class PolyLine;
 class SuperShape {
 public:
     /**
