@@ -35,8 +35,6 @@ public:
 
     std::shared_ptr<PolyLine> ToPolyLine() override;
 
-private:
-
+protected:
     std::vector<Pos> positions;
-
 };

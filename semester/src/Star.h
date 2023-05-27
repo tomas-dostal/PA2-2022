@@ -32,7 +32,7 @@ public:
 
     bool operator==(const SuperShape &s) override;
 
-    // std::pair<size_t, size_t> CalcMaxDimensions() override;
+    std::pair<size_t, size_t> CalcMaxDimensions() override;
 
     std::vector<Pos> generateStarPositions(const std::shared_ptr<Pos>center, int diameter);
 private:

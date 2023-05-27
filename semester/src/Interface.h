@@ -16,10 +16,43 @@
 #include "Pos.h"
 #include "Formatter.h"
 #include "ColorPalette.h"
+#include "messages.h"
 
 class Interface {
 public:
     Interface(std::istream &is, std::ostream &os);
+
+    // Simplified interface
+    // it looks like I'm using some methods more often with identic settings, so I made these
+    // for the code to look cleaner.
+
+    Pos getPos(const std::string & name){
+        return PromptPos(
+                formatter->FillPlaceholder(PROMPT_POSITION_FOR,
+                                               FormatterParams({name})));
+    };
+    int getPositiveNumber(const std::string & name) {
+        return PromptInteger(
+                formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                               FormatterParams({name})),
+                "",
+                [](int x) { return x > 0; });
+    };
+
+    std::vector<Pos> getPolyLine(size_t numberOfPoints) {
+        std::vector<Pos> res;
+        for (size_t i = 0; i < numberOfPoints; i++) {
+            std::string text = formatter->FillPlaceholder(PROMPT_POSITION_FOR,
+                                                              FormatterParams({"Point" +
+                                                                               std::to_string(
+                                                                                       i + 1) +
+                                                                               "/ " + std::to_string(
+                                                                      numberOfPoints)}));
+            res.push_back(getPos(text));
+        }
+        return res;
+    };
+
 
     /**
      * Prompt for a basic value (text, one word)

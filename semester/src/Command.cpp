@@ -9,21 +9,30 @@
  */
 
 #include "Command.h"
+
+#include <utility>
 #include "Tspaint.h"
 
 
-Command::Command(std::string name, std::string help, std::string example, bool availableInHeadless,
+Command::Command(std::string name,
+                 std::string help,
+                 std::string example,
+                 bool availableInHeadless,
                  const std::function<void(std::shared_ptr<Tspaint>,
                                           std::shared_ptr<Interface>)> &execute
 )
-        : name(move(name)), help(move(help)), example(move(example)), availableInHeadless(availableInHeadless), execute(execute) {
+        : name(std::move(name)),
+          help(std::move(help)),
+          example(std::move(example)),
+          availableInHeadless(availableInHeadless),
+          execute(execute) {
 
 }
 
 
 void Command::Execute(std::shared_ptr<Tspaint> tspaint,
                       std::shared_ptr<Interface> interface) {
-    execute(tspaint, interface);
+    execute(std::move(tspaint), std::move(interface));
 }
 
 

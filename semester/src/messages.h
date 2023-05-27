@@ -28,6 +28,7 @@ const char *const SHAPE_RECTANGLE = "rectangle";
 const char *const SHAPE_SQUARE = "square";
 const char *const SHAPE_CIRCLE = "circle";
 const char *const SHAPE_ELLIPSE = "ellipse";
+const char *const SHAPE_STAR = "star";
 
 const char *const SHAPE_GROUP_BEGIN = "groupBegin";
 const char *const SHAPE_GROUP_END = "groupEnd";
@@ -106,6 +107,7 @@ const char *const EXAMPLE_SET_GROUP = "set group <id> \nUsed for switching betwe
 const char *const EXAMPLE_DRAW = "draw circle <center_x> <center_y> <diameter>\ndraw circle 50 50 10";
 const char *const EXAMPLE_DRAW_CIRCLE = "draw circle <center_x> <center_y> <diameter>\ndraw circle 50 50 10";
 const char *const EXAMPLE_DRAW_RECTANGLE = "draw rectangle <start_x> <start_y> <width> <height>\ndraw rectangle 10 10 100 50";
+const char *const EXAMPLE_DRAW_STAR = "draw star <start_x> <start_y> <diameter> \ndraw star 100 100 50";
 const char *const EXAMPLE_DRAW_ELLIPSE = "draw ellipse <center_x> <center_y> <width> <height>\ndraw ellipse 10 10 100 50";
 const char *const EXAMPLE_DRAW_POLYLINE = "draw polyline <number_of_points> <p1x> <p1y> ... \ndraw polyline 3 1 1 2 2 3 3";
 const char *const EXAMPLE_DRAW_LINE = "draw line <start_x> <start_y> <end_x> <end_y> \ndraw line 10 10 100 100";

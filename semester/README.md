@@ -163,6 +163,7 @@ other properties can be modified using the "set" command.
 - `draw line <pos_start> <pos_end>`: Draws a line segment.
 - `draw polyline <pos_start> [<input_len> <pos_i>...]`: Draws a sequence of connected line segments.
 - `draw circle <pos_center> <diameter>`: Draws a circle.
+- `draw star <pos_center> <diameter>`: Draws a star.
 - `draw ellipse <pos_center> <radius_x>, <radius_y>`: Draws an ellipse.
 - `draw rectangle <pos_left_bottom> <pos_right_top>`: Draws a rectangle.
 - `draw group <group_id> <pos_left_bottom>`: Draws a group object.
@@ -213,7 +214,7 @@ If invalid input is detected (e.g. string where integer is expected), the rest o
 - Files I/O + file already exists 
 
 Function wishlist 
-
+```
 //*    set color <id>;
 //    set color <r> <g> <b>;
 //
@@ -244,3 +245,4 @@ Function wishlist
 //
 //    show all // get all ids of objects including their type
 //    show <id>
+```

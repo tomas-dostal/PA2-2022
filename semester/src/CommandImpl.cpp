@@ -24,6 +24,7 @@
 #include "ExportBMP.h"
 #include "ExportSVG.h"
 #include "ExportTspaint.h"
+#include "Star.h"
 
 
 /**
@@ -37,32 +38,19 @@
  */
 Command DrawCommand() {
     return Command{COMMAND_DRAW, HELP_DRAW, EXAMPLE_DRAW, true,
-                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
 
 //                this would be pretty cool, but requires cpp20 templates in lambda and a lot of template stuff, so maybe later
 //                std::vector<std::pair<std::string, std::function<std::any(void)>>> circleBuilder  = {
-//                    {"center", [&interface](){ return interface->PromptPos(); }},
-//                    {"diameter", [&interface](){ return interface->PromptInteger([](int x){ return x > 0; }); }},
+//                    {"center", [&it](){ return it->PromptPos(); }},
+//                    {"diameter", [&it](){ return it->PromptInteger([](int x){ return x > 0; }); }},
 //                    {"color", [&tspaint](){ return tspaint->color.get(); }},
 //                    {"fill", [&tspaint](){ return tspaint->fill.get(); }}
 //                };
 
-                       auto newCircle = [&interface, &tspaint]() {
-
-                           Pos center = std::invoke([&interface]() {
-                               return interface->PromptPos(
-                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                             FormatterParams({"center"}))
-                               );
-                           });
-                           size_t diameter = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"diameter"})),
-                                       "",
-                                       [](int x) { return x > 0; });
-                           });
-
+                       auto newCircle = [&it, &tspaint]() {
+                           Pos center = it->getPos("center");
+                           size_t diameter = it->getPositiveNumber("diameter");
                            tspaint->AddShape(
                                    std::make_shared<Circle>(tspaint->GenerateId(),
                                                             SHAPE_CIRCLE,
@@ -73,29 +61,23 @@ Command DrawCommand() {
                                                             tspaint->fill)
                            );
                        };
-                       auto newEllipse = [&interface, &tspaint]() {
-
-                           Pos center = std::invoke([&interface]() {
-                               return interface->PromptPos(
-                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                             FormatterParams({"center"}))
-                               );
-                           });
-                           size_t diameter_x = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"diameter_x"})),
-                                       "",
-                                       [](int x) { return x > 0; });
-                           });
-
-                           size_t diameter_y = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"diameter_y"})),
-                                       "",
-                                       [](int x) { return x > 0; });
-                           });
+                       auto newStar = [&it, &tspaint]() {
+                           Pos center = it->getPos("center");
+                           size_t diameter = it->getPositiveNumber("diameter");
+                           tspaint->AddShape(
+                                   std::make_shared<Star>(tspaint->GenerateId(),
+                                                          SHAPE_STAR,
+                                                          std::make_shared<Pos>(center),
+                                                          diameter,
+                                                          tspaint->thickness,
+                                                          tspaint->color,
+                                                          tspaint->fill)
+                           );
+                       };
+                       auto newEllipse = [&it, &tspaint]() {
+                           Pos center = it->getPos("center");
+                           size_t diameter_x = it->getPositiveNumber("diameter_x");
+                           size_t diameter_y = it->getPositiveNumber("diameter_y");
 
                            tspaint->AddShape(
                                    std::make_shared<Ellipse>(tspaint->GenerateId(),
@@ -108,27 +90,9 @@ Command DrawCommand() {
                                                              tspaint->fill)
                            );
                        };
-                       auto newPolyLine = [&interface, &tspaint]() {
-                           size_t numberOfPoints = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"Number of points"})),
-                                       "",
-                                       [](int x) { return x > 0; });
-                           });
-                           std::vector<Pos> res;
-                           for (size_t i = 0; i < numberOfPoints; i++) {
-                               res.push_back(std::invoke([&interface, &i, &numberOfPoints]() {
-                                   return interface->PromptPos(
-                                           interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                                 FormatterParams({"Point" +
-                                                                                                  std::to_string(
-                                                                                                          i + 1) +
-                                                                                                  "/ " + std::to_string(
-                                                                                         numberOfPoints)}))
-                                   );
-                               }));
-                           }
+                       auto newPolyLine = [&it, &tspaint]() {
+                           size_t numberOfPoints = it->getPositiveNumber("Number of points");
+                           std::vector<Pos> res = it->getPolyLine(numberOfPoints);
                            tspaint->AddShape(
                                    std::make_shared<PolyLine>(tspaint->GenerateId(),
                                                               SHAPE_POLYLINE,
@@ -138,21 +102,9 @@ Command DrawCommand() {
                                                               tspaint->fill)
                            );
                        };
-                       auto newLine = [&interface, &tspaint]() {
-
-                           Pos start = std::invoke([&interface]() {
-                               return interface->PromptPos(
-                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                             FormatterParams({"Start point"}))
-                               );
-                           });
-                           Pos end = std::invoke([&interface]() {
-                               return interface->PromptPos(
-                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                             FormatterParams({"End point"}))
-                               );
-                           });
-
+                       auto newLine = [&it, &tspaint]() {
+                           Pos start = it->getPos("Start point");
+                           Pos end = it->getPos("End point");
                            tspaint->AddShape(
                                    std::make_shared<Line>(tspaint->GenerateId(),
                                                           SHAPE_LINE,
@@ -163,29 +115,12 @@ Command DrawCommand() {
                                                           tspaint->fill)
                            );
                        };
-                       auto newRectangle = [&interface, &tspaint]() {
+   
 
-                           Pos start = std::invoke([&interface]() {
-                               return interface->PromptPos(
-                                       interface->formatter->FillPlaceholder(PROMPT_POSITION_FOR,
-                                                                             FormatterParams({"Start point"}))
-                               );
-                           });
-                           size_t width = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"Width"})),
-                                       "",
-                                       [](int x) { return x > 0; });
-                           });
-                           size_t height = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"Height"})),
-                                       "",
-                                       [](int x) { return x > 0; });
-                           });
-
+                       auto newRectangle = [&it, &tspaint]() {
+                           Pos start = it->getPos("Start point");
+                           size_t width = it->getPositiveNumber("Width");
+                           size_t height = it->getPositiveNumber("Height");
                            tspaint->AddShape(
                                    std::make_shared<Rectangle>(tspaint->GenerateId(),
                                                                SHAPE_RECTANGLE,
@@ -198,21 +133,23 @@ Command DrawCommand() {
                            );
                        };
 
-                       auto helpDraw = [&interface]() {
-                           interface->PrintInfo(EXAMPLE_DRAW_CIRCLE);
-                           interface->PrintInfo(EXAMPLE_DRAW_ELLIPSE);
-                           interface->PrintInfo(EXAMPLE_DRAW_LINE);
-                           interface->PrintInfo(EXAMPLE_DRAW_POLYLINE);
-                           interface->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
+                       auto helpDraw = [&it]() {
+                           it->PrintInfo(EXAMPLE_DRAW_CIRCLE);
+                           it->PrintInfo(EXAMPLE_DRAW_ELLIPSE);
+                           it->PrintInfo(EXAMPLE_DRAW_LINE);
+                           it->PrintInfo(EXAMPLE_DRAW_POLYLINE);
+                           it->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
+                           it->PrintInfo(EXAMPLE_DRAW_STAR);
                        };
 
                        std::map<std::string, std::function<void(void)>> shapes{
-                               {"circle",    newCircle},
-                               {"ellipse",   newEllipse},
-                               {"line",      newLine},
-                               {"polyline",  newPolyLine},
-                               {"rectangle", newRectangle},
-                               {"help",      helpDraw}
+                               {SHAPE_CIRCLE,    newCircle},
+                               {SHAPE_ELLIPSE,   newEllipse},
+                               {SHAPE_STAR,      newStar},
+                               {SHAPE_LINE,      newLine},
+                               {SHAPE_POLYLINE,  newPolyLine},
+                               {SHAPE_RECTANGLE, newRectangle},
+                               {COMMAND_HELP,    helpDraw}
                        };
 
                        std::vector<std::string> setOptionKeys;
@@ -220,7 +157,7 @@ Command DrawCommand() {
                            setOptionKeys.push_back(key);
                        }
 
-                       std::string commandName = interface->PromptOption(
+                       std::string commandName = it->PromptOption(
                                setOptionKeys, [&setOptionKeys](const std::string &commandName) {
                                    return std::find(setOptionKeys.begin(), setOptionKeys.end(), commandName) !=
                                           setOptionKeys.end();
@@ -235,22 +172,22 @@ Command DrawCommand() {
 
 Command GroupCommand() {
     return Command{COMMAND_GROUP, HELP_GROUP, EXAMPLE_HELP, true,
-                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
 
 
-                       auto groupObjects = [&interface, &tspaint]() {
-                           size_t groupSize = std::invoke([&interface]() {
-                               return interface->PromptInteger(
-                                       interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                       auto groupObjects = [&it, &tspaint]() {
+                           size_t groupSize = std::invoke([&it]() {
+                               return it->PromptInteger(
+                                       it->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
                                                                              FormatterParams({"Group size"})),
                                        "",
                                        [](int x) { return x > 0 && x <= GROUP_MAX_SIZE; });
                            });
-                           std::vector<int> ids = std::invoke([&interface, &tspaint, &groupSize]() {
-                               return interface->PromptMultipleIntegers(
+                           std::vector<int> ids = std::invoke([&it, &tspaint, &groupSize]() {
+                               return it->PromptMultipleIntegers(
                                        groupSize,
                                        std::vector<std::string>(
-                                               {interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                                               {it->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
                                                                                       FormatterParams(
                                                                                               {"Provide IDs of objects to be added to the group"}))}),
                                        std::vector<std::string>({"ID is not valid. "}),
@@ -263,7 +200,7 @@ Command GroupCommand() {
                            });
                            std::vector<std::shared_ptr<SuperShape>> ss;
                            for (int id: ids) {
-                               // new IDs are generated inside of Tspaint
+                               // new IDs are generated inside Tspaint
                                auto shape = tspaint->GetSuperShape(id);
                                ss.emplace_back(shape);
                                tspaint->RemoveSuperShapeFromRootGroup(id);
@@ -272,11 +209,11 @@ Command GroupCommand() {
                        };
 
 
-                       auto cloneGroup = [&interface, &tspaint]() {
-                           int id = interface->PromptInteger(
-                                   interface->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
+                       auto cloneGroup = [&it, &tspaint]() {
+                           int id = it->PromptInteger(
+                                   it->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
                                                                          FormatterParams(
-                                                                                 {"Provide IDs of group to be clonned"})),
+                                                                                 {"Provide IDs of group to be cloned"})),
                                    INVALID_ID,
                                    [&tspaint](int index) {
                                        if (index >= 0) {
@@ -299,15 +236,15 @@ Command GroupCommand() {
 
                        };
 
-                       auto listGroup = [&interface, &tspaint]() {
-                           interface->PrintInfo(PRINTING_GROUP);
-                           interface->PrintInfo(tspaint->currentGroup->Print(0));
+                       auto listGroup = [&it, &tspaint]() {
+                           it->PrintInfo(PRINTING_GROUP);
+                           it->PrintInfo(tspaint->currentGroup->Print(0));
                        };
 
-                       auto helpGroup = [&interface]() {
-                           interface->PrintInfo(EXAMPLE_GROUP_OBJECTS);
-                           interface->PrintInfo(EXAMPLE_GROUP_CLONE);
-                           interface->PrintInfo(EXAMPLE_GROUP_LIST);
+                       auto helpGroup = [&it]() {
+                           it->PrintInfo(EXAMPLE_GROUP_OBJECTS);
+                           it->PrintInfo(EXAMPLE_GROUP_CLONE);
+                           it->PrintInfo(EXAMPLE_GROUP_LIST);
                        };
 
                        std::map<std::string, std::function<void(void)>> shapes{
@@ -322,7 +259,7 @@ Command GroupCommand() {
                            setOptionKeys.push_back(key);
                        }
 
-                       std::string commandName = interface->PromptOption(
+                       std::string commandName = it->PromptOption(
                                setOptionKeys, [&setOptionKeys](const std::string &commandName) {
                                    return std::find(setOptionKeys.begin(), setOptionKeys.end(), commandName) !=
                                           setOptionKeys.end();
@@ -342,9 +279,9 @@ Command GroupCommand() {
  */
 Command ListCommand() {
     return Command{COMMAND_LIST, HELP_LIST, EXAMPLE_LIST, true,
-                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
-                       return std::invoke([&interface, &tspaint]() {
-                           interface->PrintInfo(tspaint->Print());
+                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
+                       return std::invoke([&it, &tspaint]() {
+                           it->PrintInfo(tspaint->Print());
                        });
                    }
     };
@@ -357,7 +294,7 @@ Command ListCommand() {
  */
 SysCommand SaveCommand() {
     return SysCommand{COMMAND_SAVE, HELP_SAVE, EXAMPLE_SAVE,
-                      [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                      [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
 
                           // Following lambdas use different openmodes which are specified in
                           // each instance of Export's children. To achieve some easy functionality
@@ -365,35 +302,36 @@ SysCommand SaveCommand() {
                           // set file mode there I created following approach to pass a lambda
                           // which prompts the user and creates a filestream, so in the end it's called
                           // inside of Exporter child instance.
-                          auto getFile = [&interface](std::ios_base::openmode mode) {
-                              return interface->PromptFile("Select output file: ",
+                          auto getFile = [&it](std::ios_base::openmode mode) {
+                              return it->PromptFile("Select output file: ",
                                                            mode);
                           };
                           // pre-define all possible save lambdas
 
-                          // all i/o errors are handled inside of Export* class, throws exception on error
+                          // all i/o errors are handled inside of Export* class, returns false on error
                           auto svgSave = [&getFile, &tspaint]() {
                               auto exporter = ExportSVG(getFile);
                               auto maxDim = tspaint->MaxDimensions();
                               exporter.Start(maxDim.first, maxDim.second);
                               tspaint->root->Draw(exporter);
-                              exporter.End();
+                              return exporter.End();
                           };
-                          // all i/o errors are handled inside of Export* class, throws exception on error
-                          auto bmpSave = [&getFile, &tspaint]() {
+                          // all i/o errors are handled inside of Export* class, returns false on error
+                          auto bmpSave = [&getFile, &tspaint, &it]() {
                               auto exporter = ExportBMP(getFile);
                               auto maxDim = tspaint->MaxDimensions();
                               exporter.SetBackground(tspaint->background);
                               exporter.Start(maxDim.first, maxDim.second);
                               tspaint->root->Draw(exporter);
-                              exporter.End();
-
+                              return exporter.End();
                           };
                           auto tspaintSave = [&getFile, &tspaint]() {
                               ExportTspaint(getFile).Start(tspaint->root->Width(), tspaint->root->Height());
+                              return false;
                           };
-                          auto helpSave = [&interface]() {
-                              interface->PrintInfo(EXAMPLE_SAVE);
+                          auto helpSave = [&it]() {
+                              it->PrintInfo(EXAMPLE_SAVE);
+                              return true;
                           };
 
                           std::map<std::string, std::function<void(void)>> exportOptions{
@@ -407,7 +345,7 @@ SysCommand SaveCommand() {
                               exportOptionKeys.push_back(key);
                           }
 
-                          std::string optionName = interface->PromptOption(
+                          std::string optionName = it->PromptOption(
                                   exportOptionKeys, [&exportOptionKeys](const std::string &commandName) {
                                       return std::find(exportOptionKeys.begin(), exportOptionKeys.end(),
                                                        commandName) !=
@@ -431,14 +369,14 @@ SysCommand
 LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr<Interface>,
                                      std::shared_ptr<Tspaint> &targetTspaint)> loadFn) {
     return SysCommand{COMMAND_LOAD, HELP_LOAD, EXAMPLE_LOAD,
-                      [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
-                          std::shared_ptr<std::fstream> fileIn = interface->PromptFile("Enter filename: ",
+                      [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
+                          std::shared_ptr<std::fstream> fileIn = it->PromptFile("Enter filename: ",
                                                                                        OPEN_FILE_READ_STR);
                           std::stringstream ss;
                           // this is probably not a good idea
-                          auto fileInterface = std::make_shared<Interface>(*fileIn, ss);
-                          fileInterface->setHeadless(true);
-                          loadFn(interface, fileInterface, tspaint);
+                          auto fileit = std::make_shared<Interface>(*fileIn, ss);
+                          fileit->setHeadless(true);
+                          loadFn(it, fileit, tspaint);
                       }
     };
 }
@@ -459,28 +397,28 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr
  */
 Command SetCommand() {
     return Command{COMMAND_SET, HELP_SET, EXAMPLE_SET, true,
-                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                   [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
 
                        // inspired by https://stackoverflow.com/questions/61969316/is-it-possible-to-put-lambda-expressions-into-a-map-or-list-in-c
 
-                       auto setColor = [&interface, &tspaint]() {
-                           tspaint->color = interface->PromptColor(tspaint->colorPalette);
+                       auto setColor = [&it, &tspaint]() {
+                           tspaint->color = it->PromptColor(tspaint->colorPalette);
                        };
-                       auto setFill = [&interface, &tspaint]() {
-                           tspaint->fill = interface->PromptColor(tspaint->colorPalette);
+                       auto setFill = [&it, &tspaint]() {
+                           tspaint->fill = it->PromptColor(tspaint->colorPalette);
                        };
-                       auto setThickness = [&interface, &tspaint]() {
-                           tspaint->thickness = (size_t) interface->PromptInteger(
-                                   interface->formatter->FillPlaceholder(SET_ENTER_THICKNESS,
+                       auto setThickness = [&it, &tspaint]() {
+                           tspaint->thickness = (size_t) it->PromptInteger(
+                                   it->formatter->FillPlaceholder(SET_ENTER_THICKNESS,
                                                                          FormatterParams{THICKNESS_MIN, THICKNESS_MAX}),
                                    INVALID_INPUT,
                                    [](const size_t value) {
                                        return Helper::_isInRange(value, THICKNESS_MIN, THICKNESS_MAX);
                                    });
                        };
-                       auto setGroup = [&interface, &tspaint]() {
-                           int id = interface->PromptInteger(
-                                   interface->formatter->FillPlaceholder(SET_ENTER_GROUP_ID,
+                       auto setGroup = [&it, &tspaint]() {
+                           int id = it->PromptInteger(
+                                   it->formatter->FillPlaceholder(SET_ENTER_GROUP_ID,
                                                                          FormatterParams{}),
                                    SET_ENTER_GROUP_ID_INVALID,
                                    [&tspaint](const int value) {
@@ -499,12 +437,12 @@ Command SetCommand() {
                        };
 
 
-                       auto helpSet = [&interface]() {
-                           interface->PrintInfo(EXAMPLE_SET_COLOR);
-                           interface->PrintInfo(EXAMPLE_SET_FILL);
-                           interface->PrintInfo(EXAMPLE_SET_THICKNESS);
-                           interface->PrintInfo(EXAMPLE_SET_GROUP);
-                           interface->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
+                       auto helpSet = [&it]() {
+                           it->PrintInfo(EXAMPLE_SET_COLOR);
+                           it->PrintInfo(EXAMPLE_SET_FILL);
+                           it->PrintInfo(EXAMPLE_SET_THICKNESS);
+                           it->PrintInfo(EXAMPLE_SET_GROUP);
+                           it->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
                        };
 
                        std::map<std::string, std::function<void(void)>> setOptions{
@@ -520,7 +458,7 @@ Command SetCommand() {
                            setOptionKeys.push_back(key);
                        }
 
-                       std::string commandName = interface->PromptOption(
+                       std::string commandName = it->PromptOption(
                                setOptionKeys, [&setOptionKeys](const std::string &commandName) {
                                    return std::find(setOptionKeys.begin(), setOptionKeys.end(), commandName) !=
                                           setOptionKeys.end();
@@ -541,15 +479,15 @@ Command SetCommand() {
  */
 SysCommand HelpCommand(const std::shared_ptr<std::vector<Command>> &commands) {
     return SysCommand{COMMAND_HELP, HELP_HELP, EXAMPLE_HELP,
-                      [commands](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
+                      [commands](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
 
-                          interface->ClearScreen();
-                          interface->PrintHelp(TSPAINT_INFO);
+                          it->ClearScreen();
+                          it->PrintHelp(TSPAINT_INFO);
 
                           for (const auto &c: *commands) {
-                              interface->PrintCommandName(c.Name());
-                              interface->PrintHelp(c.Help());
-                              interface->PrintCommandExample(c.Example());
+                              it->PrintCommandName(c.Name());
+                              it->PrintHelp(c.Help());
+                              it->PrintCommandExample(c.Example());
                           }
                           return true;
                       }
@@ -566,8 +504,8 @@ SysCommand HelpCommand(const std::shared_ptr<std::vector<Command>> &commands) {
  */
 SysCommand QuitCommand(const std::function<void(void)> stopApplication) {
     return SysCommand{COMMAND_QUIT, HELP_QUIT, EXAMPLE_QUIT,
-                      [stopApplication](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> interface) {
-                          interface->PrintHelp(QUIT_MESSAGE);
+                      [stopApplication](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
+                          it->PrintHelp(QUIT_MESSAGE);
                           stopApplication();
                       }
     };
