@@ -10,7 +10,7 @@
 
 Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(170, 170, 170, "GRAY__PROGTEST")));
-    colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 87, 51, "GRAY__OUT_OF_SIGHT")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(130, 130, 114, "GRAY__OUT_OF_SIGHT")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 0, 0, "BLACK__INSIDE_OF_MY_SOUL")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 0, 255, "MAGENTA__BRAIN_OVERFLOW")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 255, 0, "GREEN__PROGTEST_HOME")));
@@ -20,6 +20,7 @@ Tspaint::Tspaint() : colorPalette(ColorPalette()) {
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(0, 192, 0, "GREEN__IM_DONE")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 255, 255, "WHITE__LOADING")));
     colorPalette.addIfNotExists(std::make_shared<Color>(Color(240, 171, 0, "YELLOW__FIT")));
+    colorPalette.addIfNotExists(std::make_shared<Color>(Color(255, 87, 51, "ORANGE__PAIN")));
 
     // todo load from file
     color = colorPalette.getColorByName("YELLOW__FIT");

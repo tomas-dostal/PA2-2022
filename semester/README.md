@@ -82,6 +82,7 @@ Sunday afternoons, by listing
 - Green Victory `GREEN__IM_DONE` (`#00c000`)
 - Loading - white `WHITE__LOADING` (`#ffffff`)
 - FIT yellow `YELLOW__FIT` (`#f0ab00`)
+- Orange pain `ORANGE__PAIN` (`#ff5733`)
 
 
 But where would we be if there wasn't some all-encompassing and at the same time absolutely unspoken error message, 
