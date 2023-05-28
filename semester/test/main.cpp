@@ -11,25 +11,23 @@
 
 #include "../src/Application.h"
 
-bool StringContains(std::string text, std::string word){
-   return (text.find(word) != std::string::npos);
+bool StringContains(std::string text, std::string word) {
+    return (text.find(word) != std::string::npos);
 }
 
-int CopmareString(const char *s1, const char *s2)
-{
-    const unsigned char *p1 = (const unsigned char *)s1;
-    const unsigned char *p2 = (const unsigned char *)s2;
+int CopmareString(const char *s1, const char *s2) {
+    const unsigned char *p1 = (const unsigned char *) s1;
+    const unsigned char *p2 = (const unsigned char *) s2;
 
-    while (*p1)
-    {
+    while (*p1) {
         while (isspace(*p1)) p1++;
         if (!*p1) break;
 
         while (isspace(*p2)) p2++;
 
-        if (!*p2) return  1;
+        if (!*p2) return 1;
         if (*p2 > *p1) return -1;
-        if (*p1 > *p2) return  1;
+        if (*p1 > *p2) return 1;
 
         p1++;
         p2++;
@@ -40,7 +38,7 @@ int CopmareString(const char *s1, const char *s2)
     return 0;
 }
 
-void TestAddCircle(){
+void TestAddCircle() {
 
     std::stringstream ssIn;
     ssIn << "draw circle 1 2 3";
@@ -56,11 +54,11 @@ void TestAddCircle(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1): circle (2)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): circle (2)") == 0);
 }
 
 
-void TestAddRectangle(){
+void TestAddRectangle() {
 
     std::stringstream ssIn;
     ssIn << "draw rectangle 1 1 100 200";
@@ -76,9 +74,29 @@ void TestAddRectangle(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1): rectangle (2)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): rectangle (2)") == 0);
 }
-void TestAddLine(){
+
+void TestAddSquare() {
+
+    std::stringstream ssIn;
+    ssIn << "draw square 1 1 100";
+
+    std::stringstream ssOut;
+    std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
+    auto app = Application();
+    std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
+
+    app.Run(interface,
+            tspaint,
+            [&app]() { return app.IsRunning(); },
+            [](Command *) { return true; }
+    );
+
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): square (2)") == 0);
+}
+
+void TestAddLine() {
 
     std::stringstream ssIn;
     ssIn << "draw line 1 1 100 100";
@@ -94,9 +112,10 @@ void TestAddLine(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1): line (2)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): line (2)") == 0);
 }
-void TestAddPolyLine(){
+
+void TestAddPolyLine() {
 
     std::stringstream ssIn;
     ssIn << "draw polyline 5 1 1 2 2 3 3 4 4 5 5";
@@ -112,9 +131,10 @@ void TestAddPolyLine(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1): polyline (2)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): polyline (2)") == 0);
 }
-void TestAddEllipse(){
+
+void TestAddEllipse() {
 
     std::stringstream ssIn;
     ssIn << "draw ellipse 5 6 100 200";
@@ -130,11 +150,30 @@ void TestAddEllipse(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1): ellipse (2)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): ellipse (2)") == 0);
     assert(tspaint->root->List()[0]);
 }
 
-void TestGroupObjects(){
+void TestAddStar() {
+
+    std::stringstream ssIn;
+    ssIn << "draw star 5 6 100";
+
+    std::stringstream ssOut;
+    std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
+    auto app = Application();
+    std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
+
+    app.Run(interface,
+            tspaint,
+            [&app]() { return app.IsRunning(); },
+            [](Command *) { return true; }
+    );
+
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): star (2)") == 0);
+}
+
+void TestGroupObjects() {
 
     std::stringstream ssIn;
     ssIn << "draw ellipse 5 6 100 200";
@@ -152,11 +191,11 @@ void TestGroupObjects(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1): Group (4) : ellipse (2) circle (3)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): Group (4) : ellipse (2) circle (3)") == 0);
 }
 
 
-void TestGroupClone(){
+void TestGroupClone() {
 
     std::stringstream ssIn;
     ssIn << "draw ellipse 5 6 100 200";
@@ -174,9 +213,11 @@ void TestGroupClone(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1):  ellipse (2) circle (3) Group (6) : ellipse (4) circle (5)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(),
+                         "Group (1):  ellipse (2) circle (3) Group (6) : ellipse (4) circle (5)") == 0);
 }
-void TestGroupCloneDouble(){
+
+void TestGroupCloneDouble() {
 
     std::stringstream ssIn;
     ssIn << "draw ellipse 5 6 100 200";
@@ -195,9 +236,12 @@ void TestGroupCloneDouble(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1):  ellipse (2) circle (3) Group (6) : ellipse (4) circle (5) Group (9) : ellipse (7) circle (8)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(),
+                         "Group (1):  ellipse (2) circle (3) Group (6) : ellipse (4) circle (5) Group (9) : ellipse (7) circle (8)") ==
+           0);
 }
-void TestLoadFromFile(){
+
+void TestLoadFromFile() {
 
     std::stringstream ssIn;
     ssIn << "load ../examples/house.tspaint y";
@@ -213,14 +257,16 @@ void TestLoadFromFile(){
             [](Command *) { return true; }
     );
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1):  rectangle (2) line (3)  line (4) line (8) Group (9): polyline (5) line (6) line (7)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(),
+                         "Group (1):  rectangle (2) line (3)  line (4) line (8) Group (9): polyline (5) line (6) line (7)") ==
+           0);
 }
 
-void TestSaveSvg(){
+void TestSaveSvg() {
 
     std::stringstream ssIn;
     ssIn << "load ../examples/house.tspaint y ";
-    ssIn << "save test_svg.svg";
+    ssIn << "save svg test_svg.svg";
 
     std::stringstream ssOut;
     std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
@@ -234,25 +280,25 @@ void TestSaveSvg(){
     );
 
     std::ifstream testFile;
-    testFile.open ("test_svg.svg");
+    testFile.open("test_svg.svg");
     std::ostringstream sout;
     copy(std::istreambuf_iterator<char>(testFile),
          std::istreambuf_iterator<char>(),
          std::ostreambuf_iterator<char>(sout));
     testFile.close();
     std::string output = sout.str();
-    assert(StringContains(output, "<svg") == true) ;
-    assert(StringContains(output, "<line") == true) ;
-    assert(StringContains(output, "<g") == true) ;
-    assert(StringContains(output, "</svg>") == true) ;
+    assert(StringContains(output, "<svg") == true);
+    assert(StringContains(output, "<line") == true);
+    assert(StringContains(output, "<g") == true);
+    assert(StringContains(output, "</svg>") == true);
     std::remove("test_svg.svg");
 }
 
-void TestSaveBmp(){
+void TestSaveBmp() {
 
     std::stringstream ssIn;
     ssIn << "load ../examples/house.tspaint y ";
-    ssIn << "save test_bmp.bmp";
+    ssIn << "save bmp test_bmp.bmp";
 
     std::stringstream ssOut;
     std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
@@ -266,9 +312,9 @@ void TestSaveBmp(){
     );
 
     std::ifstream testFile;
-    testFile.open ("test_bmp.bmp", std::ios::binary );
+    testFile.open("test_bmp.bmp", std::ios::binary);
     testFile.seekg(0, std::ios::end);
-    if(testFile.tellg() == 0){
+    if (testFile.tellg() == 0) {
         assert("bmp file is empty");
     }
     testFile.close();
@@ -276,9 +322,7 @@ void TestSaveBmp(){
 }
 
 
-
-
-void TestCommandEOF(){
+void TestCommandEOF() {
 
     std::stringstream ssIn;
     ssIn << "draw ellipse 5 6 100 200";
@@ -290,15 +334,15 @@ void TestCommandEOF(){
     std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
 
     assert(!app.Run(interface,
-            tspaint,
-            [&app]() { return app.IsRunning(); },
-            [](Command *) { return true; }
+                    tspaint,
+                    [&app]() { return app.IsRunning(); },
+                    [](Command *) { return true; }
     ));
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1):  ellipse (2)") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1):  ellipse (2)") == 0);
 }
 
-void TestDrawInvalidInput(){
+void TestDrawInvalidInput() {
 
     std::stringstream ssIn;
     ssIn << "draw Let me pass PA2 pretty please <3";
@@ -309,12 +353,17 @@ void TestDrawInvalidInput(){
     std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
 
     assert(!app.Run(interface,
-            tspaint,
-            [&app]() { return app.IsRunning(); },
-            [](Command *) { return true; }
+                    tspaint,
+                    [&app]() { return app.IsRunning(); },
+                    [](Command *) { return true; }
     ));
 
-    assert(CopmareString(tspaint->root->Print(0).c_str(),  "Group (1):") == 0) ;
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1):") == 0);
+}
+
+void displayProgress(int current, int total) {
+    float progress = static_cast<float>(current) / total * 100;
+    std::cout << "Progress: " << progress << "%" << std::endl;
 }
 
 /**
@@ -322,23 +371,30 @@ void TestDrawInvalidInput(){
  * @return
  */
 int main(void) {
+    int currentTest = 0;
+    std::vector<std::function<void(void)>> tests = {
+            TestAddCircle,
+            TestAddRectangle,
+            TestAddLine,
+            TestAddPolyLine,
+            TestAddEllipse,
+            TestAddCircle,
+            TestAddSquare,
+            TestAddStar,
+            TestGroupObjects,
+            TestGroupClone,
+            TestGroupCloneDouble,
+            TestLoadFromFile,
+            TestSaveSvg,
+            TestSaveBmp,
+            TestCommandEOF,
+            TestDrawInvalidInput
+    };
 
-    TestAddCircle();
-    TestAddRectangle();
-    TestAddLine();
-    TestAddPolyLine();
-    TestAddEllipse();
-    TestAddCircle();
-    TestGroupObjects();
-    TestGroupClone();
-    TestGroupCloneDouble();
-
-    TestLoadFromFile();
-    TestSaveSvg();
-    TestSaveBmp();
-
-    TestCommandEOF();
-    TestDrawInvalidInput();
+    for (auto test: tests) {
+        test();
+        displayProgress(++currentTest, tests.size());
+    }
 }
 
 
