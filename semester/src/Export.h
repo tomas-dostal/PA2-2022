@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <functional>
 #include "Pos.h"
 
 class Export {
