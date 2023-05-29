@@ -85,7 +85,16 @@ void PolyLine::Draw(Export & exporter) {
 }
 
 std::pair<size_t, size_t> PolyLine::CalcMaxDimensions(){
-    return std::make_pair(width + thickness, height + thickness);
+    // tmp hotfix copy from Star
+    int maxX, maxY = 0;
+    int minX, minY = std::numeric_limits<int>::max();;
+    for (const auto& pos : positions) {
+        maxX = std::max(maxX, pos.x);
+        minX = std::min(minX, pos.x);
+        maxY = std::max(maxY, pos.y);
+        minY = std::min(minY, pos.y);
+    }
+    return std::make_pair<size_t, size_t>(maxX-minX + center->x, maxY-minY + center->y);
 }
 
 void PolyLine::MoveRelative(int x, int y) {
