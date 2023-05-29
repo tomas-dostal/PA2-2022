@@ -102,6 +102,18 @@ Command DrawCommand() {
                                                               tspaint->fill)
                            );
                        };
+                       auto newTriangle = [&it, &tspaint]() {
+                           std::vector<Pos> res = it->getPolyLine(3);
+                           res.push_back(res[0]); // add first point to the end to close the triangle
+                           tspaint->AddShape(
+                                   std::make_shared<PolyLine>(tspaint->GenerateId(),
+                                                              SHAPE_TRIANGLE,
+                                                              res,
+                                                              tspaint->thickness,
+                                                              tspaint->color,
+                                                              tspaint->fill)
+                           );
+                       };
                        auto newLine = [&it, &tspaint]() {
                            Pos start = it->getPos("Start point");
                            Pos end = it->getPos("End point");
@@ -154,6 +166,7 @@ Command DrawCommand() {
                            it->PrintInfo(EXAMPLE_DRAW_POLYLINE);
                            it->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
                            it->PrintInfo(EXAMPLE_DRAW_STAR);
+                           it->PrintInfo(EXAMPLE_DRAW_TRIANGLE);
                        };
 
                        std::map<std::string, std::function<void(void)>> shapes{
@@ -164,6 +177,7 @@ Command DrawCommand() {
                                {SHAPE_POLYLINE,  newPolyLine},
                                {SHAPE_RECTANGLE, newRectangle},
                                {SHAPE_SQUARE,    newSquare},
+                               {SHAPE_TRIANGLE,  newTriangle},
                                {COMMAND_HELP,    helpDraw}
                        };
 

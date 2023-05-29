@@ -158,7 +158,7 @@ other properties can be modified using the "set" command.
 
 
 #### Syntax 
-```Syntax: draw {line, polyline, circle, ellipse, star, square, rectangle, group} <coordinates...>```
+```Syntax: draw {line, polyline, circle, ellipse, star, square, rectangle, triangle, group} <coordinates...>```
 #### Usage
 - `draw line <pos_start> <pos_end>`: Draws a line segment.
 - `draw polyline <pos_start> [<input_len> <pos_i>...]`: Draws a sequence of connected line segments.
@@ -167,6 +167,7 @@ other properties can be modified using the "set" command.
 - `draw ellipse <pos_center> <radius_x>, <radius_y>`: Draws an ellipse.
 - `draw rectangle <pos_left_bottom> <pos_right_top>`: Draws a rectangle.
 - `draw square <pos_left_bottom> <pos_right_top>`: Draws a square.
+- `draw triangle <point1> <point2> <point3>`: Draws a closed connection between three points, which might or might not produce a triangle based on user input. 
 - `draw group <group_id> <pos_left_bottom>`: Draws a group object.
 
 

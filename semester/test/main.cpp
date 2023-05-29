@@ -115,6 +115,25 @@ void TestAddLine() {
     assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): line (2)") == 0);
 }
 
+void TestAddTriangle() {
+
+    std::stringstream ssIn;
+    ssIn << "draw triangle 10 10 50 50 10 60";
+
+    std::stringstream ssOut;
+    std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
+    auto app = Application();
+    std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
+
+    app.Run(interface,
+            tspaint,
+            [&app]() { return app.IsRunning(); },
+            [](Command *) { return true; }
+    );
+
+    assert(CopmareString(tspaint->root->Print(0).c_str(), "Group (1): triangle (2)") == 0);
+}
+
 void TestAddPolyLine() {
 
     std::stringstream ssIn;
@@ -434,6 +453,7 @@ int main(void) {
             TestAddRectangle,
             TestAddLine,
             TestAddPolyLine,
+            TestAddTriangle,
             TestAddEllipse,
             TestAddCircle,
             TestAddSquare,
