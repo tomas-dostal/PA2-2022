@@ -4,6 +4,8 @@
  */
 
 #include <algorithm>
+#include <cmath>
+
 #include "Star.h"
 #include "Pos.h"
 #include "PolyLine.h"

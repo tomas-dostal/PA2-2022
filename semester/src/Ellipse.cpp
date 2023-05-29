@@ -3,10 +3,9 @@
   * @date 12.06.2022
   */
 
-#include "cmath"
+#include <cmath>
 
 #include "Ellipse.h"
-#include "messages.h"
 #include "Export.h"
 #include "PolyLine.h"
 #include "constants.h"
