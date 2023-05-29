@@ -68,7 +68,7 @@ std::shared_ptr<ShapeGroup> Tspaint::AddGroup(std::vector<std::shared_ptr<SuperS
         else
             superShapesById.insert({item->Id(), item});
     }
-    return group;    return group;
+    return group;
 }
 
 void Tspaint::AddShape(std::shared_ptr<SuperShape> superShape){
