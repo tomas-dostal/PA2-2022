@@ -13,11 +13,7 @@
 #include "ProgtestErrors.h"
 
 Application::Application() noexcept:
-        isRunning(true),
-        progtestErrors(
-                std::make_shared<ProgtestErrors>(
-                        ProgtestErrors(std::make_shared<Interface>(std::cin, std::cout), CHANCES_FOR_PASSING_PA2,
-                                       PROGTEST_ERROR_FILENAME))) {
+        isRunning(true){
 
     auto quit = [this]() { this->Stop(); };
     auto load = [this](std::shared_ptr<Interface> interface, std::shared_ptr<Interface> fileInterface, std::shared_ptr<Tspaint> & targetTspaint) {
@@ -64,13 +60,14 @@ bool Application::Run(const std::shared_ptr<Interface> & interface,
                       std::shared_ptr<Tspaint> & tspaint,
                       std::function<bool(void)> Continue,
                       std::function<bool(Command *)> IsCommandAllowed) {
-
+    auto p = ProgtestErrors(interface, CHANCES_FOR_PASSING_PA2, PROGTEST_ERROR_FILENAME);
     interface->PrintInfo(TSPAINT_INFO);
     while (Continue() && !interface->End()) {
 
         auto tellgLast = interface->is.tellg();
         std::shared_ptr<Command> command = nullptr;
         try {
+            p.PrintRandomErrorMessageBecauseWhyNot();
             command = this->getCommandByName(interface->PromptCommand([this](const std::string &name) {
                 return std::any_of(commands.begin(), commands.end(),
                                    [&name](Command &command) { return name == command.Name(); });

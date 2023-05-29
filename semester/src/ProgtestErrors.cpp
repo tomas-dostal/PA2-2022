@@ -36,7 +36,7 @@ ProgtestErrors::ProgtestErrors(std::shared_ptr<Interface> interface, float proba
 }
 
 void ProgtestErrors::PrintRandomErrorMessageBecauseWhyNot() {
-    if (std::rand() % 42 > this->probability * 24) {
+    if (std::rand() % 42 > 24) {
         int index = std::rand() % messages.size();
         interface->ProgtestGreetings(messages[index]);
 

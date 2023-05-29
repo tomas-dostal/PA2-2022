@@ -74,6 +74,5 @@ public:
 private:
     bool isRunning;
     std::vector<Command> commands;
-    std::shared_ptr<ProgtestErrors> progtestErrors;
 
 };
