@@ -17,6 +17,9 @@ BUILD_DIR = build
 
 SOURCES = $(wildcard $(SOURCE_DIR)/*.cpp)
 HEADERS = $(wildcard $(SOURCE_DIR)/*.h)
+EXAMPLES = $(wildcard examples/*)
+IMAGES = $(wildcard img/*)
+TESTS = $(wildcard test/*)
 
 OBJECTS = $(SOURCES:$(SOURCE_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
@@ -53,16 +56,17 @@ $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 doc: Doxyfile README.md $(HEADERS)
 	doxygen Doxyfile
 
-EXAMPLES = $(wildcard examples/*)
-IMAGES = $(wildcard img/*)
-zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES) $(IMAGES)
+
+zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES) $(EXAMPLES) $(IMAGES) $(TESTS)
 	mkdir -p .archive/$(TARGET)/src
+	mkdir -p .archive/$(TARGET)/test
 	cp README.md zadani.txt prohlaseni.txt Makefile Doxyfile .archive/$(TARGET)/
 	cp -r src/* .archive/$(TARGET)/src/
 	cp -r examples/ .archive/$(TARGET)/examples/
 	cp -r img/ .archive/$(TARGET)/img/
 	cp test/main.cpp .archive/$(TARGET)/test/main.cpp
 	cp test/CMakeLists.txt .archive/$(TARGET)/test/CMakeLists.txt
+	cp test/README.md .archive/$(TARGET)/test/README.md
 	cd .archive/; zip -r ../$(TARGET).zip $(TARGET)/
 	rm -r .archive/
 .PHONY: clean
