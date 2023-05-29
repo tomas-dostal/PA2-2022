@@ -353,7 +353,6 @@ SysCommand SaveCommand() {
                           std::map<std::string, std::function<void(void)>> exportOptions{
                                   {"svg",     svgSave},
                                   {"bmp",     bmpSave},
-                                  {"tspaint", tspaintSave},
                                   {"help",    helpSave}
                           };
                           std::vector<std::string> exportOptionKeys;
