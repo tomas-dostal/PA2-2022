@@ -89,8 +89,9 @@ void ShapeGroup::Draw(Export & exporter) {
 }
 
 std::pair<size_t, size_t> ShapeGroup::CalcMaxDimensions() {
-    size_t max_width = 0;
-    size_t max_height = 0;
+    // use default width=height=1 for image, otherwise export bmp crashes on empty image
+    size_t max_width = 1;
+    size_t max_height = 1;
     for(auto const& [id, shape] : this->children){
         std::pair<size_t, size_t> tmp = shape->CalcMaxDimensions();
         if(tmp.first > max_width)
