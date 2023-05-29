@@ -4,6 +4,7 @@
   */
 
 #include "ColorPalette.h"
+#include <stdexcept>
 
 std::shared_ptr<Color> ColorPalette::getColorByName(const std::string &name) const {
 
