@@ -18,8 +18,8 @@ for i in range(42):
         commands.append(f"set color byname {color}")
     commands.append(f"draw star {x} {y} {diameter}")
 
-commands.append(f"save svg stars.svg")
-commands.append(f"save bmp stars.bmp")
+commands.append(f"save svg stars.svg y")
+#commands.append(f"save bmp stars.bmp y")
 
 with open("skyofstars.tspaint", "w") as file:
     file.write("\n".join(commands))
