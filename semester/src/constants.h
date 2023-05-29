@@ -4,6 +4,8 @@
  */
 
 #pragma once
+#include <vector>
+#include <string>
 
 const float CHANCES_FOR_PASSING_PA2 = 0.5;
 const char *const PROGTEST_ERROR_FILENAME = "src/progtesterrors.txt";
