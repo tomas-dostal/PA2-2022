@@ -61,6 +61,8 @@ zip: README.md zadani.txt prohlaseni.txt Makefile Doxyfile $(HEADERS) $(SOURCES)
 	cp -r src/* .archive/$(TARGET)/src/
 	cp -r examples/ .archive/$(TARGET)/examples/
 	cp -r img/ .archive/$(TARGET)/img/
+	cp test/main.cpp .archive/$(TARGET)/test/main.cpp
+	cp test/CMakeLists.txt .archive/$(TARGET)/test/CMakeLists.txt
 	cd .archive/; zip -r ../$(TARGET).zip $(TARGET)/
 	rm -r .archive/
 .PHONY: clean
