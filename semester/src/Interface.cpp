@@ -7,6 +7,7 @@
 #include <cctype>
 #include <fstream>
 #include <functional>
+#include <filesystem>
 
 #include "Interface.h"
 #include "Color.h"
