@@ -14,4 +14,5 @@ Chyba při kompilaci v režimu 'pedantic' - 10% penalizace
 Matrika 4: Termín odevzdání: 15.05.2021 23:58:42 Hodnotitel: automat\nChyba při základní kompilaci\nPoužité nápovědy: 4
 Závazný test: Test 'Test aritmetickych operaci': Program provedl neplatnou operaci a byl ukončen (Segmentation fault/Bus error/Memory limit exceeded/Stack limit exceeded)
 Undefined symbols for architecture arm64: you.
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
 Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)
