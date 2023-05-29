@@ -312,7 +312,7 @@ void ExportBMP::SaveToFile() {
     magic.magic[0] = 'B';
     magic.magic[1] = 'M';
     file->write((char *) (&magic), sizeof(magic));
-    bmpFileHeader header = {0};
+    bmpFileHeader header = {0, 0, 0, 0};
     header.bmpOffset = sizeof(bmpfileMagic)
                        + sizeof(bmpFileHeader) + sizeof(bmpFileDibInfo);
     header.fileSize = header.bmpOffset
