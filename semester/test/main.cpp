@@ -294,6 +294,37 @@ void TestSaveSvg() {
     std::remove("test_svg.svg");
 }
 
+
+void TestSaveEmptyImageToSvg() {
+
+    std::stringstream ssIn;
+    ssIn << "save svg test_svg.svg";
+
+    std::stringstream ssOut;
+    std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
+    auto app = Application();
+    std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
+
+    app.Run(interface,
+            tspaint,
+            [&app]() { return app.IsRunning(); },
+            [](Command *) { return true; }
+    );
+
+    std::ifstream testFile;
+    testFile.open("test_svg.svg");
+    std::ostringstream sout;
+    copy(std::istreambuf_iterator<char>(testFile),
+         std::istreambuf_iterator<char>(),
+         std::ostreambuf_iterator<char>(sout));
+    testFile.close();
+    std::string output = sout.str();
+    assert(StringContains(output, "<svg") == true);
+    assert(StringContains(output, "<g") == true);
+    assert(StringContains(output, "</svg>") == true);
+    std::remove("test_svg.svg");
+}
+
 void TestSaveBmp() {
 
     std::stringstream ssIn;
@@ -321,6 +352,32 @@ void TestSaveBmp() {
     std::remove("test_bmp.bmp");
 }
 
+
+void TestSaveEmptyImageToBmp() {
+
+    std::stringstream ssIn;
+    ssIn << "save bmp test_bmp.bmp";
+
+    std::stringstream ssOut;
+    std::shared_ptr<Interface> interface = std::make_shared<Interface>(Interface(ssIn, ssOut));
+    auto app = Application();
+    std::shared_ptr<Tspaint> tspaint = std::make_shared<Tspaint>(Tspaint());
+
+    app.Run(interface,
+            tspaint,
+            [&app]() { return app.IsRunning(); },
+            [](Command *) { return true; }
+    );
+
+    std::ifstream testFile;
+    testFile.open("test_bmp.bmp", std::ios::binary);
+    testFile.seekg(0, std::ios::end);
+    if (testFile.tellg() == 0) {
+        assert("bmp file is empty");
+    }
+    testFile.close();
+    std::remove("test_bmp.bmp");
+}
 
 void TestCommandEOF() {
 
@@ -386,7 +443,9 @@ int main(void) {
             TestGroupCloneDouble,
             TestLoadFromFile,
             TestSaveSvg,
+            TestSaveEmptyImageToSvg,
             TestSaveBmp,
+            TestSaveEmptyImageToBmp,
             TestCommandEOF,
             TestDrawInvalidInput
     };
