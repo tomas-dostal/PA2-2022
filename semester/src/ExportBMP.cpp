@@ -8,6 +8,8 @@
 #include <utility>
 #include <cmath>
 #include <any>
+#include <stdexcept>
+
 
 #include "ExportBMP.h"
 #include "messages.h"

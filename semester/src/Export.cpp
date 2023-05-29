@@ -7,6 +7,7 @@
 #include <iostream>
 #include "Export.h"
 #include "messages.h"
+#include <stdexcept>
 
 Export::Export(const std::function<std::shared_ptr<std::fstream>(std::ios_base::openmode)> & openFile, std::ios_base::openmode mode){
     file = openFile(mode);

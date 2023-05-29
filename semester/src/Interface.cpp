@@ -8,6 +8,7 @@
 #include <fstream>
 #include <functional>
 #include <filesystem>
+#include <stdexcept>
 
 #include "Interface.h"
 #include "Color.h"

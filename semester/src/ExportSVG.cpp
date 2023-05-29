@@ -7,6 +7,7 @@
 #include <ostream>
 #include <utility>
 #include <iostream>
+#include <stdexcept>
 
 #include "ExportSVG.h"
 #include "messages.h"

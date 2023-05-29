@@ -5,6 +5,7 @@
   */
 
 #include <sstream>
+#include <stdexcept>
 
 #include "Formatter.h"
 #include "messages.h"
