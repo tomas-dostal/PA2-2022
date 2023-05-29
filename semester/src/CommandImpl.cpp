@@ -194,7 +194,7 @@ Command GroupCommand() {
                            size_t groupSize = std::invoke([&it]() {
                                return it->PromptInteger(
                                        it->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                             FormatterParams({"Group size"})),
+                                                                      FormatterParams({"Group size"})),
                                        "",
                                        [](int x) { return x > 0 && x <= GROUP_MAX_SIZE; });
                            });
@@ -203,8 +203,8 @@ Command GroupCommand() {
                                        groupSize,
                                        std::vector<std::string>(
                                                {it->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                                      FormatterParams(
-                                                                                              {"Provide IDs of objects to be added to the group"}))}),
+                                                                               FormatterParams(
+                                                                                       {"Provide IDs of objects to be added to the group"}))}),
                                        std::vector<std::string>({"ID is not valid. "}),
                                        std::vector<std::function<bool(const int &)>>({[&tspaint](int index) {
                                            if (index >= 0)
@@ -223,12 +223,11 @@ Command GroupCommand() {
                            tspaint->AddGroup(ss);
                        };
 
-
                        auto cloneGroup = [&it, &tspaint]() {
                            int id = it->PromptInteger(
                                    it->formatter->FillPlaceholder(PROMPT_INTEGER_FOR,
-                                                                         FormatterParams(
-                                                                                 {"Provide IDs of group to be cloned"})),
+                                                                  FormatterParams(
+                                                                          {"Provide IDs of group to be cloned"})),
                                    INVALID_ID,
                                    [&tspaint](int index) {
                                        if (index >= 0) {
@@ -239,12 +238,14 @@ Command GroupCommand() {
                                        return false;
                                    }
                            );
-
-                           auto srcGroup = std::dynamic_pointer_cast<ShapeGroup>(tspaint->GetSuperShape(id));
+                           // now we're sure that it's a ShapeGroup, so static pointer cast can be used
+                           // otherwise it could lead to an undefined behaviour.
+                           auto srcGroup = std::static_pointer_cast<ShapeGroup>(tspaint->GetSuperShape(id));
                            auto dimensions = srcGroup->CalcMaxDimensions();
                            tspaint->currentGroup = tspaint->root;
-                           auto clone = srcGroup->Clone([tspaint]() { return tspaint->GenerateId(); });
-                           auto dstGroup = tspaint->AddExistingGroup(std::dynamic_pointer_cast<ShapeGroup>(clone));
+                           auto clone = srcGroup->Clone([&tspaint]() { return tspaint->GenerateId(); });
+                           const auto c = std::static_pointer_cast<ShapeGroup>(clone);
+                           auto dstGroup = tspaint->AddExistingGroup(c);
                            dstGroup->MoveRelative((int) dimensions.first, 0);
 
                            return true;
@@ -319,7 +320,7 @@ SysCommand SaveCommand() {
                           // inside of Exporter child instance.
                           auto getFile = [&it](std::ios_base::openmode mode) {
                               return it->PromptFile("Select output file: ",
-                                                           mode);
+                                                    mode);
                           };
                           // pre-define all possible save lambdas
 
@@ -332,7 +333,7 @@ SysCommand SaveCommand() {
                               return exporter.End();
                           };
                           // all i/o errors are handled inside of Export* class, returns false on error
-                          auto bmpSave = [&getFile, &tspaint, &it]() {
+                          auto bmpSave = [&getFile, &tspaint]() {
                               auto exporter = ExportBMP(getFile);
                               auto maxDim = tspaint->MaxDimensions();
                               exporter.SetBackground(tspaint->background);
@@ -386,7 +387,7 @@ LoadCommand(const std::function<void(std::shared_ptr<Interface>, std::shared_ptr
     return SysCommand{COMMAND_LOAD, HELP_LOAD, EXAMPLE_LOAD,
                       [loadFn](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {
                           std::shared_ptr<std::fstream> fileIn = it->PromptFile("Enter filename: ",
-                                                                                       OPEN_FILE_READ_STR);
+                                                                                OPEN_FILE_READ_STR);
                           std::stringstream ss;
                           // this is probably not a good idea
                           auto fileit = std::make_shared<Interface>(*fileIn, ss);
@@ -425,7 +426,7 @@ Command SetCommand() {
                        auto setThickness = [&it, &tspaint]() {
                            tspaint->thickness = (size_t) it->PromptInteger(
                                    it->formatter->FillPlaceholder(SET_ENTER_THICKNESS,
-                                                                         FormatterParams{THICKNESS_MIN, THICKNESS_MAX}),
+                                                                  FormatterParams{THICKNESS_MIN, THICKNESS_MAX}),
                                    INVALID_INPUT,
                                    [](const size_t value) {
                                        return Helper::_isInRange(value, THICKNESS_MIN, THICKNESS_MAX);
@@ -434,7 +435,7 @@ Command SetCommand() {
                        auto setGroup = [&it, &tspaint]() {
                            int id = it->PromptInteger(
                                    it->formatter->FillPlaceholder(SET_ENTER_GROUP_ID,
-                                                                         FormatterParams{}),
+                                                                  FormatterParams{}),
                                    SET_ENTER_GROUP_ID_INVALID,
                                    [&tspaint](const int value) {
                                        if (tspaint->IsValidIndex(value)) {
@@ -445,7 +446,8 @@ Command SetCommand() {
                                        }
                                        return false;
                                    });
-                           std::shared_ptr<ShapeGroup> ptr = std::dynamic_pointer_cast<ShapeGroup>(
+                           // already know that's an instance of ShapeGroup, so I can use static_pointer_cast.
+                           std::shared_ptr<ShapeGroup> ptr = std::static_pointer_cast<ShapeGroup>(
                                    tspaint->GetSuperShape(id));
                            tspaint->currentGroup = ptr;
 
@@ -457,7 +459,6 @@ Command SetCommand() {
                            it->PrintInfo(EXAMPLE_SET_FILL);
                            it->PrintInfo(EXAMPLE_SET_THICKNESS);
                            it->PrintInfo(EXAMPLE_SET_GROUP);
-                           it->PrintInfo(EXAMPLE_DRAW_RECTANGLE);
                        };
 
                        std::map<std::string, std::function<void(void)>> setOptions{
