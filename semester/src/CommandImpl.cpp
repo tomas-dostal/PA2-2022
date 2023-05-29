@@ -132,6 +132,20 @@ Command DrawCommand() {
                                                                tspaint->fill)
                            );
                        };
+                       auto newSquare = [&it, &tspaint]() {
+                           Pos start = it->getPos("Start point");
+                           size_t width = it->getPositiveNumber("Width");
+                           tspaint->AddShape(
+                                   std::make_shared<Rectangle>(tspaint->GenerateId(),
+                                                               SHAPE_SQUARE,
+                                                               start,
+                                                               width,
+                                                               width,
+                                                               tspaint->thickness,
+                                                               tspaint->color,
+                                                               tspaint->fill)
+                           );
+                       };
 
                        auto helpDraw = [&it]() {
                            it->PrintInfo(EXAMPLE_DRAW_CIRCLE);
@@ -149,6 +163,7 @@ Command DrawCommand() {
                                {SHAPE_LINE,      newLine},
                                {SHAPE_POLYLINE,  newPolyLine},
                                {SHAPE_RECTANGLE, newRectangle},
+                               {SHAPE_SQUARE,    newSquare},
                                {COMMAND_HELP,    helpDraw}
                        };
 
