@@ -198,7 +198,6 @@ Command DrawCommand() {
     };
 
 }
-
 Command GroupCommand() {
     return Command{COMMAND_GROUP, HELP_GROUP, EXAMPLE_HELP, true,
                    [](std::shared_ptr<Tspaint> tspaint, std::shared_ptr<Interface> it) {

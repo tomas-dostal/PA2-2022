@@ -311,3 +311,9 @@ from the user. To achieve that, you avoid entering interactive mode by providing
 
 Configuration file is a plaintext file with instructions/command calls as described in [Commands - interactive mode](#commands-interactive-mode) section. 
 Please keep in mind that in order to save a output you need to specify a `save` command as described in [Save-Related Commands](#save-related-commands) section.
+
+
+## Possible improvements
+Regarding to the feedback from submission, there are some possible improvements:
+- Better documentation of Interface including what this class do, same with Command
+- 

@@ -1,0 +1,48 @@
+set color byname RED__COMPILED_WITH_ERRORS
+draw star 52 318 29
+draw star 289 11 28
+draw star 263 359 34
+draw star 71 162 39
+draw star 331 44 29
+draw star 364 159 50
+draw star 104 258 11
+draw star 139 201 12
+draw star 359 209 21
+draw star 70 96 20
+set color byname RED__COMPILED_WITH_ERRORS
+draw star 223 343 39
+draw star 399 339 39
+draw star 457 73 32
+draw star 578 354 29
+draw star 228 315 14
+draw star 49 81 49
+draw star 415 371 22
+draw star 145 62 40
+draw star 206 295 14
+draw star 365 390 40
+set color byname YELLOW__FIT
+draw star 537 376 25
+draw star 392 190 20
+draw star 142 309 36
+draw star 489 361 19
+draw star 458 173 23
+draw star 61 345 43
+draw star 509 288 18
+draw star 261 332 49
+draw star 453 119 39
+draw star 329 379 29
+set color byname MAGENTA__BRAIN_OVERFLOW
+draw star 511 253 20
+draw star 278 164 20
+draw star 67 271 35
+draw star 299 81 12
+draw star 567 189 15
+draw star 421 246 47
+draw star 194 79 28
+draw star 138 116 41
+draw star 103 160 31
+draw star 418 129 38
+set color byname BLUE__FUN_FOR_A_WEEKEND
+draw star 63 227 49
+draw star 94 44 39
+save svg stars.svg
