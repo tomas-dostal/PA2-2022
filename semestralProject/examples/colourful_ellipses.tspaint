@@ -1,0 +1,66 @@
+draw ellipse 300 300 50 200
+set color byname YELLOW__FIT
+draw ellipse 300 300 100 250
+set color byname GREEN__IM_DONE
+draw ellipse 300 300 150 300
+set color byname BLUE__FUN_FOR_A_WEEKEND
+draw ellipse 300 300 200 350
+set color byname MAGENTA__BRAIN_OVERFLOW
+draw ellipse 300 300 250 400
+set color byname RED__COMPILED_WITH_ERRORS
+draw ellipse 300 300 300 450
+set color byname GRAY__OUT_OF_SIGHT
+draw ellipse 300 300 350 500
+set color byname WHITE__LOADING
+draw ellipse 300 300 400 550
+set color byname GREEN__PROGTEST_HOME
+draw ellipse 300 300 450 600
+set color byname BLACK__INSIDE_OF_MY_SOUL
+draw ellipse 300 300 500 650
+set color byname GRAY__PROGTEST
+draw ellipse 300 300 550 700
+set color byname YELLOW__FIT
+draw ellipse 300 300 600 750
+set color byname GREEN__ALMOST_THERE
+draw ellipse 300 300 650 800
+set color byname BLUE__FUN_FOR_A_WEEKEND
+draw ellipse 300 300 700 850
+set color byname MAGENTA__BRAIN_OVERFLOW
+draw ellipse 300 300 750 900
+set color byname RED__COMPILED_WITH_ERRORS
+draw ellipse 300 300 800 950
+set color byname GRAY__OUT_OF_SIGHT
+draw ellipse 300 300 850 1000
+set color byname WHITE__LOADING
+draw ellipse 300 300 900 1050
+set color byname GREEN__PROGTEST_HOME
+draw ellipse 300 300 950 1100
+set color byname BLACK__INSIDE_OF_MY_SOUL
+draw ellipse 300 300 1000 1150
+set color byname GRAY__PROGTEST
+draw ellipse 300 300 1050 1200
+set color byname YELLOW__FIT
+draw ellipse 300 300 1100 1250
+set color byname GREEN__ALMOST_THERE
+draw ellipse 300 300 1150 1300
+set color byname BLUE__FUN_FOR_A_WEEKEND
+draw ellipse 300 300 1200 1350
+set color byname MAGENTA__BRAIN_OVERFLOW
+draw ellipse 300 300 1250 1400
+set color byname RED__COMPILED_WITH_ERRORS
+draw ellipse 300 300 1300 1450
+set color byname GRAY__OUT_OF_SIGHT
+draw ellipse 300 300 1350 1500
+set color byname WHITE__LOADING
+draw ellipse 300 300 1400 1550
+set color byname GREEN__PROGTEST_HOME
+draw ellipse 300 300 1450 1600
+set color byname BLACK__INSIDE_OF_MY_SOUL
+draw ellipse 300 300 1500 1650
+set color byname GRAY__PROGTEST
+draw ellipse 300 300 1550 1700
+set color byname YELLOW__FIT
+draw ellipse 300 300 1600 1750
+set color byname GREEN__ALMOST_THERE
+draw ellipse 300 300 1650 1800
+set color byname BLUE__FUN_FOR_A_WEEKEND

@@ -1,3 +1,0 @@
-Cestne prohlasuji, ze jsem semestralni praci vypracoval samostatne, bez cizi pomoci.
-Cizi zdrojove kody/uryvky kodu jsou v semestralni prace vyznaceny pomoci
-anotace @basedon s odkazem na zdroj.

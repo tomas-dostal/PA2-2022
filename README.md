@@ -20,7 +20,7 @@ Even though my results were not 100%, at least I can tell that I tried.
 
 ### Semester task: 
 
-My semester task was [TSpain(t)](./semester/README.md). 
+My semester task was [TSpain(t)](semestralProject/README.md). 
 Gained 10.7400 / 12.0000 total possible points with following detailed rating: 
 
 ```
@@ -44,6 +44,18 @@ Gained 10.7400 / 12.0000 total possible points with following detailed rating:
 100% (Intensive (test suites, unit tests, ...))
 Overall rating: 89.50 %
 ```
+
+and these amazing drawing results
+
+|                                                                                         |                                                                                         |                                                                                                               |
+|-----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| <img src="./semestralProject/img/outputs/circle.bmp" alt="circle" width="200"/>         | <img src="./semestralProject/img/outputs/circle2.bmp" alt="circle2" width="200"/>       | <img src="./semestralProject/img/outputs/colorellipses_auto1.5.bmp" alt="colorellipses_auto1.5" width="200"/> |
+| <img src="./semestralProject/img/outputs/duck.bmp" alt="duck" width="200"/>             | <img src="./semestralProject/img/outputs/ellipse100.bmp" alt="ellipse100" width="200"/> | <img src="./semestralProject/img/outputs/ellipsep250.bmp" alt="ellipsep250" width="200"/>                     |
+| <img src="./semestralProject/img/outputs/eye.bmp" alt="eye" width="200"/>               | <img src="./semestralProject/img/outputs/house_pass.bmp" alt="house_pass" width="200"/> | <img src="./semestralProject/img/outputs/imagenice.bmp" alt="imagenice" width="200"/>                         |
+| <img src="./semestralProject/img/outputs/newstar.bmp" alt="newstar" width="200"/>       | <img src="./semestralProject/img/outputs/out1.bmp" alt="out1" width="200"/>             | <img src="./semestralProject/img/outputs/out2_8.bmp" alt="out2_8" width="200"/>                               |
+| <img src="./semestralProject/img/outputs/outt.bmp" alt="outt" width="200"/>             | <img src="./semestralProject/img/outputs/outtt.bmp" alt="outtt" width="200"/>           | <img src="./semestralProject/img/outputs/rose.bmp" alt="rose" width="200"/>                                   |
+| <img src="./semestralProject/img/outputs/screenshot.png" alt="screenshot" width="200"/> | <img src="./semestralProject/img/outputs/starnew2.bmp" alt="starnew2" width="200"/>     | <img src="./semestralProject/img/outputs/stars.bmp" alt="stars" width="200"/>                                 |
+
 
 ## Copying
 

@@ -1,3 +1,0 @@
-set thickness 10
-set fill byname BLACK__INSIDE_OF_MY_SOUL
-draw circle 50 50 50
